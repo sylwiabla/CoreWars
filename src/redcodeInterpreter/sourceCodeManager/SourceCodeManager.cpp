@@ -3,15 +3,21 @@
 //
 #include "SourceCodeManager.hpp"
 
-int SourceCodeManager::getNext ()
+char SourceCodeManager::getNext ()
 {
+    boost::mutex::scoped_lock scoped_lock(readMutex_);
+
     if(!opened_)
         openFile();
 
     fin_.exceptions (std::ifstream::badbit);
     try
     {
-        return fin_.eof() ? -1 : fin_.get();
+        char result;
+        if (!(fin_ >> std::noskipws >> result))
+            endReached_ = true;
+
+        return result;
     }
     catch (const std::ifstream::failure & e) {
         //throw new ReadFileException ();

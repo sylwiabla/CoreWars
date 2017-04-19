@@ -7,6 +7,7 @@
 
 #include <fstream>
 #include <boost/filesystem.hpp>
+#include <boost/thread/mutex.hpp>
 #include "exceptions/SourceFileNotFound.hpp"
 
 class SourceCodeManager
@@ -15,6 +16,7 @@ public:
     SourceCodeManager (std::string fileName) : fileName_(fileName)
     {
         opened_ = false;
+        endReached_ = false;
     }
 
     ~SourceCodeManager ()
@@ -22,13 +24,20 @@ public:
         fin_.close();
     }
 
-    int getNext();
-    void openFile();
+    char getNext();
+    inline bool endReached ()
+    {
+        return endReached_;
+    }
 
 private:
     std::string fileName_;
     std::ifstream fin_;
     bool opened_;
+    bool endReached_;
+    boost::mutex readMutex_;
+
+    void openFile();
 
 };
 

@@ -7,8 +7,12 @@ int main() {
     cout << "Hello, World!" << endl;
 
     SourceCodeManager * manager = new SourceCodeManager("/home/sylwia/ClionProjects/RedcodeInterpreter/test/test");
-    int c;
-    while((c = manager->getNext()) != -1)
-        std::cout << c << std::endl;
+    char c;
+    while(!manager->endReached())
+    {
+        c = manager->getNext();
+        if (!manager->endReached())
+            std::cout << c << std::endl;
+    }
     return 0;
 };

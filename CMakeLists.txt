@@ -3,7 +3,7 @@ project(RedcodeInterpreter)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-find_package(Boost COMPONENTS system filesystem REQUIRED)
+find_package(Boost COMPONENTS system filesystem thread REQUIRED)
 
 if(Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIRS})
