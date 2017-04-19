@@ -10,10 +10,12 @@ if(Boost_FOUND)
 
 endif()
 
-set(SOURCE_FILES src/main.cpp src/redcodeInterpreter/scanner/Scanner.hpp src/redcodeInterpreter/scanner/Scanner.cpp src/redcodeInterpreter/parser/Parser.hpp src/redcodeInterpreter/parser/Parser.cpp src/redcodeInterpreter/scanner/Scanner.hpp src/redcodeInterpreter/scanner/Scanner.cpp)
-set(SOURCE_CODE_MANAGER src/redcodeInterpreter/sourceCodeManager/SourceCodeManager.hpp src/redcodeInterpreter/sourceCodeManager/SourceCodeManager.cpp)
-set(SOURCE_CODE_MANAGER_EXCEP src/redcodeInterpreter/sourceCodeManager/exceptions/SourceFileNotFound.hpp src/redcodeInterpreter/sourceCodeManager/exceptions/SourceFileNotFound.cpp)
-add_executable(RedcodeInterpreter ${SOURCE_FILES} ${SOURCE_CODE_MANAGER} ${SOURCE_CODE_MANAGER_EXCEP})
+set(SOURCE_FILES src/main.cpp src/redcodeInterpreter/parser/Parser.hpp src/redcodeInterpreter/parser/Parser.cpp)
+set(SOURCE_CODE_MANAGER src/redcodeInterpreter/scanner/sourceCodeManager/SourceCodeManager.hpp src/redcodeInterpreter/scanner/sourceCodeManager/SourceCodeManager.cpp)
+set(SOURCE_CODE_MANAGER_EXCEP src/redcodeInterpreter/scanner/sourceCodeManager/exceptions/SourceFileNotFound.hpp src/redcodeInterpreter/scanner/sourceCodeManager/exceptions/SourceFileNotFound.cpp)
+set(SCANNER src/redcodeInterpreter/scanner/Scanner.hpp src/redcodeInterpreter/scanner/Scanner.cpp)
+
+add_executable(RedcodeInterpreter ${SOURCE_FILES} ${SOURCE_CODE_MANAGER} ${SOURCE_CODE_MANAGER_EXCEP} ${SCANNER})
 
 if(Boost_FOUND)
 

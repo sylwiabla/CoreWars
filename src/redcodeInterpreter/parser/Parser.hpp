@@ -5,6 +5,8 @@
 #ifndef REDCODEINTERPRETER_PARSER_HPP
 #define REDCODEINTERPRETER_PARSER_HPP
 
+#include <memory>
+
 class Parser
 {
 public:
@@ -24,6 +26,8 @@ private:
 
 
 };
+
+typedef std::shared_ptr<Parser> ParserPtr;
 
 
 #endif //REDCODEINTERPRETER_PARSER_HPP
