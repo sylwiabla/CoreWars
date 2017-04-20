@@ -26,9 +26,13 @@ public:
     }
 
     char getNext();
-    inline bool endReached ()
+    inline bool endReached () const
     {
         return endReached_;
+    }
+    inline void unget()
+    {
+        fin_.unget();
     }
 
 private:
