@@ -14,8 +14,9 @@ set(SOURCE_FILES src/main.cpp src/redcodeInterpreter/parser/Parser.hpp src/redco
 set(SOURCE_CODE_MANAGER src/redcodeInterpreter/scanner/sourceCodeManager/SourceCodeManager.hpp src/redcodeInterpreter/scanner/sourceCodeManager/SourceCodeManager.cpp)
 set(SOURCE_CODE_MANAGER_EXCEP src/redcodeInterpreter/scanner/sourceCodeManager/exceptions/SourceFileNotFound.hpp src/redcodeInterpreter/scanner/sourceCodeManager/exceptions/SourceFileNotFound.cpp)
 set(SCANNER src/redcodeInterpreter/scanner/Scanner.hpp src/redcodeInterpreter/scanner/Scanner.cpp)
+set(STATE src/redcodeInterpreter/scanner/state/State.hpp src/redcodeInterpreter/scanner/state/State.cpp src/redcodeInterpreter/scanner/state/State.cpp)
 
-add_executable(RedcodeInterpreter ${SOURCE_FILES} ${SOURCE_CODE_MANAGER} ${SOURCE_CODE_MANAGER_EXCEP} ${SCANNER})
+add_executable(RedcodeInterpreter ${SOURCE_FILES} ${SOURCE_CODE_MANAGER} ${SOURCE_CODE_MANAGER_EXCEP} ${SCANNER} ${STATE})
 
 if(Boost_FOUND)
 
