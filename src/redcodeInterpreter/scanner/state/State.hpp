@@ -20,7 +20,7 @@ public:
     State (void (*handler) ()) : handler_(handler), isTerminal_(false), message_("")
     {}
 
-    State (bool isTerminal, void (*handler) ()) : isTerminal_(isTerminal), handler_(handler)
+    State (bool isTerminal, void (*handler) ()) : isTerminal_(isTerminal), handler_(handler), message_("")
     {}
 
     void (* handler_) ();
