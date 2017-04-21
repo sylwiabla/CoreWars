@@ -1,5 +1,5 @@
 //
-// Created by sylwia on 4/19/17.
+// Created by Sylwia Blach on 4/19/17.
 //
 
 #ifndef REDCODEINTERPRETER_SCANNER_HPP
@@ -8,6 +8,14 @@
 #include <map>
 #include "state/State.hpp"
 #include "sourceCodeManager/SourceCodeManager.hpp"
+
+bool isDelimiter(const char & c);
+void startStateHandler();
+void omitComment();
+void omitWhiteSpaces();
+void createToken();
+void logError();
+void logEOF();
 
 class Scanner
 {
@@ -18,9 +26,20 @@ public:
         return instance;
     }
 
+    inline void setSourceManager (const std::string & filename)
+    {
+        sourceCodeManager_->setFilename(filename);
+    }
+
 private:
-    Scanner() : lineNr_(FIRST_LINE_NR), sourceCodeManager_(nullptr), currentState_(Scanner::startState_)
-    {}
+    Scanner()
+    {
+        sourceCodeManager_ = std::make_shared<SourceCodeManager> ();
+        /** @TODO **/
+        currentState_ = std::make_shared<State> ();
+        currentState_ = startState_;
+        lineNr_ = FIRST_LINE_NR;
+    }
 
     Scanner (Scanner const&) = delete;
     void operator=(Scanner const&) = delete;
@@ -34,27 +53,23 @@ private:
     SourceManagerPtr sourceCodeManager_;
 
 public:
-    void setSourceManager(std::string filename)
-    {
-        sourceCodeManager_ = std::make_shared<SourceCodeManager> (filename);
-    }
-    const std::string & getToken ();
+    const std::string getToken ();
+
+    friend bool isDelimiter(const char & c);
+    friend void startStateHandler();
+    friend void omitComment();
+    friend void omitWhiteSpaces();
+    friend void createToken();
+    friend void logError();
+    friend void logEOF();
 
 private:
-    bool isDelimiter(const char & c);
-    void startStateHandler();
-    void omitComment();
-    void omitWhiteSpaces();
-    void createToken();
-    void logError();
-    void logEOF();
-
-    static const StatePtr startState_ = std::make_shared(new State (startStateHandler));
-    static const StatePtr commentState_ = std::make_shared(new State (omitComment));
-    static const StatePtr wspaceState_ = std::make_shared(new State (omitWhiteSpaces));
-    static const StatePtr errorState_ = std::make_shared(new State (true, logError));
-    static const StatePtr tokenState_ = std::make_shared(new State (true, createToken));
-    static const StatePtr endState_ = std::make_shared(new State (true, logEOF));
+    const StatePtr startState_ = std::make_shared<State> (startStateHandler);
+    const StatePtr commentState_ = std::make_shared<State> (omitComment);
+    const StatePtr wspaceState_ = std::make_shared<State> (omitWhiteSpaces);
+    const StatePtr errorState_ = std::make_shared<State> (true, logError);
+    const StatePtr tokenState_ = std::make_shared<State> (true, createToken);
+    const StatePtr endState_ = std::make_shared<State> (true, logEOF);
 
     StatePtr currentState_;
 

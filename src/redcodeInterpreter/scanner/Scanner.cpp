@@ -4,9 +4,9 @@
 
 #include "Scanner.hpp"
 
-static const std::map<char, int> delimiters_ = {{',', 0}, {'.', 1}};
+const std::map<char, int> Scanner::delimiters_ = {{',', 0}, {'.', 1}};
 
-const std::string & Scanner::getToken()
+const std::string Scanner::getToken()
 {
     do
         currentState_->handler_();
@@ -14,89 +14,90 @@ const std::string & Scanner::getToken()
 
     StatePtr prevState = currentState_;
     currentState_->handler_();
-    return prevState->getMessage();
+    std::string result = prevState->getMessage();
+    return result;
 }
 
-bool Scanner::isDelimiter (const char & c)
+bool isDelimiter (const char & c)
 {
-    return delimiters_.find(c) == delimiters_.end();
+    return Scanner::getInstance().delimiters_.find(c) != Scanner::getInstance().delimiters_.end();
 }
 
-void Scanner::startStateHandler()
+void startStateHandler()
 {
     char c;
-    c = sourceCodeManager_->getNext();
-    if (sourceCodeManager_->endReached())
-        currentState_ = endState_;
-    if (c == COMMENT_START)
-        currentState_ = commentState_;
+    c = Scanner::getInstance().sourceCodeManager_->getNext();
+    if (Scanner::getInstance().sourceCodeManager_->endReached())
+        Scanner::getInstance().currentState_ = Scanner::getInstance().endState_;
+    if (c == Scanner::getInstance().COMMENT_START)
+        Scanner::getInstance().currentState_ = Scanner::getInstance().commentState_;
     else if (iswspace(c)) {
-        currentState_ = wspaceState_;
+        Scanner::getInstance().currentState_ = Scanner::getInstance().wspaceState_;
         if (c == '\n')
-            ++lineNr_;
+            ++Scanner::getInstance().lineNr_;
     }
     else if (isDelimiter(c))
     {
         /** @TODO **/
-        currentState_->setMessage("Unexpected delimiter");
+        Scanner::getInstance().currentState_->setMessage("Unexpected delimiter");
     }
     else
-        currentState_ = tokenState_;
+        Scanner::getInstance().currentState_ = Scanner::getInstance().tokenState_;
 }
 
-void Scanner::omitComment()
+void omitComment()
 {
     char c;
     do
     {
-        c = sourceCodeManager_->getNext();
-        if (sourceCodeManager_->endReached())
+        c = Scanner::getInstance().sourceCodeManager_->getNext();
+        if (Scanner::getInstance().sourceCodeManager_->endReached())
         {
-            currentState_ = endState_;
+            Scanner::getInstance().currentState_ = Scanner::getInstance().endState_;
             return;
         }
     }
     while (c != '\n');
 
-    ++lineNr_;
-    currentState_ = startState_;
+    ++Scanner::getInstance().lineNr_;
+    Scanner::getInstance().currentState_ = Scanner::getInstance().startState_;
 }
 
-void Scanner::omitWhiteSpaces()
+void omitWhiteSpaces()
 {
     char c;
     do
     {
-        c = sourceCodeManager_->getNext();
-        if(sourceCodeManager_->endReached())
+        c = Scanner::getInstance().sourceCodeManager_->getNext();
+        if(Scanner::getInstance().sourceCodeManager_->endReached())
         {
-            currentState_ = endState_;
+            Scanner::getInstance().currentState_ = Scanner::getInstance().endState_;
             return;
         }
         if(c == '\n')
-            ++lineNr_;
+            ++Scanner::getInstance().lineNr_;
     }
     while (!iswspace(c));
 
-    sourceCodeManager_->unget();
-    currentState_ = startState_;
+    Scanner::getInstance().sourceCodeManager_->unget();
+    Scanner::getInstance().currentState_ = Scanner::getInstance().startState_;
 }
 
-void Scanner::logError()
+void logError()
 {
     /** @TODO  **/
-    currentState_->setMessage("Error: too long identifier name");
-    currentState_ = startState_;
+    Scanner::getInstance().currentState_->setMessage("Error: too long identifier name");
+    Scanner::getInstance().currentState_ = Scanner::getInstance().startState_;
 }
 
-void Scanner::logEOF()
+void logEOF()
 {
     /** @TODO **/
-    currentState_->setMessage("End of source file");
-    currentState_ = startState_;
+    Scanner::getInstance().currentState_->setMessage("End of source file");
+    Scanner::getInstance().currentState_ = Scanner::getInstance().startState_;
 }
 
-void Scanner::createToken()
+void createToken()
 {
     std::string token = "";
     char c;
@@ -104,27 +105,27 @@ void Scanner::createToken()
 
     do
     {
-        c = sourceCodeManager_->getNext();
-        if(sourceCodeManager_->endReached())
+        c = Scanner::getInstance().sourceCodeManager_->getNext();
+        if(Scanner::getInstance().sourceCodeManager_->endReached())
         {
-            currentState_ = endState_;
+            Scanner::getInstance().currentState_ = Scanner::getInstance().endState_;
             if (token != "")
-                currentState_->setMessage(token);
+                Scanner::getInstance().currentState_->setMessage(token);
             return;
         }
         ++nrChars;
 
-        if(nrChars > MAX_IDENTIFIER_LENGTH)
+        if(nrChars > Scanner::getInstance().MAX_IDENTIFIER_LENGTH)
         {
-            currentState_ = errorState_;
+            Scanner::getInstance().currentState_ = Scanner::getInstance().errorState_;
             return;
         }
 
         if (iswspace(c) || isDelimiter(c))
         {
             if (token != "")
-                currentState_->setMessage(token);
-            currentState_ = startState_;
+                Scanner::getInstance().currentState_->setMessage(token);
+            Scanner::getInstance().currentState_ = Scanner::getInstance().startState_;
             return;
         }
         else
