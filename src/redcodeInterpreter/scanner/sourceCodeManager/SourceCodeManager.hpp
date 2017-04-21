@@ -14,7 +14,10 @@
 class SourceCodeManager
 {
 public:
-    SourceCodeManager (std::string fileName) : fileName_(fileName)
+    SourceCodeManager () : opened_(false), endReached_(false), fileName_("")
+    {}
+
+    SourceCodeManager (const std::string & fileName) : fileName_(fileName)
     {
         opened_ = false;
         endReached_ = false;
@@ -33,6 +36,11 @@ public:
     inline void unget()
     {
         fin_.unget();
+    }
+
+    void setFilename (const std::string filename)
+    {
+        fileName_ = filename;
     }
 
 private:
