@@ -8,16 +8,8 @@
 #include <map>
 #include "state/State.hpp"
 #include "sourceCodeManager/SourceCodeManager.hpp"
-
-/*class Scanner;
-
-bool Scanner::isDelimiter(const char & c);
-void Scanner::startStateHandler();
-void Scanner::omitComment();
-void Scanner::omitWhiteSpaces();
-void Scanner::createToken();
-void Scanner::logError();
-void Scanner::logEOF();*/
+#include "../errorLogger/ErrorLogger.hpp"
+#include "sourceCodeManager/exceptions/Messages.hpp"
 
 class Scanner
 {
@@ -54,7 +46,7 @@ private:
     SourceManagerPtr sourceCodeManager_;
 
 public:
-    const std::string getToken ();
+    std::string getToken ();
 
     static bool isDelimiter(const char & c);
     static void startStateHandler();
@@ -67,7 +59,7 @@ public:
 private:
     const StatePtr startState_ = std::make_shared<State> (&startStateHandler);
     const StatePtr commentState_ = std::make_shared<State> (&omitComment);
-    const StatePtr wspaceState_ = std::make_shared<State> (&omitWhiteSpaces);
+    const StatePtr wSpaceState_ = std::make_shared<State> (&omitWhiteSpaces);
     const StatePtr errorState_ = std::make_shared<State> (true, &logError);
     const StatePtr tokenState_ = std::make_shared<State> (true, &createToken);
     const StatePtr endState_ = std::make_shared<State> (true, &logEOF);

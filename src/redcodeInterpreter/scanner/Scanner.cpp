@@ -6,7 +6,7 @@
 
 const std::map<char, int> Scanner::delimiters_ = {{',', 0}, {'.', 1}};
 
-const std::string Scanner::getToken()
+std::string Scanner::getToken()
 {
     do
         currentState_->handler_();
@@ -35,15 +35,14 @@ void Scanner::startStateHandler()
         scanner->currentState_ = scanner->commentState_;
     else if (iswspace(c))
     {
-        scanner->currentState_ = scanner->wspaceState_;
+        scanner->currentState_ = scanner->wSpaceState_;
         if (c == '\n')
             ++scanner->lineNr_;
     }
     else if (isDelimiter(c))
     {
-        /** @TODO **/
-        scanner->currentState_ = scanner->errorState_;
-        scanner->currentState_->setMessage("Unexpected delimiter");
+        unsigned int lineNr = Scanner::getInstance().lineNr_;
+        ErrorLogger::getInstance().logError(std::make_pair<unsigned int, std::string> (static_cast<unsigned int &&> (lineNr), "Unexpected delimiter"));
     }
     else
     {
@@ -95,16 +94,16 @@ void Scanner::omitWhiteSpaces()
 void Scanner::logError()
 {
     Scanner * scanner = &Scanner::getInstance();
-    /** @TODO  **/
-    //scanner->currentState_->setMessage("Error: too long identifier name");
+    unsigned int lineNr = Scanner::getInstance().lineNr_;
+    std::string message = scanner->currentState_->getMessage();
+    ErrorLogger::getInstance().logError(std::make_pair<unsigned int, std::string> (static_cast<unsigned int &&> (lineNr), static_cast<std::string &&> (message)));
     scanner->currentState_ = scanner->startState_;
 }
 
 void Scanner::logEOF()
 {
     Scanner * scanner = &Scanner::getInstance();
-    /** @TODO **/
-    scanner->currentState_->setMessage("End of source file");
+    scanner->currentState_->setMessage("EOF");
     scanner->currentState_ = scanner->startState_;
 }
 
@@ -130,6 +129,7 @@ void Scanner::createToken()
         if(nrChars > scanner->MAX_IDENTIFIER_LENGTH)
         {
             scanner->currentState_ = scanner->errorState_;
+            scanner->currentState_->setMessage("Too long identifier");
             return;
         }
 
