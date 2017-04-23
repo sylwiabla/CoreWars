@@ -35,7 +35,6 @@ private:
     Scanner()
     {
         sourceCodeManager_ = std::make_shared<SourceCodeManager> ();
-        /** @TODO **/
         currentState_ = std::make_shared<State> ();
         currentState_ = startState_;
         lineNr_ = FIRST_LINE_NR;

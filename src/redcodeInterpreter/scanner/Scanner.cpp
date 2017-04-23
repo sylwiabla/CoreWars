@@ -26,75 +26,85 @@ bool isDelimiter (const char & c)
 void startStateHandler()
 {
     char c;
-    c = Scanner::getInstance().sourceCodeManager_->getNext();
-    if (Scanner::getInstance().sourceCodeManager_->endReached())
-        Scanner::getInstance().currentState_ = Scanner::getInstance().endState_;
-    if (c == Scanner::getInstance().COMMENT_START)
-        Scanner::getInstance().currentState_ = Scanner::getInstance().commentState_;
-    else if (iswspace(c)) {
-        Scanner::getInstance().currentState_ = Scanner::getInstance().wspaceState_;
+    Scanner * scanner = &Scanner::getInstance();
+
+    c = scanner->sourceCodeManager_->getNext();
+    if (scanner->sourceCodeManager_->endReached())
+        scanner->currentState_ = scanner->endState_;
+    else if (c == scanner->COMMENT_START)
+        scanner->currentState_ = scanner->commentState_;
+    else if (iswspace(c))
+    {
+        scanner->currentState_ = scanner->wspaceState_;
         if (c == '\n')
-            ++Scanner::getInstance().lineNr_;
+            ++scanner->lineNr_;
     }
     else if (isDelimiter(c))
     {
         /** @TODO **/
-        Scanner::getInstance().currentState_->setMessage("Unexpected delimiter");
+        scanner->currentState_->setMessage("Unexpected delimiter");
     }
     else
-        Scanner::getInstance().currentState_ = Scanner::getInstance().tokenState_;
+    {
+        scanner->sourceCodeManager_->unget();
+        scanner->currentState_ = scanner->tokenState_;
+    }
 }
 
 void omitComment()
 {
     char c;
+    Scanner * scanner = &Scanner::getInstance();
     do
     {
-        c = Scanner::getInstance().sourceCodeManager_->getNext();
-        if (Scanner::getInstance().sourceCodeManager_->endReached())
+        c = scanner->sourceCodeManager_->getNext();
+        if (scanner->sourceCodeManager_->endReached())
         {
-            Scanner::getInstance().currentState_ = Scanner::getInstance().endState_;
+            scanner->currentState_ = scanner->endState_;
             return;
         }
     }
     while (c != '\n');
 
-    ++Scanner::getInstance().lineNr_;
-    Scanner::getInstance().currentState_ = Scanner::getInstance().startState_;
+    ++(scanner->lineNr_);
+    scanner->currentState_ = scanner->startState_;
 }
 
 void omitWhiteSpaces()
 {
     char c;
+    Scanner * scanner = &Scanner::getInstance();
     do
     {
-        c = Scanner::getInstance().sourceCodeManager_->getNext();
-        if(Scanner::getInstance().sourceCodeManager_->endReached())
+        c = scanner->sourceCodeManager_->getNext();
+        if(scanner->sourceCodeManager_->endReached())
         {
-            Scanner::getInstance().currentState_ = Scanner::getInstance().endState_;
+            scanner->currentState_ = scanner->endState_;
             return;
         }
         if(c == '\n')
-            ++Scanner::getInstance().lineNr_;
+            ++scanner->lineNr_;
     }
-    while (!iswspace(c));
+    while (iswspace(c));
 
-    Scanner::getInstance().sourceCodeManager_->unget();
-    Scanner::getInstance().currentState_ = Scanner::getInstance().startState_;
+    scanner->sourceCodeManager_->unget();
+    scanner->currentState_ = scanner->startState_;
 }
 
 void logError()
 {
+    Scanner * scanner = &Scanner::getInstance();
     /** @TODO  **/
-    Scanner::getInstance().currentState_->setMessage("Error: too long identifier name");
-    Scanner::getInstance().currentState_ = Scanner::getInstance().startState_;
+    scanner->currentState_->setMessage("Error: too long identifier name");
+    scanner->currentState_ = scanner->startState_;
 }
 
 void logEOF()
 {
+    Scanner * scanner = &Scanner::getInstance();
     /** @TODO **/
-    Scanner::getInstance().currentState_->setMessage("End of source file");
-    Scanner::getInstance().currentState_ = Scanner::getInstance().startState_;
+    scanner->currentState_->setMessage("End of source file");
+    scanner->currentState_ = scanner->startState_;
 }
 
 void createToken()
@@ -102,30 +112,31 @@ void createToken()
     std::string token = "";
     char c;
     unsigned int nrChars = 0;
+    Scanner * scanner = &Scanner::getInstance();
 
     do
     {
-        c = Scanner::getInstance().sourceCodeManager_->getNext();
-        if(Scanner::getInstance().sourceCodeManager_->endReached())
+        c = scanner->sourceCodeManager_->getNext();
+        if(scanner->sourceCodeManager_->endReached())
         {
-            Scanner::getInstance().currentState_ = Scanner::getInstance().endState_;
             if (token != "")
-                Scanner::getInstance().currentState_->setMessage(token);
+                scanner->currentState_->setMessage(token);
+            scanner->currentState_ = scanner->endState_;
             return;
         }
         ++nrChars;
 
-        if(nrChars > Scanner::getInstance().MAX_IDENTIFIER_LENGTH)
+        if(nrChars > scanner->MAX_IDENTIFIER_LENGTH)
         {
-            Scanner::getInstance().currentState_ = Scanner::getInstance().errorState_;
+            scanner->currentState_ = scanner->errorState_;
             return;
         }
 
         if (iswspace(c) || isDelimiter(c))
         {
             if (token != "")
-                Scanner::getInstance().currentState_->setMessage(token);
-            Scanner::getInstance().currentState_ = Scanner::getInstance().startState_;
+                scanner->currentState_->setMessage(token);
+            scanner->currentState_ = scanner->startState_;
             return;
         }
         else
