@@ -11,18 +11,11 @@ char SourceCodeManager::getNext ()
         openFile();
 
     fin_.exceptions (std::ifstream::badbit);
-    try
-    {
-        char result = DEFAULT_CHAR;
-        if (!(fin_ >> std::noskipws >> result))
-            endReached_ = true;
+    char result = DEFAULT_CHAR;
+    if (!(fin_ >> std::noskipws >> result))
+        endReached_ = true;
 
-        return result;
-    }
-    catch (const std::ifstream::failure & e)
-    {
-        //throw new ReadFileException ();
-    }
+    return result;
 }
 
 void SourceCodeManager::openFile ()
