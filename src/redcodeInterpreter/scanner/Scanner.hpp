@@ -9,13 +9,15 @@
 #include "state/State.hpp"
 #include "sourceCodeManager/SourceCodeManager.hpp"
 
-bool isDelimiter(const char & c);
-void startStateHandler();
-void omitComment();
-void omitWhiteSpaces();
-void createToken();
-void logError();
-void logEOF();
+/*class Scanner;
+
+bool Scanner::isDelimiter(const char & c);
+void Scanner::startStateHandler();
+void Scanner::omitComment();
+void Scanner::omitWhiteSpaces();
+void Scanner::createToken();
+void Scanner::logError();
+void Scanner::logEOF();*/
 
 class Scanner
 {
@@ -54,21 +56,21 @@ private:
 public:
     const std::string getToken ();
 
-    friend bool isDelimiter(const char & c);
-    friend void startStateHandler();
-    friend void omitComment();
-    friend void omitWhiteSpaces();
-    friend void createToken();
-    friend void logError();
-    friend void logEOF();
+    static bool isDelimiter(const char & c);
+    static void startStateHandler();
+    static void omitComment();
+    static void omitWhiteSpaces();
+    static void createToken();
+    static void logError();
+    static void logEOF();
 
 private:
-    const StatePtr startState_ = std::make_shared<State> (startStateHandler);
-    const StatePtr commentState_ = std::make_shared<State> (omitComment);
-    const StatePtr wspaceState_ = std::make_shared<State> (omitWhiteSpaces);
-    const StatePtr errorState_ = std::make_shared<State> (true, logError);
-    const StatePtr tokenState_ = std::make_shared<State> (true, createToken);
-    const StatePtr endState_ = std::make_shared<State> (true, logEOF);
+    const StatePtr startState_ = std::make_shared<State> (&startStateHandler);
+    const StatePtr commentState_ = std::make_shared<State> (&omitComment);
+    const StatePtr wspaceState_ = std::make_shared<State> (&omitWhiteSpaces);
+    const StatePtr errorState_ = std::make_shared<State> (true, &logError);
+    const StatePtr tokenState_ = std::make_shared<State> (true, &createToken);
+    const StatePtr endState_ = std::make_shared<State> (true, &logEOF);
 
     StatePtr currentState_;
 

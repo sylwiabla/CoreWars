@@ -18,12 +18,12 @@ const std::string Scanner::getToken()
     return result;
 }
 
-bool isDelimiter (const char & c)
+bool Scanner::isDelimiter (const char & c)
 {
     return Scanner::getInstance().delimiters_.find(c) != Scanner::getInstance().delimiters_.end();
 }
 
-void startStateHandler()
+void Scanner::startStateHandler()
 {
     char c;
     Scanner * scanner = &Scanner::getInstance();
@@ -42,6 +42,7 @@ void startStateHandler()
     else if (isDelimiter(c))
     {
         /** @TODO **/
+        scanner->currentState_ = scanner->errorState_;
         scanner->currentState_->setMessage("Unexpected delimiter");
     }
     else
@@ -51,7 +52,7 @@ void startStateHandler()
     }
 }
 
-void omitComment()
+void Scanner::omitComment()
 {
     char c;
     Scanner * scanner = &Scanner::getInstance();
@@ -70,7 +71,7 @@ void omitComment()
     scanner->currentState_ = scanner->startState_;
 }
 
-void omitWhiteSpaces()
+void Scanner::omitWhiteSpaces()
 {
     char c;
     Scanner * scanner = &Scanner::getInstance();
@@ -91,15 +92,15 @@ void omitWhiteSpaces()
     scanner->currentState_ = scanner->startState_;
 }
 
-void logError()
+void Scanner::logError()
 {
     Scanner * scanner = &Scanner::getInstance();
     /** @TODO  **/
-    scanner->currentState_->setMessage("Error: too long identifier name");
+    //scanner->currentState_->setMessage("Error: too long identifier name");
     scanner->currentState_ = scanner->startState_;
 }
 
-void logEOF()
+void Scanner::logEOF()
 {
     Scanner * scanner = &Scanner::getInstance();
     /** @TODO **/
@@ -107,7 +108,7 @@ void logEOF()
     scanner->currentState_ = scanner->startState_;
 }
 
-void createToken()
+void Scanner::createToken()
 {
     std::string token = "";
     char c;
