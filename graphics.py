@@ -110,6 +110,7 @@ class Logger(Scene):
         return self._password
 
     def display_error(self,screen):
+	""" Display error message """
 	screen.fill((0,0,0))
 	self.display_label(screen,"Incorrect login or password.",
 	screen.get_width()/4-40,(screen.get_height()/3-10))
@@ -125,6 +126,7 @@ class Logger(Scene):
 	(screen.get_width()/4)-20,(screen.get_height()/6)+60)"""
 
 class Game(Scene):
+    """ Main game scene """
     def __init__(self):
         #self.on_init(screen)
 	self._sprites = []
@@ -154,7 +156,7 @@ class Game(Scene):
 
 
     def add_sign(self,screen,inkey,tab):
-	""" read filename """
+	""" read filename by sign """
         x = screen.get_width()/32+5
         y = screen.get_height()/2+10
         if inkey == K_BACKSPACE:

@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import psycopg2
+from config import config
 import hashlib
 
 class ServerSQL:
@@ -7,9 +8,11 @@ class ServerSQL:
         """ Connect to the PostgreSQL database server """
         self._conn = None
         try: 
+	    # read connection parameters
+            params = config()
             # connect to the PostgreSQL server
             print('Connecting to the PostgreSQL database...')
-            self._conn = psycopg2.connect(host="localhost",database="users", user="postgres", password="zpr#corewar")
+            self._conn = psycopg2.connect(**params)
             # create a cursor
             cur = self._conn.cursor()
             return cur
@@ -39,7 +42,7 @@ class ServerSQL:
                 print('Database connection closed.')
 
     def create_table(self,cur):
-        """ Create tables in the PostgreSQL database """
+        """ Create users_info table in the PostgreSQL database """
         command = 'CREATE TABLE users_info (user_id SERIAL PRIMARY KEY,login varchar (20) NOT NULL,password varchar (32) NOT NULL);'
         cur.execute(command)
  
@@ -52,6 +55,7 @@ class ServerSQL:
             print(row)
 
     def count_md5(self,u_pass):
+	""" Count md5 hash of given password """
         m = hashlib.md5()
         m.update(u_pass)
         u_hash = m.hexdigest()
@@ -74,15 +78,21 @@ class ServerSQL:
 	    	return rows[0][0]
 	return None
 
+    def who_am_i(self,cur,user_id):
+	cmd = "SELECT login FROM users_info WHERE user_id="+user_id
+	cur.execute(cmd)
+        rows = cur.fetchall()
+	print 'Logged as: '+rows[0][0]
+	return rows[0][0]
 
     def add_score(self,cur,user_id,score):
         """Dodaj wynik do sumy, porownaj z najlepszym wynikiem"""
         pass
 
     def remove_user(self,cur,user_id):
-        """Usun uzytkownika"""
+        """Remove users info from db"""
 	cur.execute("DELETE FROM users_info WHERE user_id = %s", (user_id))
-        # get the number of updated rows
+        # number of updated rows
         rows_deleted = cur.rowcount
 
     def get_statistics(self,cur,user_id):
@@ -93,7 +103,8 @@ class ServerSQL:
 if __name__ == '__main__':
     server = ServerSQL()
     cur = server.connect()
-    #server.display_table(cur,'users_info')
-    #server.add_user(cur,'test','test')
-    server.get_user_id(cur,"kama",'kama')
+    server.display_table(cur,'users_info')
+    #server.who_am_i(cur,'1')
+    #server.add_user(cur,'root','toor')
+    #server.get_user_id(cur,"test",'test')
     server.close_conn(cur)
