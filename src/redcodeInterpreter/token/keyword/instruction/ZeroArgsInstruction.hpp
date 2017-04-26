@@ -10,8 +10,11 @@
 class ZeroArgsInstruction : public Instruction
 {
 public:
-    ZeroArgsInstruction ()
+    ZeroArgsInstruction (std::string name) : Instruction(name)
     {}
+
 };
+
+typedef std::shared_ptr<ZeroArgsInstruction> ZeroArgsInstrPtr;
 
 #endif //REDCODEINTERPRETER_ZEROARGSINSTRUCTION_HPP

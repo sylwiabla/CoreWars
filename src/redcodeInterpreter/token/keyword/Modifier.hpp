@@ -10,8 +10,11 @@
 class Modifier : public Keyword
 {
 public:
-    Modifier()
+    Modifier(std::string name) : name_(name)
     {}
+
+private:
+    std::string name_;
 };
 
 typedef std::shared_ptr<Modifier> ModifierPtr;

@@ -10,8 +10,16 @@
 class Instruction : public Keyword
 {
 public:
-    Instruction()
+    Instruction ()
     {}
+
+    Instruction (std::string name) : name_(name)
+    {}
+
+private:
+    std::string name_;
 };
+
+typedef std::shared_ptr<Instruction> InstructionPtr;
 
 #endif //REDCODEINTERPRETER_INSTRUCTION_HPP

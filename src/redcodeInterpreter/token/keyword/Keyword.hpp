@@ -10,8 +10,10 @@
 class Keyword : public Token
 {
 public:
-    Keyword()
-    {}
+    Keyword() {}
+
 };
+
+typedef std::shared_ptr<Keyword> KeywordPtr;
 
 #endif //REDCODEINTERPRETER_KEYWORD_HPP

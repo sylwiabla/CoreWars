@@ -5,7 +5,7 @@
 #ifndef REDCODEINTERPRETER_IDENTIFIER_HPP
 #define REDCODEINTERPRETER_IDENTIFIER_HPP
 
-#include "Token.hpp"
+#include "../../Token.hpp"
 
 class Identifier : public Token
 {

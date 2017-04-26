@@ -10,8 +10,11 @@
 class AddressingMode : public Keyword
 {
 public:
-    AddressingMode()
+    AddressingMode (char name) : name_(name)
     {}
+
+private:
+    char name_;
 };
 
 typedef std::shared_ptr<AddressingMode> AddrModePtr;

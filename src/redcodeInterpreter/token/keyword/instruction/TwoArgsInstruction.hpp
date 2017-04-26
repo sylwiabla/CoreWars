@@ -8,18 +8,24 @@
 #include <tuple>
 #include "Instruction.hpp"
 #include "../AddressingMode.hpp"
-#include "../../Identifier.hpp"
+#include "../identifier/Identifier.hpp"
 #include "../Modifier.hpp"
 
 class TwoArgsInstruction : public Instruction
 {
 public:
-    TwoArgsInstruction ()
-    {}
+    TwoArgsInstruction (std::string name, bool canModifiers) : canModifiers_(canModifiers)
+    {
+        Instruction(name);
+    }
 
 private:
     std::tuple<AddrModePtr, IdentifierPtr, ModifierPtr> aArg;
     std::tuple<AddrModePtr, IdentifierPtr, ModifierPtr> bArg;
+
+    bool canModifiers_;
 };
+
+typedef std::shared_ptr<TwoArgsInstruction> TwoArgsInstrPtr;
 
 #endif //REDCODEINTERPRETER_TWOARGSINSTRUCTION_HPP
