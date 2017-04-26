@@ -5,7 +5,7 @@
 #ifndef REDCODEINTERPRETER_INSTRUCTION_HPP
 #define REDCODEINTERPRETER_INSTRUCTION_HPP
 
-#include "Keyword.hpp"
+#include "../Keyword.hpp"
 
 class Instruction : public Keyword
 {
