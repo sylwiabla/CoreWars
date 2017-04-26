@@ -100,11 +100,16 @@ TokenPtr Scanner::createAlphaToken()
 {
     char c = sourceCodeManager_->getNext();
     std::string token = "";
+    int wordCounter = 1;
     TokenPtr result = nullptr;
 
     while (isdigit(c) || isalpha(c) || (c == '_'))
     {
+        if (wordCounter > MAX_IDENTIFIER_LENGTH)
+            ErrorLogger::getInstance().logError(std::make_pair<unsigned int, std::string> (static_cast<unsigned int &&> (lineNr_), "Too long identifier."));
+
         token += c;
+        ++wordCounter;
         c = sourceCodeManager_->getNext();
     }
     if (result = RedcodeInterpreter::getInstance().isInstruction(token))
