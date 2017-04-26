@@ -4,6 +4,8 @@
 
 #include "RedcodeInterpreter.hpp"
 
+const TokenPtr & RedcodeInterpreter::isKeyword<char, AddrModePtr> (char name, std::unordered_map<char, AddrModePtr> map);
+
 void RedcodeInterpreter::init()
 {
     addressingModes_.insert(std::make_shared<AddressingMode> (new AddressingMode ('#')));
@@ -50,38 +52,29 @@ void RedcodeInterpreter::init()
 
 const TokenPtr & RedcodeInterpreter::isInstruction (std::string name)
 {
-    std::unordered_map<std::string, TwoArgsInstrPtr>::const_iterator twoIter = twoArgsInstructions_.find(name);
-    if (twoIter != twoArgsInstructions_.end())
-        return twoIter->second;
+    TokenPtr result = isKeyword<std::string, TwoArgsInstrPtr>(name, twoArgsInstructions_);
+    if (!result)
+        return result;
 
-    std::unordered_map<std::string, OneArgsInstrPtr>::const_iterator oneIter = oneArgsInstructions_.find(name);
-    if (oneIter != oneArgsInstructions_.end())
-        return oneIter->second;
+    result = isKeyword<std::string, OneArgsInstrPtr>(name, oneArgsInstructions_);
+    if (!result)
+        return result;
 
-    std::unordered_map<std::string, ZeroArgsInstrPtr>::const_iterator zeroIter = zeroArgsInstructions_.find(name);
-    if (zeroIter != zeroArgsInstructions_.end())
-        return zeroIter->second;
-
-    return nullptr;
+    result = isKeyword<std::string, ZeroArgsInstrPtr>(name, zeroArgsInstructions_);
+    return result;
 }
 
 const TokenPtr & RedcodeInterpreter::isModifier (std::string name)
 {
-    std::unordered_map<std::string, ModifierPtr>::const_iterator iter = modifiers_.find(name);
-    if (iter != modifiers_.end())
-        return iter->second;
+    return isKeyword<std::string, ModifierPtr>(name, modifiers_);
 }
 
 const TokenPtr & RedcodeInterpreter::isAddrMode (char name)
 {
-    std::unordered_map<char, AddrModePtr>::const_iterator iter = addressingModes_.find(name);
-    if (iter != addressingModes_.end())
-        return iter->second;
+    return isKeyword<char, AddrModePtr>(name, addressingModes_);
 }
 
 const TokenPtr & RedcodeInterpreter::isPseudoInstr (std::string name)
 {
-    std::unordered_map<std::string, PseudoInstrPtr>::const_iterator iter = pseudoInstructions_.find(name);
-    if (iter != pseudoInstructions_.end())
-        return iter->second;
+    return isKeyword<std::string, PseudoInstrPtr>(name, pseudoInstructions_);
 }

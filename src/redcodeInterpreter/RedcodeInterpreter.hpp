@@ -32,6 +32,15 @@ public:
     const TokenPtr & isAddrMode (char name);
     const TokenPtr & isPseudoInstr (std::string name);
 
+    template<typename Name, typename Ptr> const TokenPtr & isKeyword (Name name, std::unordered_map<Name, Ptr> map)
+    {
+        std::unordered_map<Name, Ptr>::const_iterator iter = map.find(name);
+        if (iter != map.end())
+            return iter->second;
+
+        return nullptr;
+    };
+
 private:
     RedcodeInterpreter ()
     {}
