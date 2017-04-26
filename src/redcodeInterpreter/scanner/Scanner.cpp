@@ -4,146 +4,118 @@
 
 #include "Scanner.hpp"
 
-const std::map<char, int> Scanner::delimiters_ = {{',', 0}, {'.', 1}};
+const std::unordered_map<char, bool> Scanner::delimiters_ = {{',', true}, {'.', true}};
 
-std::string Scanner::getToken()
+TokenPtr Scanner::getToken()
 {
-    do
-        currentState_->handler_();
-    while (!currentState_->isTerminal());
-
-    StatePtr prevState = currentState_;
-    currentState_->handler_();
-    std::string result = prevState->getMessage();
-    return result;
-}
-
-bool Scanner::isDelimiter (const char & c)
-{
-    return Scanner::getInstance().delimiters_.find(c) != Scanner::getInstance().delimiters_.end();
-}
-
-void Scanner::startStateHandler()
-{
-    char c;
-    Scanner * scanner = &Scanner::getInstance();
-
-    c = scanner->sourceCodeManager_->getNext();
-    if (scanner->sourceCodeManager_->endReached())
-        scanner->currentState_ = scanner->endState_;
-    else if (c == scanner->COMMENT_START)
-        scanner->currentState_ = scanner->commentState_;
-    else if (iswspace(c))
+    omitWhiteSpace();
+    char c = sourceCodeManager_->getNext();
+    while (c == COMMENT_START)
     {
-        scanner->currentState_ = scanner->wSpaceState_;
-        if (c == '\n')
-            ++scanner->lineNr_;
+        omitComment();
+        omitWhiteSpace();
+        c = sourceCodeManager_->getNext();
     }
-    else if (isDelimiter(c))
-    {
-        unsigned int lineNr = Scanner::getInstance().lineNr_;
-        ErrorLogger::getInstance().logError(std::make_pair<unsigned int, std::string> (static_cast<unsigned int &&> (lineNr), "Unexpected delimiter"));
-    }
-    else
-    {
-        scanner->sourceCodeManager_->unget();
-        scanner->currentState_ = scanner->tokenState_;
-    }
+    sourceCodeManager_->unget();
+    TokenPtr token = createToken ();
+    return token;
 }
 
 void Scanner::omitComment()
 {
-    char c;
-    Scanner * scanner = &Scanner::getInstance();
-    do
+    char c = sourceCodeManager_->getNext();
+
+    while (c != '\n')
+        c = sourceCodeManager_->getNext();
+
+    ++lineNr_;
+}
+
+void Scanner::omitWhiteSpace()
+{
+    char c = sourceCodeManager_->getNext();
+    while (iswspace(c))
     {
-        c = scanner->sourceCodeManager_->getNext();
-        if (scanner->sourceCodeManager_->endReached())
-        {
-            scanner->currentState_ = scanner->endState_;
-            return;
-        }
+        if (c == '\n')
+            ++lineNr_;
+        c = sourceCodeManager_->getNext();
     }
-    while (c != '\n');
 
-    ++(scanner->lineNr_);
-    scanner->currentState_ = scanner->startState_;
+    sourceCodeManager_->unget();
 }
 
-void Scanner::omitWhiteSpaces()
+TokenPtr Scanner::createToken ()
 {
-    char c;
-    Scanner * scanner = &Scanner::getInstance();
-    do
+    char c = sourceCodeManager_->getNext();
+    if (RedcodeInterpreter::getInstance().isAddrMode(c))
+        return std::make_shared<Token> (new AddressingMode(c));
+
+    TokenPtr token = nullptr;
+    if (isdigit(c))
     {
-        c = scanner->sourceCodeManager_->getNext();
-        if(scanner->sourceCodeManager_->endReached())
-        {
-            scanner->currentState_ = scanner->endState_;
-            return;
-        }
-        if(c == '\n')
-            ++scanner->lineNr_;
+        sourceCodeManager_->unget();
+        token = createNumToken();
     }
-    while (iswspace(c));
+    else if (isalpha(c))
+    {
+        sourceCodeManager_->unget();
+        token = createAlphaToken();
+    }
+    else
+    {
+        /* @TODO - errors */
+        ErrorLogger::getInstance().logError(std::make_pair<unsigned int, std::string>(static_cast<unsigned int &&> (lineNr_),
+                                                          "Cannot resolve token starting from"));
+        return nullptr;
+    }
+    c = sourceCodeManager_->getNext();
+    if (!isDelimiter(c) && !iswspace(c))
+    {
+        /* @TODO - errors */
+        ErrorLogger::getInstance().logError(std::make_pair<unsigned int, std::string> (static_cast<unsigned int &&> (lineNr_), "Cannot resolve token: 'token'"));
+        return nullptr;
+    }
 
-    scanner->sourceCodeManager_->unget();
-    scanner->currentState_ = scanner->startState_;
+    if (c == '\n')
+        ++lineNr_;
+
+    return token;
 }
 
-void Scanner::logError()
-{
-    Scanner * scanner = &Scanner::getInstance();
-    unsigned int lineNr = Scanner::getInstance().lineNr_;
-    std::string message = scanner->currentState_->getMessage();
-    ErrorLogger::getInstance().logError(std::make_pair<unsigned int, std::string> (static_cast<unsigned int &&> (lineNr), static_cast<std::string &&> (message)));
-    scanner->currentState_ = scanner->startState_;
-}
-
-void Scanner::logEOF()
-{
-    Scanner * scanner = &Scanner::getInstance();
-    scanner->currentState_->setMessage("EOF");
-    scanner->currentState_ = scanner->startState_;
-}
-
-void Scanner::createToken()
+TokenPtr Scanner::createNumToken ()
 {
     std::string token = "";
-    char c;
-    unsigned int nrChars = 0;
-    Scanner * scanner = &Scanner::getInstance();
-
-    do
+    char c = sourceCodeManager_->getNext();
+    while (isdigit(c))
     {
-        c = scanner->sourceCodeManager_->getNext();
-        if(scanner->sourceCodeManager_->endReached())
-        {
-            if (token != "")
-                scanner->currentState_->setMessage(token);
-            scanner->currentState_ = scanner->endState_;
-            return;
-        }
-        ++nrChars;
-
-        if(nrChars > scanner->MAX_IDENTIFIER_LENGTH)
-        {
-            scanner->currentState_ = scanner->errorState_;
-            scanner->currentState_->setMessage("Too long identifier");
-            return;
-        }
-
-        if (iswspace(c) || isDelimiter(c))
-        {
-            if (token != "")
-                scanner->currentState_->setMessage(token);
-            scanner->currentState_ = scanner->startState_;
-            return;
-        }
-        else
-        {
-            token += c;
-        }
+        token += c;
+        c = sourceCodeManager_->getNext();
     }
-    while(1);
+
+    sourceCodeManager_->unget();
+    return std::make_shared<Token> (new NumericValue (std::stol(token)));
+}
+
+TokenPtr Scanner::createAlphaToken()
+{
+    char c = sourceCodeManager_->getNext();
+    std::string token = "";
+    TokenPtr result = nullptr;
+
+    while (isdigit(c) || isalpha(c) || (c == '_'))
+    {
+        token += c;
+        c = sourceCodeManager_->getNext();
+    }
+    if (result = RedcodeInterpreter::getInstance().isInstruction(token))
+        return result;
+    if (result = RedcodeInterpreter::getInstance().isModifier(token))
+        return result;
+    if (result = RedcodeInterpreter::getInstance().isPseudoInstr(token))
+        return result;
+    else
+        result = std::make_shared<Token> (new Label (token));
+
+    sourceCodeManager_->unget();
+    return result;
 }

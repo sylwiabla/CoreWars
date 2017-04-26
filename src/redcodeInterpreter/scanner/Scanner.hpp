@@ -5,11 +5,16 @@
 #ifndef REDCODEINTERPRETER_SCANNER_HPP
 #define REDCODEINTERPRETER_SCANNER_HPP
 
-#include <map>
-#include "state/State.hpp"
+#include <unordered_map>
 #include "sourceCodeManager/SourceCodeManager.hpp"
 #include "../errorLogger/ErrorLogger.hpp"
-#include "sourceCodeManager/exceptions/Messages.hpp"
+#include "../token/keyword/AddressingMode.hpp"
+#include "../token/keyword/instruction/Instruction.hpp"
+#include "../token/keyword/Modifier.hpp"
+#include "../token/keyword/identifier/Label.hpp"
+#include "../token/keyword/identifier/NumericValue.hpp"
+#include "../RedcodeInterpreter.hpp"
+//#include "sourceCodeManager/exceptions/Messages.hpp"
 
 class Scanner
 {
@@ -29,15 +34,14 @@ private:
     Scanner()
     {
         sourceCodeManager_ = std::make_shared<SourceCodeManager> ();
-        currentState_ = std::make_shared<State> ();
-        currentState_ = startState_;
         lineNr_ = FIRST_LINE_NR;
     }
 
     Scanner (Scanner const&) = delete;
     void operator=(Scanner const&) = delete;
 
-    static const std::map<char, int> delimiters_;
+    static const std::unordered_map<char, bool> delimiters_;
+
     unsigned int lineNr_;
     static const unsigned int MAX_IDENTIFIER_LENGTH = 1024;
     static const unsigned int FIRST_LINE_NR = 1;
@@ -46,25 +50,20 @@ private:
     SourceManagerPtr sourceCodeManager_;
 
 public:
-    std::string getToken ();
-
-    static bool isDelimiter(const char & c);
-    static void startStateHandler();
-    static void omitComment();
-    static void omitWhiteSpaces();
-    static void createToken();
-    static void logError();
-    static void logEOF();
+    TokenPtr getToken();
 
 private:
-    const StatePtr startState_ = std::make_shared<State> (&startStateHandler);
-    const StatePtr commentState_ = std::make_shared<State> (&omitComment);
-    const StatePtr wSpaceState_ = std::make_shared<State> (&omitWhiteSpaces);
-    const StatePtr errorState_ = std::make_shared<State> (true, &logError);
-    const StatePtr tokenState_ = std::make_shared<State> (true, &createToken);
-    const StatePtr endState_ = std::make_shared<State> (true, &logEOF);
+    void omitComment ();
+    void omitWhiteSpace ();
+    TokenPtr createToken ();
 
-    StatePtr currentState_;
+    inline bool isDelimiter (char c)
+    {
+        return delimiters_.find(c) != delimiters_.end();
+    }
+
+    TokenPtr createNumToken ();
+    TokenPtr createAlphaToken ();
 
 };
 
