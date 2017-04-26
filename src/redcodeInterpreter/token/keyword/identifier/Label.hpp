@@ -1,0 +1,8 @@
+//
+// Created by sylwia on 4/26/17.
+//
+
+#ifndef REDCODEINTERPRETER_LABEL_HPP
+#define REDCODEINTERPRETER_LABEL_HPP
+
+#endif //REDCODEINTERPRETER_LABEL_HPP
