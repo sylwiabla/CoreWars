@@ -14,10 +14,8 @@
 class TwoArgsInstruction : public Instruction
 {
 public:
-    TwoArgsInstruction (std::string name, bool canModifiers) : canModifiers_(canModifiers)
-    {
-        Instruction(name);
-    }
+    TwoArgsInstruction (std::string name, bool canModifiers) : Instruction(name), canModifiers_(canModifiers)
+    {}
 
 private:
     std::tuple<AddrModePtr, IdentifierPtr, ModifierPtr> aArg;

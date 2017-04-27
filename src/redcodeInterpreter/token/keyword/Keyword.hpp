@@ -12,6 +12,8 @@ class Keyword : public Token
 public:
     Keyword() {}
 
+    void greet ();
+
 };
 
 typedef std::shared_ptr<Keyword> KeywordPtr;

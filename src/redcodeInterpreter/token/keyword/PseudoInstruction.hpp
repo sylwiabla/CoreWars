@@ -13,6 +13,11 @@ public:
     PseudoInstruction (std::string name) : name_(name)
     {}
 
+    void greet ()
+    {
+        std::cout << "Pseudo instruction: " << name_ << std::endl;
+    }
+
 private:
     std::string name_;
 };

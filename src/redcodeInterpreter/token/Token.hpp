@@ -13,6 +13,8 @@ public:
     Token()
     {}
 
+    void greet ()
+    {}
 
 };
 

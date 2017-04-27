@@ -15,6 +15,11 @@ public:
 
 private:
     std::string name_;
+
+    void greet ()
+    {
+        std::cout << "Modifier: " << name_ << std::endl;
+    }
 };
 
 typedef std::shared_ptr<Modifier> ModifierPtr;

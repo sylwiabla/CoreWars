@@ -27,14 +27,14 @@ public:
 
     void init ();
 
-    const TokenPtr & isInstruction (std::string name);
-    const TokenPtr & isModifier (std::string name);
-    const TokenPtr & isAddrMode (char name);
-    const TokenPtr & isPseudoInstr (std::string name);
+    TokenPtr isInstruction (std::string name);
+    TokenPtr isModifier (std::string name);
+    TokenPtr isAddrMode (char name);
+    TokenPtr isPseudoInstr (std::string name);
 
-    template<typename Name, typename Ptr> const TokenPtr & isKeyword (Name name, std::unordered_map<Name, Ptr> map)
+    template<typename Name, typename Ptr> TokenPtr isKeyword (Name name, std::unordered_map<Name, Ptr> map)
     {
-        std::unordered_map<Name, Ptr>::const_iterator iter = map.find(name);
+        typename std::unordered_map<Name, Ptr>::const_iterator iter = map.find(name);
         if (iter != map.end())
             return iter->second;
 

@@ -35,6 +35,7 @@ private:
     {
         sourceCodeManager_ = std::make_shared<SourceCodeManager> ();
         lineNr_ = FIRST_LINE_NR;
+        endReached_ = false;
     }
 
     Scanner (Scanner const&) = delete;
@@ -48,9 +49,14 @@ private:
     static const char COMMENT_START = ';';
 
     SourceManagerPtr sourceCodeManager_;
+    bool endReached_;
 
 public:
     TokenPtr getToken();
+    inline bool endReached () const
+    {
+        return endReached_;
+    }
 
 private:
     void omitComment ();

@@ -13,6 +13,11 @@ public:
     AddressingMode (char name) : name_(name)
     {}
 
+    void greet ()
+    {
+        std::cout << "Addressing mode: " << name_ << std::endl;
+    }
+
 private:
     char name_;
 };

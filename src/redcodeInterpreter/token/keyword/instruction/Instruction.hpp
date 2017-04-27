@@ -16,6 +16,11 @@ public:
     Instruction (std::string name) : name_(name)
     {}
 
+    void greet ()
+    {
+        std::cout << "Instruction: " << name_ << std::endl;
+    }
+
 private:
     std::string name_;
 };

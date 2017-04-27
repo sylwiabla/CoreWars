@@ -16,9 +16,9 @@ TokenPtr Scanner::getToken()
         omitWhiteSpace();
         c = sourceCodeManager_->getNext();
     }
+
     sourceCodeManager_->unget();
-    TokenPtr token = createToken ();
-    return token;
+    return createToken ();
 }
 
 void Scanner::omitComment()
@@ -47,8 +47,14 @@ void Scanner::omitWhiteSpace()
 TokenPtr Scanner::createToken ()
 {
     char c = sourceCodeManager_->getNext();
+    if (c == EOF)
+    {
+        endReached_ = true;
+        return nullptr;
+    }
+
     if (RedcodeInterpreter::getInstance().isAddrMode(c))
-        return std::make_shared<Token> (new AddressingMode(c));
+        return std::make_shared<Token> (AddressingMode(c));
 
     TokenPtr token = nullptr;
     if (isdigit(c))
@@ -71,6 +77,11 @@ TokenPtr Scanner::createToken ()
     c = sourceCodeManager_->getNext();
     if (!isDelimiter(c) && !iswspace(c))
     {
+        if (c == EOF)
+        {
+            endReached_ = true;
+            return nullptr;
+        }
         /* @TODO - errors */
         ErrorLogger::getInstance().logError(std::make_pair<unsigned int, std::string> (static_cast<unsigned int &&> (lineNr_), "Cannot resolve token: 'token'"));
         return nullptr;
@@ -93,7 +104,7 @@ TokenPtr Scanner::createNumToken ()
     }
 
     sourceCodeManager_->unget();
-    return std::make_shared<Token> (new NumericValue (std::stol(token)));
+    return std::make_shared<Token> (NumericValue (std::stol(token)));
 }
 
 TokenPtr Scanner::createAlphaToken()
@@ -119,7 +130,7 @@ TokenPtr Scanner::createAlphaToken()
     if (result = RedcodeInterpreter::getInstance().isPseudoInstr(token))
         return result;
     else
-        result = std::make_shared<Token> (new Label (token));
+        result = std::make_shared<Token> (Label (token));
 
     sourceCodeManager_->unget();
     return result;
