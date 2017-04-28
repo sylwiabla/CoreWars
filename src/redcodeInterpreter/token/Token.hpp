@@ -6,15 +6,20 @@
 #define REDCODEINTERPRETER_TOKEN_HPP
 
 #include <memory>
+#include "../RedcodeInterpreter.hpp"
 
 class Token
 {
 public:
-    Token()
+    Token(RedcodeInterpreter::TokenType type) : type_(type)
     {}
 
-    void greet ()
+    Token (RedcodeInterpreter::TokenType type, std::string name) : type_(type), name_(name)
     {}
+
+private:
+    RedcodeInterpreter::TokenType type_;
+    std::string name_;
 
 };
 
