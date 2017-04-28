@@ -7,14 +7,6 @@
 
 #include <iostream>
 #include <unordered_map>
-#include <vector>
-#include <algorithm>
-#include "token/keyword/instruction/TwoArgsInstruction.hpp"
-#include "token/keyword/instruction/OneArgsInstruction.hpp"
-#include "token/keyword/instruction/ZeroArgsInstruction.hpp"
-#include "token/keyword/AddressingMode.hpp"
-#include "token/keyword/Modifier.hpp"
-#include "token/keyword/PseudoInstruction.hpp"
 
 class RedcodeInterpreter
 {
@@ -25,21 +17,11 @@ public:
         return instance;
     }
 
-    void init ();
+    enum TokenType {immidiateMode, directMode, indirectMode, AModifier, BModifier, ABModifier, BAModifier, FModifier, XModifier, IModifier, equ, org, end, forType, rof, pin,
+        dat, mov, add, sub, mul, div, mod, jmz, jmn, djn, spl, cmp, seq, sne, slt, ldp, stp, jmp, nop};
 
-    TokenPtr isInstruction (std::string name);
-    TokenPtr isModifier (std::string name);
-    TokenPtr isAddrMode (char name);
-    TokenPtr isPseudoInstr (std::string name);
+    static const std::unordered_map<std::string, TokenType> keywords_;
 
-    template<typename Name, typename Ptr> TokenPtr isKeyword (Name name, std::unordered_map<Name, Ptr> map)
-    {
-        typename std::unordered_map<Name, Ptr>::const_iterator iter = map.find(name);
-        if (iter != map.end())
-            return iter->second;
-
-        return nullptr;
-    };
 
 private:
     RedcodeInterpreter ()
@@ -47,13 +29,6 @@ private:
 
     RedcodeInterpreter (RedcodeInterpreter const&) = delete;
     void operator=(RedcodeInterpreter const&) = delete;
-
-    std::unordered_map<std::string, TwoArgsInstrPtr> twoArgsInstructions_;
-    std::unordered_map<std::string, OneArgsInstrPtr> oneArgsInstructions_;
-    std::unordered_map<std::string, ZeroArgsInstrPtr> zeroArgsInstructions_;
-    std::unordered_map<std::string, ModifierPtr> modifiers_;
-    std::unordered_map<char, AddrModePtr> addressingModes_;
-    std::unordered_map<std::string, PseudoInstrPtr> pseudoInstructions_;
 };
 
 #endif //REDCODEINTERPRETER_REDCODEINTERPRETER_HPP
