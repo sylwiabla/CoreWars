@@ -37,6 +37,10 @@ public:
     inline void unget()
     {
         fin_.unget();
+        char c = fin_.get();
+        if(c == '\n')
+            --lineNr_;
+        fin_.unget();
     }
 
     void setFilename (const std::string filename)
