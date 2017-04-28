@@ -10,18 +10,9 @@
 class Parser
 {
 public:
-    static Parser & getInstance()
-    {
-        static Parser instance;
-        return instance;
-    }
-
-private:
     Parser()
     {}
 
-    Parser (Parser const&) = delete;
-    void operator=(Parser const&) = delete;
 
 
 
