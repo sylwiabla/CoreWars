@@ -35,4 +35,6 @@ private:
     boost::mutex writeMutex_;
 };
 
+typedef std::shared_ptr<ErrorLogger> ErrorLoggerPtr;
+
 #endif //REDCODEINTERPRETER_ERRORLOGGER_HPP
