@@ -14,13 +14,14 @@
 class SourceCodeManager
 {
 public:
-    SourceCodeManager () : opened_(false), endReached_(false), fileName_("")
+    SourceCodeManager () : opened_(false), endReached_(false), fileName_(""), lineNr_(0)
     {}
 
     SourceCodeManager (const std::string & fileName) : fileName_(fileName)
     {
         opened_ = false;
         endReached_ = false;
+        lineNr_ = 0;
     }
 
     ~SourceCodeManager ()
@@ -43,11 +44,22 @@ public:
         fileName_ = filename;
     }
 
+    inline std::string getFilename () const
+    {
+        return fileName_;
+    }
+
+    inline unsigned int getLineNr () const
+    {
+        return lineNr_;
+    }
+
 private:
     std::string fileName_;
     std::ifstream fin_;
     bool opened_;
     bool endReached_;
+    unsigned int lineNr_;
     boost::mutex readMutex_;
 
     static const char DEFAULT_CHAR = '\0';

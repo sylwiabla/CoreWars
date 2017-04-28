@@ -15,6 +15,9 @@ char SourceCodeManager::getNext ()
     if (!(fin_ >> std::noskipws >> result))
         endReached_ = true;
 
+    if (result == '\n')
+        ++lineNr_;
+
     return result;
 }
 
@@ -24,6 +27,7 @@ void SourceCodeManager::openFile ()
     if(boost::filesystem::exists(file))
     {
         fin_.open(fileName_);
+        lineNr_ = 1;
         opened_ = true;
     }
     else
