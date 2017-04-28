@@ -6,37 +6,30 @@
 #define REDCODEINTERPRETER_ERRORLOGGER_HPP
 
 #include <iostream>
+#include <tuple>
 #include <queue>
 #include <memory>
 #include <boost/thread/mutex.hpp>
 
-typedef std::pair<unsigned int, const std::string> Error;
-typedef std::queue<Error> ErrorQueue;
+typedef std::tuple<std::string, unsigned int, const std::string> Error;
+typedef std::shared_ptr<Error> ErrorPtr;
+typedef std::queue<ErrorPtr> ErrorQueue;
 
 class ErrorLogger
 {
 public:
-    static ErrorLogger & getInstance()
-    {
-        static ErrorLogger instance;
-        return instance;
-    }
+    ErrorLogger ()
+    {}
 
     ~ErrorLogger()
     {
         errorQueue_ = ErrorQueue ();
     }
 
-    void logError(const Error &);
-    Error * getError ();
+    void logError(ErrorPtr);
+    ErrorPtr getError ();
 
 private:
-    ErrorLogger ()
-    {}
-
-    ErrorLogger (ErrorLogger const&) = delete;
-    void operator=(ErrorLogger const&) = delete;
-
     ErrorQueue errorQueue_;
     boost::mutex readMutex_;
     boost::mutex writeMutex_;
