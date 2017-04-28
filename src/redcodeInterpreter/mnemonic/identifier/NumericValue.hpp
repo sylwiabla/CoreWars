@@ -10,10 +10,7 @@
 class NumericValue : public Identifier
 {
 public:
-    NumericValue ()
-    {}
-
-    NumericValue (long value) : value_(value)
+    NumericValue (long value) : Identifier(RedcodeInterpreter::numeric), value_(value)
     {}
 
 private:

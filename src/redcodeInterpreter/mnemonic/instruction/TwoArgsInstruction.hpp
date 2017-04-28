@@ -14,7 +14,7 @@
 class TwoArgsInstruction : public Instruction
 {
 public:
-    TwoArgsInstruction (std::string name, bool canModifiers) : Instruction(name), canModifiers_(canModifiers)
+    TwoArgsInstruction (RedcodeInterpreter::TokenType type, bool canModifiers) : Instruction(type), canModifiers_(canModifiers)
     {}
 
 private:

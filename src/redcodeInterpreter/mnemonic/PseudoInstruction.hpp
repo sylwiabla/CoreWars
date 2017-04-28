@@ -5,18 +5,14 @@
 #ifndef REDCODEINTERPRETER_PSEUDOINSTRUCTION_HPP
 #define REDCODEINTERPRETER_PSEUDOINSTRUCTION_HPP
 
-#include "Keyword.hpp"
+#include "Mnemonic.hpp"
 
-class PseudoInstruction : public Keyword
+class PseudoInstruction : public Mnemonic
 {
 public:
-    PseudoInstruction (std::string name) : name_(name)
+    PseudoInstruction (RedcodeInterpreter::TokenType type) : Mnemonic(type)
     {}
 
-    void greet ()
-    {
-        std::cout << "Pseudo instruction: " << name_ << std::endl;
-    }
 
 private:
     std::string name_;

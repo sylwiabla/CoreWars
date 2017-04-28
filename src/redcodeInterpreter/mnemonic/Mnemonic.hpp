@@ -5,17 +5,20 @@
 #ifndef REDCODEINTERPRETER_KEYWORD_HPP
 #define REDCODEINTERPRETER_KEYWORD_HPP
 
-#include "../Token.hpp"
+#include <memory>
+#include "../RedcodeInterpreter.hpp"
 
-class Keyword : public Token
+class Mnemonic
 {
 public:
-    Keyword() {}
+    Mnemonic(RedcodeInterpreter::TokenType type) : type_(type)
+    {}
 
-    void greet ();
+private:
+    RedcodeInterpreter::TokenType type_;
 
 };
 
-typedef std::shared_ptr<Keyword> KeywordPtr;
+typedef std::shared_ptr<Mnemonic> MnemonicPtr;
 
 #endif //REDCODEINTERPRETER_KEYWORD_HPP

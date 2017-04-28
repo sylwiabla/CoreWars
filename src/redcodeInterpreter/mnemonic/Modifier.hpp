@@ -5,21 +5,16 @@
 #ifndef REDCODEINTERPRETER_MODIFIER_HPP
 #define REDCODEINTERPRETER_MODIFIER_HPP
 
-#include "Keyword.hpp"
+#include "Mnemonic.hpp"
 
-class Modifier : public Keyword
+class Modifier : public Mnemonic
 {
 public:
-    Modifier(std::string name) : name_(name)
+    Modifier(RedcodeInterpreter::TokenType type) : Mnemonic(type)
     {}
 
 private:
     std::string name_;
-
-    void greet ()
-    {
-        std::cout << "Modifier: " << name_ << std::endl;
-    }
 };
 
 typedef std::shared_ptr<Modifier> ModifierPtr;

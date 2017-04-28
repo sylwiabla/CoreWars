@@ -10,14 +10,13 @@
 class Label : public Identifier
 {
 public:
-    Label ()
-    {}
-
-    Label (std::string name) : name_(name)
+    Label (std::string name) : Identifier(RedcodeInterpreter::alpha), name_(name)
     {}
 
 private:
     std::string name_;
+
+
 };
 
 #endif //REDCODEINTERPRETER_LABEL_HPP

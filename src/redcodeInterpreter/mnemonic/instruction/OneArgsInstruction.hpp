@@ -13,7 +13,7 @@
 class OneArgsInstruction : public Instruction
 {
 public:
-    OneArgsInstruction (std::string name) : Instruction (name)
+    OneArgsInstruction (RedcodeInterpreter::TokenType type) : Instruction(type)
     {}
 
 private:

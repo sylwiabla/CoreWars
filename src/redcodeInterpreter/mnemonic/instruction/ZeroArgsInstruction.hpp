@@ -10,7 +10,7 @@
 class ZeroArgsInstruction : public Instruction
 {
 public:
-    ZeroArgsInstruction (std::string name) : Instruction(name)
+    ZeroArgsInstruction (RedcodeInterpreter::TokenType type) : Instruction(type)
     {}
 
 };

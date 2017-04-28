@@ -5,24 +5,15 @@
 #ifndef REDCODEINTERPRETER_INSTRUCTION_HPP
 #define REDCODEINTERPRETER_INSTRUCTION_HPP
 
-#include "../Keyword.hpp"
+#include "../Mnemonic.hpp"
 
-class Instruction : public Keyword
+class Instruction : public Mnemonic
 {
 public:
-    Instruction ()
+    Instruction (RedcodeInterpreter::TokenType type) : Mnemonic(type)
     {}
 
-    Instruction (std::string name) : name_(name)
-    {}
 
-    void greet ()
-    {
-        std::cout << "Instruction: " << name_ << std::endl;
-    }
-
-private:
-    std::string name_;
 };
 
 typedef std::shared_ptr<Instruction> InstructionPtr;

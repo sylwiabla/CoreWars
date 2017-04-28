@@ -5,19 +5,15 @@
 #ifndef REDCODEINTERPRETER_IDENTIFIER_HPP
 #define REDCODEINTERPRETER_IDENTIFIER_HPP
 
-#include "../../Token.hpp"
+#include "../Mnemonic.hpp"
 
-class Identifier : public Token
+class Identifier : Mnemonic
 {
 public:
-    Identifier ()
+    Identifier (RedcodeInterpreter::TokenType type) : Mnemonic(type)
     {}
 
-    Identifier (std::string name) : name_(name)
-    {}
 
-private:
-    std::string name_;
 };
 
 typedef std::shared_ptr<Identifier> IdentifierPtr;

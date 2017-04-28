@@ -5,21 +5,15 @@
 #ifndef REDCODEINTERPRETER_ADDRESSINGMODE_HPP
 #define REDCODEINTERPRETER_ADDRESSINGMODE_HPP
 
-#include "Keyword.hpp"
+#include "Mnemonic.hpp"
 
-class AddressingMode : public Keyword
+class AddressingMode : public Mnemonic
 {
 public:
-    AddressingMode (char name) : name_(name)
+    AddressingMode (RedcodeInterpreter::TokenType type) : Mnemonic(type)
     {}
 
-    void greet ()
-    {
-        std::cout << "Addressing mode: " << name_ << std::endl;
-    }
 
-private:
-    char name_;
 };
 
 typedef std::shared_ptr<AddressingMode> AddrModePtr;
