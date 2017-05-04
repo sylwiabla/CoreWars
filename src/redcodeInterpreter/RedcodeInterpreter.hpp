@@ -22,6 +22,7 @@ public:
 
     static const std::unordered_map<std::string, TokenType> keywords_;
     static const char COMMENT_START = ';';
+    typedef std::unordered_map<std::string, RedcodeInterpreter::TokenType>::const_iterator TokenIter;
 
 private:
     RedcodeInterpreter ()

@@ -5,12 +5,12 @@
 #ifndef REDCODEINTERPRETER_PSEUDOINSTRUCTION_HPP
 #define REDCODEINTERPRETER_PSEUDOINSTRUCTION_HPP
 
-#include "Mnemonic.hpp"
+#include "Symbol.hpp"
 
-class PseudoInstruction : public Mnemonic
+class PseudoInstruction : public Symbol
 {
 public:
-    PseudoInstruction (RedcodeInterpreter::TokenType type) : Mnemonic(type)
+    PseudoInstruction (RedcodeInterpreter::TokenType type) : Symbol(type)
     {}
 
 

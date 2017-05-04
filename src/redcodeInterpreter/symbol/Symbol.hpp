@@ -8,10 +8,10 @@
 #include <memory>
 #include "../RedcodeInterpreter.hpp"
 
-class Mnemonic
+class Symbol
 {
 public:
-    Mnemonic(RedcodeInterpreter::TokenType type) : type_(type)
+    Symbol(RedcodeInterpreter::TokenType type) : type_(type)
     {}
 
 private:
@@ -19,6 +19,6 @@ private:
 
 };
 
-typedef std::shared_ptr<Mnemonic> MnemonicPtr;
+typedef std::shared_ptr<Symbol> MnemonicPtr;
 
 #endif //REDCODEINTERPRETER_KEYWORD_HPP

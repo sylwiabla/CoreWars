@@ -5,12 +5,12 @@
 #ifndef REDCODEINTERPRETER_IDENTIFIER_HPP
 #define REDCODEINTERPRETER_IDENTIFIER_HPP
 
-#include "../Mnemonic.hpp"
+#include "../Symbol.hpp"
 
-class Identifier : Mnemonic
+class Identifier : Symbol
 {
 public:
-    Identifier (RedcodeInterpreter::TokenType type) : Mnemonic(type)
+    Identifier (RedcodeInterpreter::TokenType type) : Symbol(type)
     {}
 
 

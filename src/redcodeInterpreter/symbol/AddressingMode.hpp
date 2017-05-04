@@ -5,12 +5,12 @@
 #ifndef REDCODEINTERPRETER_ADDRESSINGMODE_HPP
 #define REDCODEINTERPRETER_ADDRESSINGMODE_HPP
 
-#include "Mnemonic.hpp"
+#include "Symbol.hpp"
 
-class AddressingMode : public Mnemonic
+class AddressingMode : public Symbol
 {
 public:
-    AddressingMode (RedcodeInterpreter::TokenType type) : Mnemonic(type)
+    AddressingMode (RedcodeInterpreter::TokenType type) : Symbol(type)
     {}
 
 
