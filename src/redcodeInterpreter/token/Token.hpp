@@ -17,6 +17,11 @@ public:
     Token (RedcodeInterpreter::TokenType type, std::string name) : type_(type), name_(name)
     {}
 
+    const std::string & getName () const
+    {
+        return name_;
+    }
+
 private:
     RedcodeInterpreter::TokenType type_;
     std::string name_;

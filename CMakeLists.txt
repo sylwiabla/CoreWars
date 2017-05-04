@@ -16,9 +16,9 @@ set(SOURCE_CODE_MANAGER src/redcodeInterpreter/scanner/sourceCodeManager/SourceC
 set(SOURCE_CODE_MANAGER_EXCEP src/redcodeInterpreter/scanner/sourceCodeManager/exceptions/SourceFileNotFound.hpp src/redcodeInterpreter/scanner/sourceCodeManager/exceptions/SourceFileNotFound.cpp)
 set(ERROR_LOGGER src/redcodeInterpreter/errorLogger/ErrorLogger.hpp src/redcodeInterpreter/errorLogger/ErrorLogger.cpp)
 set(TOKEN src/redcodeInterpreter/token/Token.hpp src/redcodeInterpreter/token/Token.cpp)
-set(KEYWORD src/redcodeInterpreter/mnemonic/Mnemonic.hpp src/redcodeInterpreter/mnemonic/Modifier.hpp src/redcodeInterpreter/mnemonic/AddressingMode.hpp src/redcodeInterpreter/mnemonic/PseudoInstruction.hpp)
-set(INSTRUCTION src/redcodeInterpreter/mnemonic/instruction/Instruction.hpp src/redcodeInterpreter/mnemonic/instruction/TwoArgsInstruction.hpp src/redcodeInterpreter/mnemonic/instruction/OneArgsInstruction.hpp src/redcodeInterpreter/mnemonic/instruction/ZeroArgsInstruction.hpp)
-set(IDENTIFIER src/redcodeInterpreter/mnemonic/identifier/Label.hpp src/redcodeInterpreter/mnemonic/identifier/NumericValue.hpp src/redcodeInterpreter/mnemonic/identifier/Identifier.hpp)
+set(KEYWORD src/redcodeInterpreter/symbol/Symbol.hpp src/redcodeInterpreter/symbol/Modifier.hpp src/redcodeInterpreter/symbol/AddressingMode.hpp src/redcodeInterpreter/symbol/PseudoInstruction.hpp)
+set(INSTRUCTION src/redcodeInterpreter/symbol/instruction/Instruction.hpp src/redcodeInterpreter/symbol/instruction/TwoArgsInstruction.hpp src/redcodeInterpreter/symbol/instruction/OneArgsInstruction.hpp src/redcodeInterpreter/symbol/instruction/ZeroArgsInstruction.hpp)
+set(IDENTIFIER src/redcodeInterpreter/symbol/identifier/Label.hpp src/redcodeInterpreter/symbol/identifier/NumericValue.hpp src/redcodeInterpreter/symbol/identifier/Identifier.hpp)
 set(INTERPRETER src/redcodeInterpreter/RedcodeInterpreter.cpp src/redcodeInterpreter/RedcodeInterpreter.hpp)
 
 add_executable(RedcodeInterpreter ${SOURCE_FILES} ${SOURCE_CODE_MANAGER} ${SOURCE_CODE_MANAGER_EXCEP} ${ERROR_LOGGER} ${SCANNER} ${INTERPRETER} ${ERROR_LOGGER} ${TOKEN} ${KEYWORD} ${INSTRUCTION} ${IDENTIFIER})
