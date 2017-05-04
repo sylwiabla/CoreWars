@@ -8,14 +8,14 @@
 #include <memory>
 #include <list>
 #include "../errorLogger/ErrorLogger.hpp"
-#include "../mnemonic/AddressingMode.hpp"
-#include "../mnemonic/Modifier.hpp"
-#include "../mnemonic/PseudoInstruction.hpp"
-#include "../mnemonic/identifier/Label.hpp"
-#include "../mnemonic/identifier/NumericValue.hpp"
-#include "../mnemonic/instruction/OneArgsInstruction.hpp"
-#include "../mnemonic/instruction/TwoArgsInstruction.hpp"
-#include "../mnemonic/instruction/ZeroArgsInstruction.hpp"
+#include "../symbol/AddressingMode.hpp"
+#include "../symbol/Modifier.hpp"
+#include "../symbol/PseudoInstruction.hpp"
+#include "../symbol/identifier/Label.hpp"
+#include "../symbol/identifier/NumericValue.hpp"
+#include "../symbol/instruction/OneArgsInstruction.hpp"
+#include "../symbol/instruction/TwoArgsInstruction.hpp"
+#include "../symbol/instruction/ZeroArgsInstruction.hpp"
 
 class Parser
 {
