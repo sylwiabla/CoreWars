@@ -15,8 +15,7 @@ TokenPtr Scanner::getToken ()
         c = sourceCodeManager_->getNext();
     }
 
-    sourceCodeManager_->unget();
-    return createToken ();
+    return createToken (c);
 }
 
 void Scanner::omitComment()
@@ -40,21 +39,18 @@ void Scanner::omitWhiteSpace()
     sourceCodeManager_->unget();
 }
 
-TokenPtr Scanner::createToken ()
+TokenPtr Scanner::createToken (char first)
 {
-    char c = sourceCodeManager_->getNext();
     if (endReached())
         return nullptr;
 
-    if (isdigit(c))
-        return createNumeric(c);
+    if (isdigit(first))
+        return createNumeric(first);
 
-    if (isalpha(c))
-        return createAlpha(c);
+    if (isalpha(first))
+        return createAlpha(first);
 
-    logger_->logError(std::make_shared<Error> (std::make_tuple<std::string, unsigned int, const std::string> (sourceCodeManager_->getFilename(),
-                                                                                                               sourceCodeManager_->getLineNr(), "Cannot resolve token")));
-    return nullptr;
+    return createModifier (first);
 }
 
 TokenPtr Scanner::createNumeric (char first)
@@ -83,10 +79,7 @@ TokenPtr Scanner::createAlpha (char first)
     token += first;
     char c = sourceCodeManager_->getNext();
     int wordCounter = 1;
-    TokenPtr result = nullptr;
-    std::unordered_map<std::string, RedcodeInterpreter::TokenType>::const_iterator tokenIter = RedcodeInterpreter::keywords_.find(token);
-    if (tokenIter != RedcodeInterpreter::keywords_.end())
-        return std::make_shared<Token> (tokenIter->second);
+    RedcodeInterpreter::TokenIter tokenIter;
 
     while (isdigit(c) || isalpha(c) || (c == '_'))
     {
@@ -99,12 +92,37 @@ TokenPtr Scanner::createAlpha (char first)
         c = sourceCodeManager_->getNext();
     }
 
-    tokenIter = RedcodeInterpreter::keywords_.find(token);
-    if (tokenIter == RedcodeInterpreter::keywords_.end())
-        result = std::make_shared<Token> (*(new Token(RedcodeInterpreter::alpha, token)));
-    else
-        result = std::make_shared<Token> (tokenIter->second);
+    if (!iswspace(c) && (c != RedcodeInterpreter::COMMENT_START) && (c == ',') && (c != '.'))
+    {
+        logger_->logError(std::make_shared<Error> (std::make_tuple<std::string, unsigned int, const std::string> (sourceCodeManager_->getFilename(),
+                                                                                                                  sourceCodeManager_->getLineNr(), "Bad alphanumeric identifier")));
+        return nullptr;
+    }
 
     sourceCodeManager_->unget();
-    return result;
+    tokenIter = RedcodeInterpreter::keywords_.find(token);
+    if (tokenIter == RedcodeInterpreter::keywords_.end())
+        return std::make_shared<Token> (*(new Token(RedcodeInterpreter::alpha, token)));
+    else
+        return std::make_shared<Token> (*(new Token(tokenIter->second)));
+}
+
+TokenPtr Scanner::createModifier(char first)
+{
+    std::string token = "";
+    token += first;
+    RedcodeInterpreter::TokenIter tokenIter = RedcodeInterpreter::keywords_.find(token);
+    if (tokenIter != RedcodeInterpreter::keywords_.end())
+    {
+        if (isalpha(sourceCodeManager_->getNext()))
+        {
+            sourceCodeManager_->unget();
+            return std::make_shared<Token> (*(new Token(tokenIter->second)));
+        }
+        logger_->logError(std::make_shared<Error> (std::make_tuple<std::string, unsigned int, const std::string> (sourceCodeManager_->getFilename(),
+                                                                                                                  sourceCodeManager_->getLineNr(), "Cannot resolve token")));
+    }
+    else
+        logger_->logError(std::make_shared<Error> (std::make_tuple<std::string, unsigned int, const std::string> (sourceCodeManager_->getFilename(),
+                                                                                                                  sourceCodeManager_->getLineNr(), "Cannot resolve token")));
 }
