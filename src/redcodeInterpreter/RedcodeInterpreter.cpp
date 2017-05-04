@@ -9,4 +9,4 @@ const std::unordered_map<std::string, RedcodeInterpreter::TokenType> RedcodeInte
                                                                                   {"equ", equ}, {"org", org}, {"end", end}, {"for", forType}, {"rof", rof}, {"pin", pin}, {"dat", dat},
                                                                                   {"mov", mov}, {"add", add}, {"sub", sub}, {"mul", mul}, {"div", div}, {"mod", mod}, {"jmz", jmz}, {"jmn", jmn},
                                                                                   {"djn", djn}, {"spl", spl}, {"cmp", cmp}, {"seq", seq}, {"sne", sne}, {"slt", slt}, {"ldp", ldp}, {"stp", stp},
-                                                                                  {"jmp", jmp}, {"nop", nop}, {",", comma}};
+                                                                                  {"jmp", jmp}, {"nop", nop}, {",", comma}, {".", dot}};

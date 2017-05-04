@@ -50,7 +50,7 @@ TokenPtr Scanner::createToken (char first)
     if (isalpha(first))
         return createAlpha(first);
 
-    return createModifier (first);
+    return createOther (first);
 }
 
 TokenPtr Scanner::createNumeric (char first)
@@ -107,17 +107,20 @@ TokenPtr Scanner::createAlpha (char first)
         return std::make_shared<Token> (*(new Token(tokenIter->second)));
 }
 
-TokenPtr Scanner::createModifier(char first)
+TokenPtr Scanner::createOther(char first)
 {
     std::string token = "";
     token += first;
     RedcodeInterpreter::TokenIter tokenIter = RedcodeInterpreter::keywords_.find(token);
     if (tokenIter != RedcodeInterpreter::keywords_.end())
     {
+        if ((tokenIter->second == RedcodeInterpreter::comma) || (tokenIter->second == RedcodeInterpreter::dot))
+            return std::make_shared<Token> (*(new Token(tokenIter->second, tokenIter->first)));
+
         if (isalpha(sourceCodeManager_->getNext()))
         {
             sourceCodeManager_->unget();
-            return std::make_shared<Token> (*(new Token(tokenIter->second)));
+            return std::make_shared<Token> (*(new Token(tokenIter->second, tokenIter->first)));
         }
         logger_->logError(std::make_shared<Error> (std::make_tuple<std::string, unsigned int, const std::string> (sourceCodeManager_->getFilename(),
                                                                                                                   sourceCodeManager_->getLineNr(), "Cannot resolve token")));

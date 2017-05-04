@@ -36,7 +36,7 @@ private:
     TokenPtr createToken (char first);
     TokenPtr createNumeric (char first);
     TokenPtr createAlpha (char first);
-    TokenPtr createModifier (char first);
+    TokenPtr createOther (char first);
 
 };
 
