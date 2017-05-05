@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="RedcodeInterpreter"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/sylwia/ClionProjects/RedcodeInterpreter/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/sylwia/ClionProjects/RedcodeInterpreter/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/sylwia/ClionProjects/RedcodeInterpreter/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/sylwia/ClionProjects/RedcodeInterpreter/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/sylwia/ClionProjects/RedcodeInterpreter/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/sylwia/ClionProjects/RedcodeInterpreter/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/sylwia/ClionProjects/RedcodeInterpreter/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/sylwia/ClionProjects/RedcodeInterpreter/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/sylwia/ClionProjects/RedcodeInterpreter/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/sylwia/ClionProjects/RedcodeInterpreter/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/sylwia/ClionProjects/RedcodeInterpreter/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/sylwia/ClionProjects/RedcodeInterpreter/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/sylwia/ClionProjects/RedcodeInterpreter/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/sylwia/ClionProjects/RedcodeInterpreter/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/sylwia/ClionProjects/RedcodeInterpreter/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="RedcodeInterpreter">
+				<Option output="/home/sylwia/ClionProjects/RedcodeInterpreter/cmake-build-debug/RedcodeInterpreter" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/sylwia/ClionProjects/RedcodeInterpreter/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/include/c++/4.8"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/4.8"/>
+					<Add directory="/usr/include/c++/4.8/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.8/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/sylwia/ClionProjects/RedcodeInterpreter/cmake-build-debug/Makefile&quot;  VERBOSE=1 RedcodeInterpreter"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/sylwia/ClionProjects/RedcodeInterpreter/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/sylwia/ClionProjects/RedcodeInterpreter/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/sylwia/ClionProjects/RedcodeInterpreter/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="RedcodeInterpreter/fast">
+				<Option output="/home/sylwia/ClionProjects/RedcodeInterpreter/cmake-build-debug/RedcodeInterpreter" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/sylwia/ClionProjects/RedcodeInterpreter/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/include/c++/4.8"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/4.8"/>
+					<Add directory="/usr/include/c++/4.8/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.8/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/sylwia/ClionProjects/RedcodeInterpreter/cmake-build-debug/Makefile&quot;  VERBOSE=1 RedcodeInterpreter/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/sylwia/ClionProjects/RedcodeInterpreter/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/sylwia/ClionProjects/RedcodeInterpreter/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/sylwia/ClionProjects/RedcodeInterpreter/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/sylwia/ClionProjects/RedcodeInterpreter/src/main.cpp">
+			<Option target="RedcodeInterpreter"/>
+		</Unit>
+		<Unit filename="/home/sylwia/ClionProjects/RedcodeInterpreter/src/redcodeInterpreter/RedcodeInterpreter.cpp">
+			<Option target="RedcodeInterpreter"/>
+		</Unit>
+		<Unit filename="/home/sylwia/ClionProjects/RedcodeInterpreter/src/redcodeInterpreter/RedcodeInterpreter.hpp">
+			<Option target="RedcodeInterpreter"/>
+		</Unit>
+		<Unit filename="/home/sylwia/ClionProjects/RedcodeInterpreter/src/redcodeInterpreter/errorLogger/ErrorLogger.cpp">
+			<Option target="RedcodeInterpreter"/>
+		</Unit>
+		<Unit filename="/home/sylwia/ClionProjects/RedcodeInterpreter/src/redcodeInterpreter/errorLogger/ErrorLogger.hpp">
+			<Option target="RedcodeInterpreter"/>
+		</Unit>
+		<Unit filename="/home/sylwia/ClionProjects/RedcodeInterpreter/src/redcodeInterpreter/mnemonic/AddressingMode.hpp">
+			<Option target="RedcodeInterpreter"/>
+		</Unit>
+		<Unit filename="/home/sylwia/ClionProjects/RedcodeInterpreter/src/redcodeInterpreter/mnemonic/Mnemonic.hpp">
+			<Option target="RedcodeInterpreter"/>
+		</Unit>
+		<Unit filename="/home/sylwia/ClionProjects/RedcodeInterpreter/src/redcodeInterpreter/mnemonic/Modifier.hpp">
+			<Option target="RedcodeInterpreter"/>
+		</Unit>
+		<Unit filename="/home/sylwia/ClionProjects/RedcodeInterpreter/src/redcodeInterpreter/mnemonic/PseudoInstruction.hpp">
+			<Option target="RedcodeInterpreter"/>
+		</Unit>
+		<Unit filename="/home/sylwia/ClionProjects/RedcodeInterpreter/src/redcodeInterpreter/mnemonic/identifier/Identifier.hpp">
+			<Option target="RedcodeInterpreter"/>
+		</Unit>
+		<Unit filename="/home/sylwia/ClionProjects/RedcodeInterpreter/src/redcodeInterpreter/mnemonic/identifier/Label.hpp">
+			<Option target="RedcodeInterpreter"/>
+		</Unit>
+		<Unit filename="/home/sylwia/ClionProjects/RedcodeInterpreter/src/redcodeInterpreter/mnemonic/identifier/NumericValue.hpp">
+			<Option target="RedcodeInterpreter"/>
+		</Unit>
+		<Unit filename="/home/sylwia/ClionProjects/RedcodeInterpreter/src/redcodeInterpreter/mnemonic/instruction/Instruction.hpp">
+			<Option target="RedcodeInterpreter"/>
+		</Unit>
+		<Unit filename="/home/sylwia/ClionProjects/RedcodeInterpreter/src/redcodeInterpreter/mnemonic/instruction/OneArgsInstruction.hpp">
+			<Option target="RedcodeInterpreter"/>
+		</Unit>
+		<Unit filename="/home/sylwia/ClionProjects/RedcodeInterpreter/src/redcodeInterpreter/mnemonic/instruction/TwoArgsInstruction.hpp">
+			<Option target="RedcodeInterpreter"/>
+		</Unit>
+		<Unit filename="/home/sylwia/ClionProjects/RedcodeInterpreter/src/redcodeInterpreter/mnemonic/instruction/ZeroArgsInstruction.hpp">
+			<Option target="RedcodeInterpreter"/>
+		</Unit>
+		<Unit filename="/home/sylwia/ClionProjects/RedcodeInterpreter/src/redcodeInterpreter/parser/Parser.cpp">
+			<Option target="RedcodeInterpreter"/>
+		</Unit>
+		<Unit filename="/home/sylwia/ClionProjects/RedcodeInterpreter/src/redcodeInterpreter/parser/Parser.hpp">
+			<Option target="RedcodeInterpreter"/>
+		</Unit>
+		<Unit filename="/home/sylwia/ClionProjects/RedcodeInterpreter/src/redcodeInterpreter/scanner/Scanner.cpp">
+			<Option target="RedcodeInterpreter"/>
+		</Unit>
+		<Unit filename="/home/sylwia/ClionProjects/RedcodeInterpreter/src/redcodeInterpreter/scanner/Scanner.hpp">
+			<Option target="RedcodeInterpreter"/>
+		</Unit>
+		<Unit filename="/home/sylwia/ClionProjects/RedcodeInterpreter/src/redcodeInterpreter/scanner/sourceCodeManager/SourceCodeManager.cpp">
+			<Option target="RedcodeInterpreter"/>
+		</Unit>
+		<Unit filename="/home/sylwia/ClionProjects/RedcodeInterpreter/src/redcodeInterpreter/scanner/sourceCodeManager/SourceCodeManager.hpp">
+			<Option target="RedcodeInterpreter"/>
+		</Unit>
+		<Unit filename="/home/sylwia/ClionProjects/RedcodeInterpreter/src/redcodeInterpreter/scanner/sourceCodeManager/exceptions/SourceFileNotFound.cpp">
+			<Option target="RedcodeInterpreter"/>
+		</Unit>
+		<Unit filename="/home/sylwia/ClionProjects/RedcodeInterpreter/src/redcodeInterpreter/scanner/sourceCodeManager/exceptions/SourceFileNotFound.hpp">
+			<Option target="RedcodeInterpreter"/>
+		</Unit>
+		<Unit filename="/home/sylwia/ClionProjects/RedcodeInterpreter/src/redcodeInterpreter/token/Token.cpp">
+			<Option target="RedcodeInterpreter"/>
+		</Unit>
+		<Unit filename="/home/sylwia/ClionProjects/RedcodeInterpreter/src/redcodeInterpreter/token/Token.hpp">
+			<Option target="RedcodeInterpreter"/>
+		</Unit>
+		<Unit filename="/home/sylwia/ClionProjects/RedcodeInterpreter/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

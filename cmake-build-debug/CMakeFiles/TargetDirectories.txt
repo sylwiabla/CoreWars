@@ -1,0 +1,3 @@
+/home/sylwia/ClionProjects/RedcodeInterpreter/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/sylwia/ClionProjects/RedcodeInterpreter/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/sylwia/ClionProjects/RedcodeInterpreter/cmake-build-debug/CMakeFiles/RedcodeInterpreter.dir
