@@ -17,15 +17,8 @@ public:
 
     virtual const char* what() const throw()
     {
-        cnvt_.str("");
-
-        cnvt_ << std::runtime_error::what() << ": " << "Source file not found";
-
-        return cnvt_.str().c_str();
+        return "Source file not found";
     }
-
-private:
-    static std::ostringstream cnvt_;
 };
 
 #endif //REDCODEINTERPRETER_SOURCEFILENOTFOUND_HPP

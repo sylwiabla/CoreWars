@@ -12,9 +12,9 @@
 class Scanner
 {
 public:
-    Scanner(const std::string & filename, ErrorLoggerPtr logger) : logger_(logger)
+    Scanner(const SourceManagerPtr & sourceManagerPtr, const ErrorLoggerPtr & logger) : logger_(logger)
     {
-        sourceCodeManager_ = std::make_shared<SourceCodeManager> (filename);
+        sourceCodeManager_ = sourceManagerPtr;
     }
 
 private:

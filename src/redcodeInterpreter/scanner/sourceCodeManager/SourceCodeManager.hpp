@@ -14,62 +14,31 @@
 class SourceCodeManager
 {
 public:
-    SourceCodeManager () : opened_(false), endReached_(false), fileName_(""), lineNr_(0)
+    SourceCodeManager () : endReached_(false), lineNr_(0)
     {}
 
-    SourceCodeManager (const std::string & fileName) : fileName_(fileName)
+    virtual char getNext()
     {
-        opened_ = false;
-        endReached_ = false;
-        lineNr_ = 0;
+        return DEFAULT_CHAR;
     }
-
-    ~SourceCodeManager ()
+    virtual bool endReached () const
     {
-        fin_.close();
+        return true;
     }
-
-    char getNext();
-    inline bool endReached () const
-    {
-        return endReached_;
-    }
-    inline void unget()
-    {
-        fin_.unget();
-        char c = fin_.get();
-        if(c == '\n')
-            --lineNr_;
-        fin_.unget();
-    }
-
-    void setFilename (const std::string filename)
-    {
-        fileName_ = filename;
-    }
-
-    inline std::string getFilename () const
-    {
-        return fileName_;
-    }
+    virtual void unget()
+    {}
 
     inline unsigned int getLineNr () const
     {
         return lineNr_;
     }
 
-private:
-    std::string fileName_;
-    std::ifstream fin_;
-    bool opened_;
+protected:
     bool endReached_;
     unsigned int lineNr_;
     boost::mutex readMutex_;
 
     static const char DEFAULT_CHAR = '\0';
-
-    void openFile();
-
 };
 
 typedef std::shared_ptr<SourceCodeManager> SourceManagerPtr;

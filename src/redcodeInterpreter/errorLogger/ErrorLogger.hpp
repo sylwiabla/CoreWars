@@ -11,7 +11,7 @@
 #include <memory>
 #include <boost/thread/mutex.hpp>
 
-typedef std::tuple<std::string, unsigned int, const std::string> Error;
+typedef std::tuple<unsigned int, const std::string> Error;
 typedef std::shared_ptr<Error> ErrorPtr;
 typedef std::queue<ErrorPtr> ErrorQueue;
 
@@ -26,7 +26,7 @@ public:
         errorQueue_ = ErrorQueue ();
     }
 
-    void logError(ErrorPtr);
+    void logError(const ErrorPtr &);
     ErrorPtr getError ();
 
 private:
