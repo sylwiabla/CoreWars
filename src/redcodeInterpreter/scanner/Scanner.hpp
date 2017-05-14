@@ -5,17 +5,16 @@
 #ifndef REDCODEINTERPRETER_SCANNER_HPP
 #define REDCODEINTERPRETER_SCANNER_HPP
 
+#include <unordered_map>
 #include "sourceCodeManager/SourceCodeManager.hpp"
 #include "../errorLogger/ErrorLogger.hpp"
-#include "../token/Token.hpp"
+#include "token/Token.hpp"
 
 class Scanner
 {
 public:
-    Scanner(const SourceManagerPtr & sourceManagerPtr, const ErrorLoggerPtr & logger) : logger_(logger)
-    {
-        sourceCodeManager_ = sourceManagerPtr;
-    }
+    Scanner(SourceManagerPtr sourceManagerPtr, const ErrorLoggerPtr & logger) : logger_(logger), sourceCodeManager_(std::move(sourceManagerPtr))
+    {}
 
 private:
     static const unsigned int MAX_IDENTIFIER_LENGTH = 1024;
@@ -23,12 +22,21 @@ private:
     SourceManagerPtr sourceCodeManager_;
     ErrorLoggerPtr logger_;
 
+    static const std::unordered_map<std::string, Token::TokenType> keywords_;
+    static const char COMMENT_START = ';';
+
 public:
     TokenPtr getToken();
     inline bool endReached () const
     {
         return sourceCodeManager_->endReached();
     }
+    inline unsigned int getLineNr () const
+    {
+        return sourceCodeManager_->getLineNr();
+    }
+
+    typedef std::unordered_map<std::string, Token::TokenType>::const_iterator TokenIter;
 
 private:
     void omitComment ();
@@ -40,6 +48,6 @@ private:
 
 };
 
-typedef std::shared_ptr<Scanner> ScannerPtr;
+typedef std::unique_ptr<Scanner> ScannerPtr;
 
 #endif //REDCODEINTERPRETER_SCANNER_HPP

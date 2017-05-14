@@ -18,7 +18,7 @@ typedef std::queue<ErrorPtr> ErrorQueue;
 class ErrorLogger
 {
 public:
-    ErrorLogger ()
+    ErrorLogger () : nrErrors_(0)
     {}
 
     ~ErrorLogger()
@@ -28,11 +28,18 @@ public:
 
     void logError(const ErrorPtr &);
     ErrorPtr getError ();
+    inline bool isFull () const
+    {
+        return nrErrors_ >= MAX_ERRORS;
+    }
 
 private:
     ErrorQueue errorQueue_;
     boost::mutex readMutex_;
     boost::mutex writeMutex_;
+
+    unsigned int nrErrors_;
+    static const unsigned int MAX_ERRORS = 30;
 };
 
 typedef std::shared_ptr<ErrorLogger> ErrorLoggerPtr;

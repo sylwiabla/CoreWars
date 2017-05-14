@@ -4,11 +4,19 @@
 
 #include "Scanner.hpp"
 
+const std::unordered_map<std::string, Token::TokenType> Scanner::keywords_ = {{"#", Token::immidiateMode}, {"$", Token::directMode}, {"@", Token::indirectMode}, {".A", Token::AModifier}, {".B", Token::BModifier},
+                                                                              {".AB", Token::ABModifier}, {".BA", Token::BAModifier}, {".F", Token::FModifier}, {".X", Token::XModifier}, {".I", Token::IModifier},
+                                                                              {"equ", Token::equ}, {"org", Token::org}, {"end", Token::end}, {"for", Token::forType}, {"rof", Token::rof}, {"pin", Token::pin},
+                                                                              {"dat", Token::dat}, {"mov", Token::mov}, {"add", Token::add}, {"sub", Token::sub}, {"mul", Token::mul}, {"div", Token::div},
+                                                                              {"mod", Token::mod}, {"jmz", Token::jmz}, {"jmn", Token::jmn}, {"djn", Token::djn}, {"spl", Token::spl}, {"cmp", Token::cmp},
+                                                                              {"seq", Token::seq}, {"sne", Token::sne}, {"slt", Token::slt}, {"ldp", Token::ldp}, {"stp", Token::stp}, {"jmp", Token::jmp},
+                                                                              {"nop", Token::nop}, {",", Token::comma}, {".", Token::dot}};
+
 TokenPtr Scanner::getToken ()
 {
     omitWhiteSpace();
     char c = sourceCodeManager_->getNext();
-    while (c == RedcodeInterpreter::COMMENT_START)
+    while (c == COMMENT_START)
     {
         omitComment();
         omitWhiteSpace();
@@ -62,8 +70,8 @@ TokenPtr Scanner::createNumeric (char first)
     }
 
     sourceCodeManager_->unget();
-    if (iswspace(c) || (c == RedcodeInterpreter::COMMENT_START) || (c == ',') || (c == EOF))
-        return std::make_shared<Token> (RedcodeInterpreter::numeric, token);
+    if (iswspace(c) || (c == COMMENT_START) || (c == ',') || (c == EOF))
+        return std::make_shared<Token> (Token::numeric, token);
 
     logger_->logError(std::make_shared<Error> (Error (sourceCodeManager_->getLineNr(), "Bad numeric identifier: " + token)));
     return nullptr;
@@ -89,16 +97,16 @@ TokenPtr Scanner::createAlpha (char first)
         c = sourceCodeManager_->getNext();
     }
 
-    if (!iswspace(c) && (c != RedcodeInterpreter::COMMENT_START) && (c == ',') && (c != '.') && (c != EOF))
+    if (!iswspace(c) && (c != COMMENT_START) && (c == ',') && (c != '.') && (c != EOF))
     {
         logger_->logError(std::make_shared<Error> (Error (sourceCodeManager_->getLineNr(), "Bad alphanumeric identifier: " + token)));
         return nullptr;
     }
 
     sourceCodeManager_->unget();
-    RedcodeInterpreter::TokenIter tokenIter = RedcodeInterpreter::keywords_.find(token);
-    if (tokenIter == RedcodeInterpreter::keywords_.end())
-        return std::make_shared<Token> (*(new Token(RedcodeInterpreter::alpha, token)));
+    TokenIter tokenIter = keywords_.find(token);
+    if (tokenIter == keywords_.end())
+        return std::make_shared<Token> (*(new Token(Token::alpha, token)));
     return std::make_shared<Token> (*(new Token(tokenIter->second)));
 }
 
@@ -106,10 +114,10 @@ TokenPtr Scanner::createOther(char first)
 {
     std::string token = "";
     token += first;
-    RedcodeInterpreter::TokenIter tokenIter = RedcodeInterpreter::keywords_.find(token);
-    if (tokenIter != RedcodeInterpreter::keywords_.end())
+    TokenIter tokenIter = keywords_.find(token);
+    if (tokenIter != keywords_.end())
     {
-        if ((tokenIter->second == RedcodeInterpreter::comma))
+        if ((tokenIter->second == Token::comma))
             return std::make_shared<Token> (*(new Token(tokenIter->second)));
 
         if (isalpha(sourceCodeManager_->getNext()))

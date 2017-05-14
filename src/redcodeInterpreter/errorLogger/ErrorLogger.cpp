@@ -8,6 +8,7 @@ void ErrorLogger::logError(const ErrorPtr & error)
 {
     boost::mutex::scoped_lock scoped_lock(writeMutex_);
     errorQueue_.push(error);
+    ++nrErrors_;
 }
 
 ErrorPtr ErrorLogger::getError ()

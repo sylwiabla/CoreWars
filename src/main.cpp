@@ -4,12 +4,11 @@
 
 using namespace std;
 
-int main() {
-
+int main()
+{
     ErrorLoggerPtr errorLogger = std::make_shared<ErrorLogger> ();
     TokenPtr token;
-    FilesystemManagerPtr filesystemManager = std::make_shared<FilesystemSourceManager> ("/home/sylwia/ClionProjects/RedcodeInterpreter/test/test");
-    ScannerPtr scanner = std::make_shared<Scanner> (std::static_pointer_cast<SourceCodeManager> (filesystemManager), errorLogger);
+    ScannerPtr scanner = std::make_unique<Scanner> (std::make_unique<FilesystemSourceManager> ("/home/sylwia/ClionProjects/RedcodeInterpreter/test/test"), errorLogger);
     while (!scanner->endReached())
     {
         token = scanner->getToken();
@@ -23,6 +22,5 @@ int main() {
         std::cout << "Line: " << std::get<0> (*error) << ", " << std::get<1> (*error) << std::endl;
         error = errorLogger->getError();
     }
-
     return 0;
 }

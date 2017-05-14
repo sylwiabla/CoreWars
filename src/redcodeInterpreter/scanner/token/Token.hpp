@@ -6,15 +6,17 @@
 #define REDCODEINTERPRETER_TOKEN_HPP
 
 #include <memory>
-#include "../RedcodeInterpreter.hpp"
 
 class Token
 {
 public:
-    Token(RedcodeInterpreter::TokenType type) : type_(type)
+    enum TokenType {immidiateMode, directMode, indirectMode, AModifier, BModifier, ABModifier, BAModifier, FModifier, XModifier, IModifier, equ, org, end, forType, rof, pin,
+        dat, mov, add, sub, mul, div, mod, jmz, jmn, djn, spl, cmp, seq, sne, slt, ldp, stp, jmp, nop, comma, numeric, alpha, dot};
+
+    Token(TokenType type) : type_(type)
     {}
 
-    Token (RedcodeInterpreter::TokenType type, std::string name) : type_(type), name_(name)
+    Token (TokenType type, std::string name) : type_(type), name_(name)
     {}
 
     const std::string & getName () const
@@ -22,8 +24,13 @@ public:
         return name_;
     }
 
+    TokenType getType () const
+    {
+        return type_;
+    }
+
 private:
-    RedcodeInterpreter::TokenType type_;
+    TokenType type_;
     std::string name_;
 
 };

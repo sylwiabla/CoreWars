@@ -44,6 +44,6 @@ private:
     void openFile ();
 };
 
-typedef std::shared_ptr<FilesystemSourceManager> FilesystemManagerPtr;
+typedef std::unique_ptr<FilesystemSourceManager> FilesystemManagerPtr;
 
 #endif //REDCODEINTERPRETER_FILESYSTEMSOURCEMANAGER_HPP

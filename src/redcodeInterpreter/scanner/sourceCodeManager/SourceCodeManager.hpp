@@ -41,6 +41,6 @@ protected:
     static const char DEFAULT_CHAR = '\0';
 };
 
-typedef std::shared_ptr<SourceCodeManager> SourceManagerPtr;
+typedef std::unique_ptr<SourceCodeManager> SourceManagerPtr;
 
 #endif //REDCODEINTERPRETER_SOURCECODEMANAGER_HPP
