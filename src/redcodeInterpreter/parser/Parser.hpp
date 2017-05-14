@@ -35,29 +35,24 @@ STS -> FOR S
 #include <memory>
 #include <vector>
 #include <list>
-#include <map>
 #include <unordered_map>
 #include <stack>
 #include "../errorLogger/ErrorLogger.hpp"
 #include "../scanner/Scanner.hpp"
-#include "../RedcodeInterpreter.hpp"
-
-/*#include "../symbol/AddressingMode.hpp"
-#include "../symbol/Modifier.hpp"
-#include "../symbol/PseudoInstruction.hpp"
-#include "../symbol/identifier/Label.hpp"
-#include "../symbol/identifier/NumericValue.hpp"
-#include "../symbol/instruction/OneArgsInstruction.hpp"
-#include "../symbol/instruction/TwoArgsInstruction.hpp"
-#include "../symbol/instruction/ZeroArgsInstruction.hpp"*/
+#include "instruction/SingleInstruction.hpp"
+#include "instruction/CompositeInstruction.hpp"
 
 class Parser;
 typedef std::shared_ptr<Parser> ParserPtr;
+namespace std
+{
+    struct EnumClassHash;
+}
 
 class Parser
 {
 public:
-    Parser(ErrorLoggerPtr logger, ScannerPtr scanner) : logger_(logger), scanner_(scanner)
+    Parser(ErrorLoggerPtr logger, ScannerPtr scanner) : logger_(logger), scanner_(std::move(scanner))
     {
         stack_.push(symbols_[25]); // push end symbol
         stack_.push(symbols_[0]);  // push start symbol - STATS
@@ -74,6 +69,8 @@ private:
 public:
     typedef std::shared_ptr<Symbol> SymbolPtr;
     typedef std::shared_ptr<ProductionRule> ProductionPtr;
+    typedef const std::unordered_map<Token::TokenType, SymbolType, std::EnumClassHash> Terminals;
+    typedef const std::unordered_map<std::pair<SymbolPtr, SymbolPtr>, ProductionPtr> PredictTable;
 
 private:
     ErrorLoggerPtr logger_;
@@ -120,14 +117,10 @@ private:
             nonterminal_ = nonterminal;
             derivation_ = derivation;
         }
-    };
 
-    struct EnumClassHash
-    {
-        template <typename T>
-        std::size_t operator()(T t) const
+        const std::vector<SymbolPtr> & getDerivation () const
         {
-            return static_cast<std::size_t>(t);
+            return derivation_;
         }
     };
 
@@ -155,16 +148,48 @@ private:
     static const std::vector<Parser::SymbolPtr> modDotRule;
     static const std::vector<Parser::SymbolPtr> modEpsRule;
 
-    static const std::unordered_map<RedcodeInterpreter::TokenType, SymbolType, EnumClassHash> terminals_;
+    static Terminals terminals_;
     static const std::vector<SymbolPtr> symbols_;
     static const std::vector<ProductionPtr> productions_;
-    static const std::map<std::tuple<SymbolPtr, SymbolPtr>, ProductionPtr> predictTable_;
+    static PredictTable predictTable_;
     std::stack<SymbolPtr> stack_;
+    std::stack<CompInstPtr> nestedInstructions_;
+    std::list<InstructionPtr> code_;
 
     SymbolPtr mapTokenToSymbol (TokenPtr token);
-    void accept ();
-    void derive();
+    void accept (TokenPtr token, SymbolType type);
+    void derive(SymbolPtr input);
     void logError();
+
+    const InstructionPtr & acceptInst (Token::TokenType tokenType, SymbolType symbolType);
+    void acceptAddrMode (Token::TokenType type);
+    void acceptNumeric (std::string value);
+    void acceptModifier (Token::TokenType type);
+    void acceptFor (Token::TokenType type);
 };
+
+namespace std
+{
+    struct EnumClassHash
+    {
+        template<typename T>
+        std::size_t operator()(T t) const
+        {
+            return static_cast<std::size_t>(t);
+        }
+    };
+
+    template <> struct hash<std::pair<Parser::SymbolPtr, Parser::SymbolPtr>>
+    {
+        std::size_t operator()(const std::pair<Parser::SymbolPtr, Parser::SymbolPtr> & key) const
+        {
+            using std::size_t;
+
+            Parser::SymbolType firstType = key.first->getType();
+            Parser::SymbolType secondType = key.second->getType();
+            return (static_cast<std::size_t>(firstType) << 1) ^ (static_cast<std::size_t>(secondType) << 1) >> 1;
+        }
+    };
+}
 
 #endif //REDCODEINTERPRETER_PARSER_HPP
