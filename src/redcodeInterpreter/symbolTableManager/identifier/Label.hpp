@@ -10,11 +10,12 @@
 class Label : public Identifier
 {
 public:
-    Label (std::string name) : Identifier(RedcodeInterpreter::alpha), name_(name)
+    Label (std::string name, long value) : Identifier(name), value_(value)
     {}
 
 private:
     std::string name_;
+    long value_;
 
 
 };

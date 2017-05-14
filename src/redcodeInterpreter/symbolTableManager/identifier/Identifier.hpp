@@ -5,14 +5,16 @@
 #ifndef REDCODEINTERPRETER_IDENTIFIER_HPP
 #define REDCODEINTERPRETER_IDENTIFIER_HPP
 
-#include "../Symbol.hpp"
+#include <memory>
 
-class Identifier : Symbol
+class Identifier
 {
 public:
-    Identifier (RedcodeInterpreter::TokenType type) : Symbol(type)
+    Identifier (std::string name) : name_(name)
     {}
 
+private:
+    std::string name_;
 
 };
 
