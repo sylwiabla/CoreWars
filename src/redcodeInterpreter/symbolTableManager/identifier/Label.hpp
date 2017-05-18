@@ -10,8 +10,13 @@
 class Label : public Identifier
 {
 public:
-    Label (std::string name, long value) : Identifier(name), value_(value)
+    Label (std::string name, long value) : Identifier(name, LABEL), value_(value)
     {}
+
+    inline long getValue () const
+    {
+        return value_;
+    }
 
 private:
     std::string name_;
@@ -19,5 +24,7 @@ private:
 
 
 };
+
+typedef std::shared_ptr<Label> LabelPtr;
 
 #endif //REDCODEINTERPRETER_LABEL_HPP

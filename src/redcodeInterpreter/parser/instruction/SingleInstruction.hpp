@@ -15,10 +15,10 @@ public:
     ZeroArgsInstruction (Token::TokenType type) : Instruction(type)
     {}
 
-    virtual void insertAddrMode (Token::TokenType addrMode) = 0;
-    virtual void insertNumeric (long value) = 0;
-    virtual void insertModifier (Token::TokenType modifier) = 0;
-    virtual void insertInstruction (InstructionPtr instruction) = 0;
+    virtual void insertAddrMode (Token::TokenType addrMode) {}
+    virtual void insertNumeric (long value) {}
+    virtual void insertModifier (Token::TokenType modifier) {}
+    virtual void insertInstruction (InstructionPtr instruction) {}
 
 };
 
@@ -46,7 +46,7 @@ public:
         std::get<2> (aArg) = modifier;
     }
 
-    virtual void insertInstruction (InstructionPtr instruction) = 0;
+    virtual void insertInstruction (InstructionPtr instruction) {};
 
 private:
     Operand aArg;
@@ -87,7 +87,7 @@ public:
             std::get<2> (aArg) = modifier;
     }
 
-    virtual void insertInstruction (InstructionPtr instruction) = 0;
+    virtual void insertInstruction (InstructionPtr instruction) {};
 
 private:
     Operand aArg;

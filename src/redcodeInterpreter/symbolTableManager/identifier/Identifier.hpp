@@ -7,14 +7,19 @@
 
 #include <memory>
 
+enum IdentifierType {LABEL, FUNCTION};
+
 class Identifier
 {
 public:
-    Identifier (std::string name) : name_(name)
+    Identifier (std::string name, IdentifierType type) : name_(name), type_(type)
     {}
+
+    long getValue();
 
 private:
     std::string name_;
+    IdentifierType type_;
 
 };
 

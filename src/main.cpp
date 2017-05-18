@@ -2,7 +2,14 @@
 #include "redcodeInterpreter/scanner/Scanner.hpp"
 #include "redcodeInterpreter/scanner/sourceCodeManager/FilesystemSourceManager.hpp"
 
-using namespace std;
+namespace std
+{
+    template<typename T, typename... Args>
+    std::unique_ptr<T> make_unique(Args&&... args)
+    {
+        return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
+    }
+}
 
 int main()
 {

@@ -144,7 +144,10 @@ void Parser::parse ()
         else if (!stack_.top()->isTerminal())
             derive(input);
         else
+        {
             logError();
+            token = scanner_->getToken();
+        }
     }
 }
 
@@ -166,16 +169,14 @@ void Parser::accept (TokenPtr token, SymbolType type)
         acceptAddrMode(token->getType());
     else if (type == numeric)
         acceptNumeric(token->getName());
-    else if (type == equ) //  dodac do nestedInst i do wlasciwego miejsca w code_ @TODO, nie dodawac do nested jak obsluga podstawienia
-        ;
-    else if (type == forType)
-        acceptFor(token->getType());
+    else if ((type == equ) || (type == forType))
+        acceptComposite(token->getType());
     else if (type == mod)
         acceptModifier(token->getType());
     else if ((type == uqe) || (type == rof))
         nestedInstructions_.pop();
-    else if (type == label) // @TODO
-        ;
+    else if (type == label)
+        acceptLabel(token->getName());
 }
 
 void Parser::derive(SymbolPtr input)
@@ -194,10 +195,10 @@ void Parser::derive(SymbolPtr input)
 
 void Parser::logError ()
 {
-
+    logger_->logError(std::make_shared<Error> (Error (scanner_->getLineNr(), "Unexpected identifier")));
 }
 
-const InstructionPtr & Parser::acceptInst (Token::TokenType tokenType, SymbolType symbolType)
+const InstructionPtr Parser::acceptInst (Token::TokenType tokenType, SymbolType symbolType)
 {
     InstructionPtr instruction;
     if (symbolType == inst0)
@@ -258,7 +259,7 @@ void Parser::acceptModifier (Token::TokenType type)
         code_.back()->insertModifier(type);
 }
 
-void Parser::acceptFor (Token::TokenType type)
+void Parser::acceptComposite (Token::TokenType type)
 {
     CompInstPtr compositeInstruction = std::make_shared<CompositeInstruction> (type);
     CompInstPtr parentInstruction;
@@ -268,4 +269,41 @@ void Parser::acceptFor (Token::TokenType type)
     else
         code_.push_back(compositeInstruction);
     nestedInstructions_.push(compositeInstruction);
+}
+
+void Parser::acceptLabel (std::string name)
+{
+    IdentifierPtr symbol = symbolTableManager_->find(name);
+    CompInstPtr parent;
+    parent = nestedInstructions_.top();
+    if (symbol)
+    {
+        if (parent)
+            insertLabelToComposite(parent, std::make_shared<Label>(name, symbol->getValue()));
+        else
+            insertLabelAsOperand(code_.back(), std::make_shared<Label>(name, symbol->getValue()));
+    }
+    else
+    {
+        if (parent)
+        {
+            if (parent->getType() == Token::forType)
+                logger_->logError(std::make_shared<Error> (Error (scanner_->getLineNr(), "Identifier not declared: " + name)));
+            else
+                symbolTableManager_->insert(name, std::make_shared<Identifier> (name));
+        }
+        else
+            logger_->logError(std::make_shared<Error> (Error (scanner_->getLineNr(), "Identifier not declared: " + name)));
+    }
+}
+
+bool Parser::insertLabelAsOperand (InstructionPtr instruction, LabelPtr label)
+{
+    if (instruction)
+    {
+        instruction->insertNumeric(label->getValue());
+        return true;
+    }
+    return false;
+
 }

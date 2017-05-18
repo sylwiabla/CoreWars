@@ -6,8 +6,10 @@
 #define REDCODEINTERPRETER_MULTIINSTRUCTION_HPP
 
 #include <list>
+#include <algorithm>
 #include "Instruction.hpp"
 
+class CompositeInstruction;
 typedef std::shared_ptr<CompositeInstruction> CompInstPtr;
 
 class CompositeInstruction : public Instruction
@@ -23,7 +25,7 @@ public:
     {
         InstructionPtr last;
         last = body_.back();
-        auto iter = std::find (composites_.begin(), composites_.end(), last->getType());
+        auto iter = std::find(composites_.begin(), composites_.end(), last->getType());
         if (iter != composites_.end())
             last->insertInstruction(instruction);
         else
@@ -37,10 +39,22 @@ public:
 
     virtual void insertNumeric (long value)
     {
-        if (body_.empty())
-            counter_ = value;
+        if (Instruction::getType() == Token::forType)
+        {
+            if (body_.empty())
+                counter_ = value;
+            else
+                body_.back()->insertNumeric(value);
+        }
         else
-            body_.back()->insertNumeric(value);
+        {
+            if (body_.empty())
+            {
+                //insert to symbol table manager
+            }
+            else
+                body_.back()->insertNumeric(value);
+        }
     }
 
     virtual void insertModifier (Token::TokenType modifier)
@@ -51,8 +65,7 @@ public:
 private:
     std::list<InstructionPtr> body_;
     long counter_;
-    static const std::list<Token::TokenType> composites_ = {Token::forType, Token::equ};
-
+    static const std::list<Token::TokenType> composites_;
 };
 
 #endif //REDCODEINTERPRETER_MULTIINSTRUCTION_HPP

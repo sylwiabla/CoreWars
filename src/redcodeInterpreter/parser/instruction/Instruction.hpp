@@ -9,6 +9,7 @@
 #include "../../scanner/token/Token.hpp"
 #include "../../symbolTableManager/identifier/Identifier.hpp"
 
+class Instruction;
 typedef std::shared_ptr<Instruction> InstructionPtr;
 
 class Instruction

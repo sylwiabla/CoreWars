@@ -33,4 +33,6 @@ private:
 
 };
 
+typedef std::shared_ptr<SymbolTableManager> SymbolTablePtr;
+
 #endif //REDCODEINTERPRETER_SYMBOLTABLEMANAGER_HPP

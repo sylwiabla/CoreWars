@@ -11,11 +11,11 @@
 class Function : public Identifier
 {
 public:
-    Function (std::string name, MultiInstPtr body) :  Identifier(name), body_(body)
+    Function (std::string name, CompInstPtr body) :  Identifier(name, FUNCTION), body_(body)
     {}
 
 private:
-    MultiInstPtr body_;
+    CompInstPtr body_;
 };
 
 #endif //REDCODEINTERPRETER_FUNCTION_HPP

@@ -41,6 +41,8 @@ STS -> FOR S
 #include "../scanner/Scanner.hpp"
 #include "instruction/SingleInstruction.hpp"
 #include "instruction/CompositeInstruction.hpp"
+#include "../symbolTableManager/SymbolTableManager.hpp"
+#include "../symbolTableManager/identifier/Label.hpp"
 
 class Parser;
 typedef std::shared_ptr<Parser> ParserPtr;
@@ -52,7 +54,7 @@ namespace std
 class Parser
 {
 public:
-    Parser(ErrorLoggerPtr logger, ScannerPtr scanner) : logger_(logger), scanner_(std::move(scanner))
+    Parser(ErrorLoggerPtr logger, ScannerPtr scanner, SymbolTablePtr symbolTableManager) : logger_(logger), scanner_(std::move(scanner)), symbolTableManager_(symbolTableManager)
     {
         stack_.push(symbols_[25]); // push end symbol
         stack_.push(symbols_[0]);  // push start symbol - STATS
@@ -75,6 +77,7 @@ public:
 private:
     ErrorLoggerPtr logger_;
     ScannerPtr scanner_;
+    SymbolTablePtr symbolTableManager_;
 
     class Symbol
     {
@@ -161,11 +164,15 @@ private:
     void derive(SymbolPtr input);
     void logError();
 
-    const InstructionPtr & acceptInst (Token::TokenType tokenType, SymbolType symbolType);
+    const InstructionPtr acceptInst (Token::TokenType tokenType, SymbolType symbolType);
     void acceptAddrMode (Token::TokenType type);
     void acceptNumeric (std::string value);
     void acceptModifier (Token::TokenType type);
-    void acceptFor (Token::TokenType type);
+    void acceptComposite (Token::TokenType type);
+    void acceptLabel (std::string name);
+
+    bool insertLabelAsOperand (InstructionPtr instruction, LabelPtr label);
+    bool insertLabelToComposite(InstructionPtr instruction, LabelPtr label);
 };
 
 namespace std
