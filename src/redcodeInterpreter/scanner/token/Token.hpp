@@ -10,7 +10,7 @@
 class Token
 {
 public:
-    enum TokenType {immidiateMode, directMode, indirectMode, AModifier, BModifier, ABModifier, BAModifier, FModifier, XModifier, IModifier, equ, org, end, forType, rof, pin,
+    enum TokenType {immidiateMode, directMode, indirectMode, AModifier, BModifier, ABModifier, BAModifier, FModifier, XModifier, IModifier, equ, end, forType, rof, uqe,
         dat, mov, add, sub, mul, div, mod, jmz, jmn, djn, spl, cmp, seq, sne, slt, ldp, stp, jmp, nop, comma, numeric, alpha, dot};
 
     Token(TokenType type) : type_(type)
