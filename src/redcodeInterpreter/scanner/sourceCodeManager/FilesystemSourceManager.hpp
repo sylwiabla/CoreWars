@@ -10,16 +10,22 @@
 class FilesystemSourceManager : public SourceCodeManager
 {
 public:
-    FilesystemSourceManager () : SourceCodeManager(), opened_(false), fileName_("")
-    {}
+    FilesystemSourceManager () : SourceCodeManager(), fileName_("")
+    {
+        init();
+    }
 
-    FilesystemSourceManager (const std::string & fileName) : SourceCodeManager (), opened_(false), fileName_(fileName)
-    {}
+    FilesystemSourceManager (const std::string & fileName) : SourceCodeManager (), fileName_(fileName)
+    {
+        init();
+    }
 
     ~FilesystemSourceManager()
     {
         fin_.close();
     }
+
+    void init ();
 
     virtual void unget()
     {
@@ -39,7 +45,6 @@ public:
 private:
     std::string fileName_;
     std::ifstream fin_;
-    bool opened_;
 
     void openFile ();
 };

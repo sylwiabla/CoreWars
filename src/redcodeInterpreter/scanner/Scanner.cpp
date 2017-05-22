@@ -4,9 +4,9 @@
 
 #include "Scanner.hpp"
 
-const std::unordered_map<std::string, Token::TokenType> Scanner::keywords_ = {{"#", Token::immidiateMode}, {"$", Token::directMode}, {"@", Token::indirectMode}, {".A", Token::AModifier}, {".B", Token::BModifier},
-                                                                              {".AB", Token::ABModifier}, {".BA", Token::BAModifier}, {".F", Token::FModifier}, {".X", Token::XModifier}, {".I", Token::IModifier},
-                                                                              {"equ", Token::equ}, {"org", Token::org}, {"end", Token::end}, {"for", Token::forType}, {"rof", Token::rof}, {"pin", Token::pin},
+const std::unordered_map<std::string, Token::TokenType> Scanner::keywords_ = {{"#", Token::immidiateMode}, {"$", Token::directMode}, {"@", Token::indirectMode}, {"A", Token::AModifier}, {"B", Token::BModifier},
+                                                                              {"AB", Token::ABModifier}, {"BA", Token::BAModifier}, {"F", Token::FModifier}, {"X", Token::XModifier}, {"I", Token::IModifier},
+                                                                              {"equ", Token::equ}, {"end", Token::end}, {"for", Token::forType}, {"rof", Token::rof}, {"uqe", Token::uqe},
                                                                               {"dat", Token::dat}, {"mov", Token::mov}, {"add", Token::add}, {"sub", Token::sub}, {"mul", Token::mul}, {"div", Token::div},
                                                                               {"mod", Token::mod}, {"jmz", Token::jmz}, {"jmn", Token::jmn}, {"djn", Token::djn}, {"spl", Token::spl}, {"cmp", Token::cmp},
                                                                               {"seq", Token::seq}, {"sne", Token::sne}, {"slt", Token::slt}, {"ldp", Token::ldp}, {"stp", Token::stp}, {"jmp", Token::jmp},
@@ -23,6 +23,8 @@ TokenPtr Scanner::getToken ()
         c = sourceCodeManager_->getNext();
     }
 
+    if (endReached())
+        return nullptr;
     return createToken (c);
 }
 
@@ -33,7 +35,10 @@ void Scanner::omitComment()
     while (c != '\n')
     {
         if (endReached())
+        {
+            sourceCodeManager_->unget();
             return;
+        }
         c = sourceCodeManager_->getNext();
     }
 }
@@ -70,7 +75,7 @@ TokenPtr Scanner::createNumeric (char first)
     }
 
     sourceCodeManager_->unget();
-    if (iswspace(c) || (c == COMMENT_START) || (c == ',') || (c == EOF))
+    if (iswspace(c) || (c == COMMENT_START) || (c == ',') || endReached() || (c == '.'))
         return std::make_shared<Token> (Token::numeric, token);
 
     logger_->logError(std::make_shared<Error> (Error (sourceCodeManager_->getLineNr(), "Bad numeric identifier: " + token)));
@@ -97,7 +102,7 @@ TokenPtr Scanner::createAlpha (char first)
         c = sourceCodeManager_->getNext();
     }
 
-    if (!iswspace(c) && (c != COMMENT_START) && (c == ',') && (c != '.') && (c != EOF))
+    if (!endReached() && !iswspace(c) && (c != COMMENT_START) && (c != ',') && (c != '.'))
     {
         logger_->logError(std::make_shared<Error> (Error (sourceCodeManager_->getLineNr(), "Bad alphanumeric identifier: " + token)));
         return nullptr;
@@ -117,15 +122,14 @@ TokenPtr Scanner::createOther(char first)
     TokenIter tokenIter = keywords_.find(token);
     if (tokenIter != keywords_.end())
     {
-        if ((tokenIter->second == Token::comma))
+        Token::TokenType type = tokenIter->second;
+        if ((type == Token::comma) || (type == Token::dot))
             return std::make_shared<Token> (*(new Token(tokenIter->second)));
 
-        if (isalpha(sourceCodeManager_->getNext()))
-        {
-            sourceCodeManager_->unget();
-            return std::make_shared<Token> (*(new Token(tokenIter->second, tokenIter->first)));
-        }
+        char next = sourceCodeManager_->getNext();
         sourceCodeManager_->unget();
+        if (isalpha(next) || isdigit(next))
+            return std::make_shared<Token> (*(new Token(tokenIter->second, tokenIter->first)));
         logger_->logError(std::make_shared<Error> (Error (sourceCodeManager_->getLineNr(), "Cannot resolve token: " + token)));
     }
     else

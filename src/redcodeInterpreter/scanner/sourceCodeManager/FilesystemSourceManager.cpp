@@ -4,6 +4,12 @@
 
 #include "FilesystemSourceManager.hpp"
 
+void FilesystemSourceManager::init ()
+{
+    openFile();
+    fin_.exceptions (std::ifstream::badbit);
+}
+
 void FilesystemSourceManager::openFile ()
 {
     boost::filesystem::path file(fileName_);
@@ -11,7 +17,6 @@ void FilesystemSourceManager::openFile ()
     {
         fin_.open(fileName_);
         lineNr_ = 1;
-        opened_ = true;
     }
     else
         throw new SourceFileNotFound();
@@ -21,12 +26,11 @@ char FilesystemSourceManager::getNext ()
 {
     boost::mutex::scoped_lock scoped_lock(readMutex_);
 
-    if(!opened_)
-        openFile();
+    if (endReached_)
+        return EOF;
 
-    fin_.exceptions (std::ifstream::badbit);
-    char result = DEFAULT_CHAR;
-    if (!(fin_ >> std::noskipws >> result))
+    char result;
+    if ((fin_ >> std::noskipws >> result).eof())
         endReached_ = true;
 
     if (result == '\n')
