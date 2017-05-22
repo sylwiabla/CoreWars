@@ -19,7 +19,6 @@ public:
     }
 
 private:
-    std::string name_;
     long value_;
 
 

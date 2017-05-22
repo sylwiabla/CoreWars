@@ -15,7 +15,10 @@ public:
     Identifier (std::string name, IdentifierType type) : name_(name), type_(type)
     {}
 
-    long getValue();
+    IdentifierType getType () const
+    {
+        return type_;
+    }
 
 private:
     std::string name_;

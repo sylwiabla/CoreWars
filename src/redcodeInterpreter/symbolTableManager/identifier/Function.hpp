@@ -14,8 +14,15 @@ public:
     Function (std::string name, CompInstPtr body) :  Identifier(name, FUNCTION), body_(body)
     {}
 
+    const CompInstPtr & getInstruction () const
+    {
+        return body_;
+    }
+
 private:
     CompInstPtr body_;
 };
+
+typedef std::shared_ptr<Function> FunctionPtr;
 
 #endif //REDCODEINTERPRETER_FUNCTION_HPP
