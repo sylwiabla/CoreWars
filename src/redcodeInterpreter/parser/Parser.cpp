@@ -9,7 +9,7 @@ const Parser::Terminals Parser::terminals_ = {{Token::immidiateMode, addMode}, {
                                         {Token::rof, rof}, {Token::dat, inst2}, {Token::mov, inst2}, {Token::add, inst2}, {Token::sub, inst2}, {Token::mul, inst2}, {Token::div, inst2}, {Token::mod, inst2},
                                         {Token::jmz, inst2}, {Token::jmn, inst2}, {Token::djn, inst2}, {Token::spl, inst2}, {Token::cmp, inst2}, {Token::seq, inst2}, {Token::sne, inst2}, {Token::slt, inst2},
                                         {Token::ldp, inst2}, {Token::stp, inst2}, {Token::jmp, inst1}, {Token::nop, inst0}, {Token::comma, comma}, {Token::numeric, numeric}, {Token::alpha, label},
-                                        {Token::dot, dot}};
+                                        {Token::dot, dot}, {Token::uqe, uqe},};
 
 const std::vector<Parser::SymbolPtr> Parser::symbols_ = {std::make_shared<Symbol> (false, STATS), std::make_shared<Symbol> (false, STAT), std::make_shared<Symbol> (true, epsilon),
                                                          std::make_shared<Symbol> (false, INST), std::make_shared<Symbol> (false, EQU), std::make_shared<Symbol> (false, FOR), std::make_shared<Symbol> (true, label),
@@ -35,8 +35,8 @@ const std::vector<Parser::SymbolPtr> Parser::op1Rule = {Parser::symbols_[15], Pa
 const std::vector<Parser::SymbolPtr> Parser::opNameNumRule = {Parser::symbols_[16]};
 const std::vector<Parser::SymbolPtr> Parser::opNameLabRule = {Parser::symbols_[6]};
 const std::vector<Parser::SymbolPtr> Parser::equRule = {Parser::symbols_[18], Parser::symbols_[6], Parser::symbols_[17]};
-const std::vector<Parser::SymbolPtr> Parser::equVNumRule = {Parser::symbols_[16]};
-const std::vector<Parser::SymbolPtr> Parser::equVLabRule = {Parser::symbols_[6]};
+const std::vector<Parser::SymbolPtr> Parser::equVNumRule = {Parser::symbols_[20], Parser::symbols_[16]};
+const std::vector<Parser::SymbolPtr> Parser::equVLabRule = {Parser::symbols_[20], Parser::symbols_[6]};
 const std::vector<Parser::SymbolPtr> Parser::equVStsRule = {Parser::symbols_[20], Parser::symbols_[19]};
 const std::vector<Parser::SymbolPtr> Parser::stsInstRule = {Parser::symbols_[0], Parser::symbols_[3]};
 const std::vector<Parser::SymbolPtr> Parser::stsForRule = {Parser::symbols_[0], Parser::symbols_[5]};
@@ -68,8 +68,8 @@ const std::vector<Parser::ProductionPtr> Parser::productions_ = {std::make_share
                                                                  std::make_shared<ProductionRule> (Parser::symbols_[15], Parser::modDotRule),
                                                                  std::make_shared<ProductionRule> (Parser::symbols_[15], Parser::modEpsRule)};
 
-// STATS
-Parser::PredictTable Parser::predictTable_ = {{std::make_pair(Parser::symbols_[0], Parser::symbols_[6]), Parser::productions_[0]},
+        // STATS
+/*Parser::PredictTable Parser::predictTable_ = {{std::make_pair(Parser::symbols_[0], Parser::symbols_[6]), Parser::productions_[0]},
                                               {std::make_pair(Parser::symbols_[0], Parser::symbols_[7]), Parser::productions_[0]},
                                               {std::make_pair(Parser::symbols_[0], Parser::symbols_[8]), Parser::productions_[0]},
                                               {std::make_pair(Parser::symbols_[0], Parser::symbols_[10]), Parser::productions_[0]},
@@ -126,7 +126,67 @@ Parser::PredictTable Parser::predictTable_ = {{std::make_pair(Parser::symbols_[0
                                               {std::make_pair(Parser::symbols_[19], Parser::symbols_[7]), Parser::productions_[18]},
                                               {std::make_pair(Parser::symbols_[19], Parser::symbols_[8]), Parser::productions_[18]},
                                               {std::make_pair(Parser::symbols_[19], Parser::symbols_[10]), Parser::productions_[18]},
-                                              {std::make_pair(Parser::symbols_[19], Parser::symbols_[21]), Parser::productions_[19]} };
+                                              {std::make_pair(Parser::symbols_[19], Parser::symbols_[21]), Parser::productions_[19]} }; */
+
+// STATS
+Parser::PredictTable Parser::predictTable_ = {{std::make_pair(*Parser::symbols_[0], *Parser::symbols_[6]), Parser::productions_[0]},
+                                              {std::make_pair(*Parser::symbols_[0], *Parser::symbols_[7]), Parser::productions_[0]},
+                                              {std::make_pair(*Parser::symbols_[0], *Parser::symbols_[8]), Parser::productions_[0]},
+                                              {std::make_pair(*Parser::symbols_[0], *Parser::symbols_[10]), Parser::productions_[0]},
+                                              {std::make_pair(*Parser::symbols_[0], *Parser::symbols_[21]), Parser::productions_[0]},
+                                              {std::make_pair(*Parser::symbols_[0], *Parser::symbols_[22]), Parser::productions_[1]},
+                                              {std::make_pair(*Parser::symbols_[0], *Parser::symbols_[17]), Parser::productions_[0]},
+                                              {std::make_pair(*Parser::symbols_[0], *Parser::symbols_[20]), Parser::productions_[1]},
+                                              {std::make_pair(*Parser::symbols_[0], *Parser::symbols_[25]), Parser::productions_[1]},
+        // STAT
+                                              {std::make_pair(*Parser::symbols_[1], *Parser::symbols_[6]), Parser::productions_[5]},
+                                              {std::make_pair(*Parser::symbols_[1], *Parser::symbols_[7]), Parser::productions_[2]},
+                                              {std::make_pair(*Parser::symbols_[1], *Parser::symbols_[8]), Parser::productions_[2]},
+                                              {std::make_pair(*Parser::symbols_[1], *Parser::symbols_[10]), Parser::productions_[2]},
+                                              {std::make_pair(*Parser::symbols_[1], *Parser::symbols_[21]), Parser::productions_[4]},
+                                              {std::make_pair(*Parser::symbols_[1], *Parser::symbols_[17]), Parser::productions_[3]},
+        // INST
+                                              {std::make_pair(*Parser::symbols_[3], *Parser::symbols_[7]), Parser::productions_[6]},
+                                              {std::make_pair(*Parser::symbols_[3], *Parser::symbols_[8]), Parser::productions_[7]},
+                                              {std::make_pair(*Parser::symbols_[3], *Parser::symbols_[10]), Parser::productions_[8]},
+        // OP
+                                              {std::make_pair(*Parser::symbols_[9], *Parser::symbols_[6]), Parser::productions_[10]},
+                                              {std::make_pair(*Parser::symbols_[9], *Parser::symbols_[12]), Parser::productions_[9]},
+                                              {std::make_pair(*Parser::symbols_[9], *Parser::symbols_[16]), Parser::productions_[10]},
+        // OP1
+                                              {std::make_pair(*Parser::symbols_[13], *Parser::symbols_[6]), Parser::productions_[11]},
+                                              {std::make_pair(*Parser::symbols_[13], *Parser::symbols_[16]), Parser::productions_[11]},
+        // MOD
+                                              {std::make_pair(*Parser::symbols_[15], *Parser::symbols_[6]), Parser::productions_[22]},
+                                              {std::make_pair(*Parser::symbols_[15], *Parser::symbols_[7]), Parser::productions_[22]},
+                                              {std::make_pair(*Parser::symbols_[15], *Parser::symbols_[8]), Parser::productions_[22]},
+                                              {std::make_pair(*Parser::symbols_[15], *Parser::symbols_[10]), Parser::productions_[22]},
+                                              {std::make_pair(*Parser::symbols_[15], *Parser::symbols_[11]), Parser::productions_[22]},
+                                              {std::make_pair(*Parser::symbols_[15], *Parser::symbols_[23]), Parser::productions_[21]},
+                                              {std::make_pair(*Parser::symbols_[15], *Parser::symbols_[21]), Parser::productions_[22]},
+                                              {std::make_pair(*Parser::symbols_[15], *Parser::symbols_[22]), Parser::productions_[22]},
+                                              {std::make_pair(*Parser::symbols_[15], *Parser::symbols_[17]), Parser::productions_[22]},
+                                              {std::make_pair(*Parser::symbols_[15], *Parser::symbols_[20]), Parser::productions_[22]},
+                                              {std::make_pair(*Parser::symbols_[15], *Parser::symbols_[25]), Parser::productions_[22]},
+        // OP_NAME
+                                              {std::make_pair(*Parser::symbols_[14], *Parser::symbols_[6]), Parser::productions_[13]},
+                                              {std::make_pair(*Parser::symbols_[14], *Parser::symbols_[16]), Parser::productions_[12]},
+        // FOR
+                                              {std::make_pair(*Parser::symbols_[5], *Parser::symbols_[21]), Parser::productions_[20]},
+        // EQU
+                                              {std::make_pair(*Parser::symbols_[4], *Parser::symbols_[17]), Parser::productions_[14]},
+        // EQU_VAL
+                                              {std::make_pair(*Parser::symbols_[18], *Parser::symbols_[6]), Parser::productions_[16]},
+                                              {std::make_pair(*Parser::symbols_[18], *Parser::symbols_[7]), Parser::productions_[17]},
+                                              {std::make_pair(*Parser::symbols_[18], *Parser::symbols_[8]), Parser::productions_[17]},
+                                              {std::make_pair(*Parser::symbols_[18], *Parser::symbols_[10]), Parser::productions_[17]},
+                                              {std::make_pair(*Parser::symbols_[18], *Parser::symbols_[16]), Parser::productions_[15]},
+                                              {std::make_pair(*Parser::symbols_[18], *Parser::symbols_[21]), Parser::productions_[17]},
+        // STS
+                                              {std::make_pair(*Parser::symbols_[19], *Parser::symbols_[7]), Parser::productions_[18]},
+                                              {std::make_pair(*Parser::symbols_[19], *Parser::symbols_[8]), Parser::productions_[18]},
+                                              {std::make_pair(*Parser::symbols_[19], *Parser::symbols_[10]), Parser::productions_[18]},
+                                              {std::make_pair(*Parser::symbols_[19], *Parser::symbols_[21]), Parser::productions_[19]} };
 
 void Parser::parse ()
 {
@@ -135,11 +195,18 @@ void Parser::parse ()
 
     while (!scanner_->endReached() && !logger_->isFull())
     {
+        while (!token)
+            token = scanner_->getToken();
+
+        while (stack_.top()->getType() == epsilon)
+            stack_.pop();
+
         input = mapTokenToSymbol(token);
-        if (input == stack_.top())
+        if (*input == *stack_.top())  // @TODO
         {
             accept(token, input->getType());
             token = scanner_->getToken();
+            int i = 0;
         }
         else if (!stack_.top()->isTerminal())
             derive(input);
@@ -173,27 +240,28 @@ void Parser::accept (TokenPtr token, SymbolType type)
         acceptComposite(token->getType());
     else if (type == mod)
         acceptModifier(token->getType());
-    else if ((type == uqe) || (type == rof))
+    else if (type == rof)
         nestedInstructions_.pop();
+    else if (type == uqe)
+        acceptUqe();
     else if (type == label)
         acceptLabel(token->getName());
 }
 
 void Parser::derive(SymbolPtr input)
 {
-    std::pair<SymbolPtr, SymbolPtr> pair = std::make_pair(stack_.top(), input);
+    std::pair<Symbol, Symbol> pair = std::make_pair(*stack_.top(), *input);
     auto production = predictTable_.find(pair);
+    stack_.pop();
 
     if (production == predictTable_.end())
         logError();
     else
         for (SymbolPtr symbol : production->second->getDerivation())
             stack_.push(symbol);
-
-    stack_.pop();
 }
 
-void Parser::logError ()
+void Parser::logError () // @TODO
 {
     logger_->logError(std::make_shared<Error> (Error (scanner_->getLineNr(), "Unexpected identifier")));
 }
@@ -208,23 +276,27 @@ const InstructionPtr Parser::acceptInst (Token::TokenType tokenType, SymbolType 
     else
         instruction = std::make_shared<TwoArgsInstruction> (tokenType);
 
-    CompInstPtr parentInstruction;
-    parentInstruction = nestedInstructions_.top();
-    if (parentInstruction)
-        parentInstruction->insertInstruction(instruction);
-    else
+    if (nestedInstructions_.empty())
         code_.push_back(instruction);
+    else
+    {
+        CompInstPtr parentInstruction;
+        parentInstruction = nestedInstructions_.top();
+        parentInstruction->insertInstruction(instruction);
+    }
     return  instruction;
 }
 
 void Parser::acceptAddrMode(Token::TokenType type)
 {
-    CompInstPtr parentInstruction;
-    parentInstruction = nestedInstructions_.top();
-    if (parentInstruction)
-        parentInstruction->insertAddrMode(type);
-    else
+    if (nestedInstructions_.empty())
         code_.back()->insertAddrMode(type);
+    else
+    {
+        CompInstPtr parentInstruction;
+        parentInstruction = nestedInstructions_.top();
+        parentInstruction->insertAddrMode(type);
+    }
 }
 
 void Parser::acceptNumeric (std::string value)
@@ -232,12 +304,21 @@ void Parser::acceptNumeric (std::string value)
     try
     {
         long numValue = std::stol(value);
-        CompInstPtr parentInstruction;
-        parentInstruction = nestedInstructions_.top();
-        if (parentInstruction)
-            parentInstruction->insertNumeric(numValue);
-        else
+        if (nestedInstructions_.empty())
             code_.back()->insertNumeric(numValue);
+        else
+        {
+            CompInstPtr parentInstruction;
+            parentInstruction = nestedInstructions_.top();
+            std::string recentlyAdded = symbolTableManager_->getRecentlyAdded();
+            if (recentlyAdded == "")
+                parentInstruction->insertNumeric(numValue);
+            else
+            {
+                symbolTableManager_->insert(recentlyAdded, std::make_shared<Label> (recentlyAdded, numValue));
+                symbolTableManager_->setRecentlyAdded("");
+            }
+        }
     }
     catch (const std::invalid_argument & e)
     {
@@ -251,59 +332,66 @@ void Parser::acceptNumeric (std::string value)
 
 void Parser::acceptModifier (Token::TokenType type)
 {
-    CompInstPtr parentInstruction;
-    parentInstruction = nestedInstructions_.top();
-    if (parentInstruction)
-        parentInstruction->insertModifier(type);
-    else
+    if (nestedInstructions_.empty())
         code_.back()->insertModifier(type);
+    else
+    {
+        CompInstPtr parentInstruction;
+        parentInstruction = nestedInstructions_.top();
+        parentInstruction->insertModifier(type);
+    }
 }
 
 void Parser::acceptComposite (Token::TokenType type)
 {
     CompInstPtr compositeInstruction = std::make_shared<CompositeInstruction> (type);
-    CompInstPtr parentInstruction;
-    parentInstruction = nestedInstructions_.top();
-    if (parentInstruction)
-        parentInstruction->insertInstruction(compositeInstruction);
-    else
+    if (nestedInstructions_.empty())
         code_.push_back(compositeInstruction);
+    else
+    {
+        CompInstPtr parentInstruction;
+        parentInstruction = nestedInstructions_.top();
+        parentInstruction->insertInstruction(compositeInstruction);
+    }
     nestedInstructions_.push(compositeInstruction);
 }
 
 void Parser::acceptLabel (std::string name)
 {
-    IdentifierPtr symbol = symbolTableManager_->find(name);
-    CompInstPtr parent;
-    parent = nestedInstructions_.top();
-    if (symbol)
+    FunctionPtr function = symbolTableManager_->findFunction(name);
+    if (function)
     {
-        if (parent)
-            insertLabelToComposite(parent, std::make_shared<Label>(name, symbol->getValue()));
-        else
-            insertLabelAsOperand(code_.back(), std::make_shared<Label>(name, symbol->getValue()));
+        for (InstructionPtr instruction : function->getInstruction()->getBody())
+            code_.push_back(instruction);
     }
     else
     {
-        if (parent)
+        LabelPtr label = symbolTableManager_->findLabel(name);
+        if (label)
         {
-            if (parent->getType() == Token::forType)
-                logger_->logError(std::make_shared<Error> (Error (scanner_->getLineNr(), "Identifier not declared: " + name)));
+            long value = label->getValue();
+            std::string recentlyAdded = symbolTableManager_->getRecentlyAdded();
+            if (recentlyAdded == "")
+                code_.back()->insertNumeric(value);
             else
-                symbolTableManager_->insert(name, std::make_shared<Identifier> (name));
+                symbolTableManager_->insert(recentlyAdded, std::make_shared<Label> (recentlyAdded, value));
         }
         else
-            logger_->logError(std::make_shared<Error> (Error (scanner_->getLineNr(), "Identifier not declared: " + name)));
+        {
+            if (nestedInstructions_.top()->getType() == Token::equ)
+                symbolTableManager_->setRecentlyAdded(name);
+            else
+                logger_->logError(std::make_shared<Error> (Error (scanner_->getLineNr(), "Identifier not declared: " + name)));
+        }
     }
 }
 
-bool Parser::insertLabelAsOperand (InstructionPtr instruction, LabelPtr label)
+void Parser::acceptUqe ()
 {
-    if (instruction)
-    {
-        instruction->insertNumeric(label->getValue());
-        return true;
-    }
-    return false;
+    std::string recentlyAdded = symbolTableManager_->getRecentlyAdded();
+    if (recentlyAdded != "")  // means that this equ invocation is procedure definition
+        symbolTableManager_->insert(recentlyAdded, std::make_shared<Function> (recentlyAdded, nestedInstructions_.top()));
 
+    code_.pop_back();        // based on grammar, function definition cannot have parent composite instruction
+    nestedInstructions_.pop();
 }

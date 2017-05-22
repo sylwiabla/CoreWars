@@ -4,8 +4,8 @@
 
 /*
                     Redcode Grammar
-S -> STAT S
-S -> ''
+STATS -> STAT STATS
+STATS -> ''
 STAT -> INST
 STAT -> EQU
 STAT -> FOR
@@ -22,8 +22,8 @@ OPN -> num
 OPN -> lab
 FOR -> for OPN STS rof
 EQU -> equ lab EQUV
-EQUV -> num
-EQUV -> lab
+EQUV -> num uqe
+EQUV -> lab uqe
 EQUV -> STS uqe
 STS -> INST S
 STS -> FOR S
@@ -65,19 +65,15 @@ public:
     enum SymbolType {STATS, STAT, INST, EQU, FOR, label, inst0, inst1, inst2, OP, comma, addMode, OP1, OP_NAME, numeric, MOD, equ, EQU_VAL, STS, uqe, forType, rof, dot, mod, epsilon, end};
 
 private:
-    class Symbol;
     class ProductionRule;
 
 public:
+    class Symbol;
+
     typedef std::shared_ptr<Symbol> SymbolPtr;
     typedef std::shared_ptr<ProductionRule> ProductionPtr;
     typedef const std::unordered_map<Token::TokenType, SymbolType, std::EnumClassHash> Terminals;
-    typedef const std::unordered_map<std::pair<SymbolPtr, SymbolPtr>, ProductionPtr> PredictTable;
-
-private:
-    ErrorLoggerPtr logger_;
-    ScannerPtr scanner_;
-    SymbolTablePtr symbolTableManager_;
+    typedef const std::unordered_map<std::pair<Symbol, Symbol>, ProductionPtr> PredictTable;
 
     class Symbol
     {
@@ -107,6 +103,11 @@ private:
             return (isTerminal_ == symbol.isTerminal()) && (type_ == symbol.getType());
         }
     };
+
+private:
+    ErrorLoggerPtr logger_;
+    ScannerPtr scanner_;
+    SymbolTablePtr symbolTableManager_;
 
     class ProductionRule
     {
@@ -170,9 +171,7 @@ private:
     void acceptModifier (Token::TokenType type);
     void acceptComposite (Token::TokenType type);
     void acceptLabel (std::string name);
-
-    bool insertLabelAsOperand (InstructionPtr instruction, LabelPtr label);
-    bool insertLabelToComposite(InstructionPtr instruction, LabelPtr label);
+    void acceptUqe ();
 };
 
 namespace std
@@ -186,14 +185,14 @@ namespace std
         }
     };
 
-    template <> struct hash<std::pair<Parser::SymbolPtr, Parser::SymbolPtr>>
+    template <> struct hash<std::pair<Parser::Symbol, Parser::Symbol>>
     {
-        std::size_t operator()(const std::pair<Parser::SymbolPtr, Parser::SymbolPtr> & key) const
+        std::size_t operator()(const std::pair<Parser::Symbol, Parser::Symbol> & key) const
         {
             using std::size_t;
 
-            Parser::SymbolType firstType = key.first->getType();
-            Parser::SymbolType secondType = key.second->getType();
+            Parser::SymbolType firstType = key.first.getType();
+            Parser::SymbolType secondType = key.second.getType();
             return (static_cast<std::size_t>(firstType) << 1) ^ (static_cast<std::size_t>(secondType) << 1) >> 1;
         }
     };
