@@ -21,7 +21,7 @@ public:
     virtual ~Instruction()
     {}
 
-    virtual void insertInstruction (InstructionPtr instruction) = 0;
+    virtual void insertInstruction (const InstructionPtr & instruction) = 0;
     virtual void insertAddrMode (Token::TokenType addrMode) = 0;
     virtual void insertNumeric (long value) = 0;
     virtual void insertModifier (Token::TokenType modifier) = 0;

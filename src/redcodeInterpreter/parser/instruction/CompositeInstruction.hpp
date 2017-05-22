@@ -21,8 +21,10 @@ public:
     virtual ~CompositeInstruction ()
     {}
 
-    virtual void insertInstruction (InstructionPtr instruction)
+    virtual void insertInstruction (const InstructionPtr & instruction)
     {
+        if (body_.empty())
+            body_.push_back(instruction);
         InstructionPtr last;
         last = body_.back();
         auto iter = std::find(composites_.begin(), composites_.end(), last->getType());
@@ -39,27 +41,20 @@ public:
 
     virtual void insertNumeric (long value)
     {
-        if (Instruction::getType() == Token::forType)
-        {
-            if (body_.empty())
-                counter_ = value;
-            else
-                body_.back()->insertNumeric(value);
-        }
+        if (body_.empty())
+            counter_ = value;
         else
-        {
-            if (body_.empty())
-            {
-                //insert to symbol table manager
-            }
-            else
-                body_.back()->insertNumeric(value);
-        }
+            body_.back()->insertNumeric(value);
     }
 
     virtual void insertModifier (Token::TokenType modifier)
     {
         body_.back()->insertModifier(modifier);
+    }
+
+    const std::list<InstructionPtr> & getBody () const
+    {
+        return body_;
     }
 
 private:
