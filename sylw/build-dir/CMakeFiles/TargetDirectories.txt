@@ -1,0 +1,5 @@
+/home/klis/STUDIA/6sem/ZPR/roboczy/sylw/build-dir/CMakeFiles/rebuild_cache.dir
+/home/klis/STUDIA/6sem/ZPR/roboczy/sylw/build-dir/CMakeFiles/RedcodeInterpreter.dir
+/home/klis/STUDIA/6sem/ZPR/roboczy/sylw/build-dir/CMakeFiles/compiler.dir
+/home/klis/STUDIA/6sem/ZPR/roboczy/sylw/build-dir/CMakeFiles/compiler_ext.dir
+/home/klis/STUDIA/6sem/ZPR/roboczy/sylw/build-dir/CMakeFiles/edit_cache.dir

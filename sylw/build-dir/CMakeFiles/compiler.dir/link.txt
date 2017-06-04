@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC  -std=c++14 -std=c++1y -DCMAKE_CXX_COMPILER=/usr/bin/g++  -shared -Wl,-soname,libcompiler.so -o libcompiler.so CMakeFiles/compiler.dir/compiler.cpp.o 
