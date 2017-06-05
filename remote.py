@@ -51,14 +51,15 @@ def clientthread(conn):
             clients_name.remove(username)
             clients_conn.remove(conn)
             break
-        if data.startswith('filename:'): # read file
-            #s = Scanner.getInstance()
-	    #s.setSourceManager(data[9:])
-            print data[9:]
-        if data.startswith('start:'): # compile
+        if data.startswith('filename:'): # compile
             print 'Compiling...'
-            error = compiler_ext.compile('../test/test')
-        reply = data #soon: compitation errors
+            error = compiler_ext.compile('corewars/'+data[9:])
+            if len(error)>0:
+                print error
+                reply = 'error:'+error
+            else:
+                reply = 'compiled:'
+        #reply = data #soon: compitation errors
         conn.sendall(reply)
     conn.close()
  

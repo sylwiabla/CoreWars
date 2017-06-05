@@ -191,7 +191,7 @@ self._width/32,self._height/3)
 	    self.create_button(screen,"Stop",(self._width/32)+110,self._height/1.1)
 	    self.create_button(screen,"Core",(self._width/32)+220,self._height/1.1)
 	    self.create_button(screen,"Scores",(self._width/32)+330,self._height/1.1)
-	    self.create_button(screen,"Load",(self._width/32)+220,(screen.get_height()/2)-15)
+	    #self.create_button(screen,"Load",(self._width/32)+220,(screen.get_height()/2)-15)
         else:
             for i in range(len(self._sprites[0])):
                 rect = self._sprites[0][i]

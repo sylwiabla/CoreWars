@@ -81,14 +81,10 @@ class App:
                     self.sign_in()
 		elif titles[index]=='Sign up':
 		    self.sign_up()
-		elif titles[index]=='Load':
+		elif titles[index]=='Start':
 		    filename = self._scenes_line[self._sceneID].get_filename()
 		    self.load_file(filename)
-		elif titles[index]=='Start':
-                    core_size = self._scenes_line[self._sceneID]._core_size_str
-                    if not core_size:
-                        core_size = self._scenes_line[self._sceneID]._core_size
-	            self.start_battle(core_size);
+	            #self.start_battle(core_size);
 		elif titles[index]=='Scores':
 	            self._sceneID+=1;
                     self.load_scene()
@@ -108,8 +104,10 @@ class App:
         if self._reply!=self._old_reply:
             if self._reply.startswith('users:'):
                 self._scenes_line[self._sceneID].save_users(self._display_surf,self._reply[6:])
-            elif self._reply.startswith('compiler:'):
-                self._scenes_line[self._sceneID].display_info(self._display_surf,self._reply[9:])
+            elif self._reply.startswith('error:'):
+                self._scenes_line[self._sceneID].display_info(self._display_surf,'Error ocures, check console')
+            elif self._reply.startswith('compiled:'):
+                self._scenes_line[self._sceneID].display_info(self._display_surf,'Compilation completed!')
             self._old_reply = self._reply
         #pass
 
@@ -135,14 +133,11 @@ class App:
 
 
     def load_file(self,filename):
-        """Send name of warrior program to compiler"""
+        """Send name of warrior to compiler and start program"""
 	self.send(self._socket,'filename:'+filename)
         sql = serverSQL.ServerSQL()
 	cur = sql.connect()
-        if sql.add_warrior(cur,filename,self._userID): #name already in use
-            self._scenes_line[self._sceneID].display_info(self._display_surf,'Username already exist.')
-        else:
-            self._scenes_line[self._sceneID].display_info(self._display_surf,"Loaded file: "+filename)
+        sql.add_warrior(cur,filename,self._userID)
         sql.close_conn(cur)
 
 

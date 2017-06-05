@@ -1,0 +1,26 @@
+equ var 12 uqe
+mov 12.I, $var
+nop
+for var
+dat @var, 24.AB
+jmz #var.X, 9
+nop
+rof
+equ foo
+nop
+slt var, var
+mul 12, 78
+jmp #98.BA
+
+uqe
+
+for 45
+nop
+foo
+foo
+nop
+foo
+
+rof
+nop
+mul 3, 4
