@@ -3,21 +3,21 @@
 #include "redcodeInterpreter/scanner/sourceCodeManager/FilesystemSourceManager.hpp"
 #include "redcodeInterpreter/parser/Parser.hpp"
 
-namespace std
+/*namespace std
 {
     template<typename T, typename... Args>
     std::unique_ptr<T> make_unique(Args&&... args)
     {
         return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
     }
-}
+}*/
 
 int main()
 {
     ErrorLoggerPtr errorLogger = std::make_shared<ErrorLogger> ();
     SymbolTablePtr symbolTableManager = std::make_shared<SymbolTableManager> ();
     ParserPtr parser = std::make_shared<Parser> (errorLogger, std::make_unique<Scanner> (std::make_unique<FilesystemSourceManager>
-                                                                                                 ("/home/sylwia/Documents/Projects/ClionProjects/RedcodeInterpreter/test/test"), errorLogger),
+                                                                                                 ("/home/klis/STUDIA/6sem/ZPR/CoreWars/test/test"), errorLogger),
                                                  symbolTableManager);
     parser->parse();
     ErrorPtr error = errorLogger->getError();

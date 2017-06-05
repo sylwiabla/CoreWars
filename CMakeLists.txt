@@ -1,14 +1,13 @@
 cmake_minimum_required(VERSION 3.5)
 project(RedcodeInterpreter)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -std=c++1y -DCMAKE_CXX_COMPILER=/usr/bin/g++")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -std=c++1y -DCMAKE_CXX_COMPILER=/usr/bin/g++")
 
-find_package(Boost COMPONENTS system filesystem thread REQUIRED)
-
-if(Boost_FOUND)
-    include_directories(${Boost_INCLUDE_DIRS})
-
-endif()
+find_package( PythonLibs 2.7 REQUIRED )
+include_directories( ${PYTHON_INCLUDE_DIRS} )
+ 
+find_package( Boost COMPONENTS system filesystem thread python REQUIRED )
+include_directories( ${Boost_INCLUDE_DIR} )
 
 set(SCANNER src/redcodeInterpreter/scanner/Scanner.hpp
         src/redcodeInterpreter/scanner/Scanner.cpp)
@@ -32,8 +31,19 @@ set(SOURCE_FILES src/main.cpp
 
 add_executable(RedcodeInterpreter ${SOURCE_FILES} ${SOURCE_CODE_MANAGER} ${SOURCE_CODE_MANAGER_EXCEP} ${ERROR_LOGGER} ${SCANNER} ${TOKEN} ${KEYWORD} ${INSTRUCTION} ${IDENTIFIER})
 
+add_library( compiler SHARED src/compiler.cpp ${SOURCE_FILES} ${SOURCE_CODE_MANAGER} ${SOURCE_CODE_MANAGER_EXCEP} ${ERROR_LOGGER} ${SCANNER} ${TOKEN} ${KEYWORD} ${INSTRUCTION} ${IDENTIFIER})
+
+add_library( compiler_ext SHARED compiler_ext.cpp )
+target_link_libraries( compiler ${Boost_LIBRARIES})
+target_link_libraries( compiler_ext ${Boost_LIBRARIES} compiler)
+set_target_properties( compiler_ext PROPERTIES PREFIX "" )
+
 if(Boost_FOUND)
 
     target_link_libraries(RedcodeInterpreter ${Boost_LIBRARIES})
 
 endif()
+
+
+
+
