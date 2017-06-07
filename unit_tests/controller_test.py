@@ -41,12 +41,46 @@ class test_controller(unittest.TestCase):
         self.assertEqual(reply,'Welcome to the server.')
         app.close(socket)
 
-    # nie dziala
-    def test_sing_in(self):
+    def test_sing_in_positive(self):
         app = controller.App()
-        user_id = app.db_auth('zpr','cae2c166cd6f1094ef1609cae3721759')
-        self.assertEqual(user_id, 3)
+        user_id = app.db_auth('bartek','bartek')
+        self.assertEqual(user_id, 6)
 
+    def test_sing_in_wrong_password(self):
+        app = controller.App()
+        user_id = app.db_auth('bartek','barteky')
+        self.assertEqual(user_id, 6)
+
+    def test_sing_in_unknown_username(self):
+        app = controller.App()
+        user_id = app.db_auth('barteky','bartek')
+        self.assertEqual(user_id, 6)
+
+    def test_add_warrior_1_positive(self):
+        app = controller.App()
+        test = app.db_add_warrior('setydrth',6)
+        print test
+        self.assertEqual(test,None)
+
+    def test_add_warrior_2_name_exist(self):
+        app = controller.App()
+        test = app.db_add_warrior('setydrth',6)
+        print test
+        self.assertEqual(test,None)
+
+    def test_remove_warrior_3_positive(self):
+        app = controller.App()
+        test = app.db_remove_warrior('setydrth')
+        print test
+        self.assertEqual(test,1)
+
+    def test_remove_warrior_4_not_exist(self):
+        app = controller.App()
+        test = app.db_remove_warrior('setydrth')
+        print test
+        self.assertEqual(test,1)
+
+        
 
 
 if __name__ == '__main__':

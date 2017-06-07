@@ -8,14 +8,6 @@ import sys
 import thread
 import threading
 
-#TODO:
-#      - rozpoczecie rozgrywki, obsluga przyciskow (start)
-#      - dodatki, bajery, w stylu: status bitwy (jakie info moge dostac od Sylwii?)
-#      - czy ja mam polaczyc dwa programy w jeden?
-#      - eksport klas Sylwii do pythona, wykorzystanie w remote (errorLoger, co jeszcze?)
-#      - testy (czy nalezy testowac baze danych? polaczenie z serwerem? grafike? co powinno byc przetestowane)
-#      - dokumentacja (oxygen)
-
 
 class App:
     def __init__(self):
@@ -94,7 +86,8 @@ class App:
                     self.load_scene()
 		elif titles[index]=='remove':
                     scene = self._scenes_line[self._sceneID]
-                    text = self.db_remove_warrior(scene.get_convict())
+                    self.db_remove_warrior(scene.get_convict())
+                    text = self.db_get_warriors(self._userID)
 	            scene.display_info(self._display_surf,text)
         if event.type == pygame.QUIT:
             self._running = False
@@ -135,10 +128,7 @@ class App:
     def load_file(self,filename):
         """Send name of warrior to compiler and start program"""
 	self.send(self._socket,'filename:'+filename)
-        sql = serverSQL.ServerSQL()
-	cur = sql.connect()
-        sql.add_warrior(cur,filename,self._userID)
-        sql.close_conn(cur)
+        db_add_warrior(filename, self._userID)
 
 
     def sign_in(self):
@@ -206,12 +196,27 @@ class App:
         sql.close_conn(cur)
         return userID
 
+    def db_add_warrior(self, filename, userID):
+        sql = serverSQL.ServerSQL()
+	cur = sql.connect()
+        ID = sql.add_warrior(cur,filename,userID)
+        sql.close_conn(cur)
+        return ID
+        
+
     def db_remove_warrior(self, convict):
         sql = serverSQL.ServerSQL()
         cur = sql.connect()
         warrior_id = sql.get_warrior_id(cur,convict)
-        sql.remove_warrior(cur,warrior_id)
-        rest = sql.get_warriors(cur,self._userID)
+        print 'Warrior:'+str(warrior_id)
+        count = sql.remove_warrior(cur,warrior_id)
+        sql.close_conn(cur)
+        return count
+
+    def db_get_warriors(self, userID):
+        sql = serverSQL.ServerSQL()
+        cur = sql.connect()
+        rest = sql.get_warriors(cur,userID)
         sql.close_conn(cur)
         return rest
 

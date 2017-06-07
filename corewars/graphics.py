@@ -9,9 +9,6 @@ WHITE = (255,255,255)
 
 class Scene:
     __metaclass__=ABCMeta
-   # def __init__(self):
-	#self._boxes = []
-        #self._screen = screen
 
     @abstractmethod
     def on_init(self,screen):
@@ -35,9 +32,9 @@ class Scene:
        self.display_box(screen,rect[0],rect[1],rect[2],rect[3])
 
 
-    def display_label(self,screen,_string,x,y):
+    def display_label(self,screen,_string,x,y,color=BLUE):
         myfont = pygame.font.SysFont("monospace", 20)
-        label = myfont.render(_string, 1, BLUE)
+        label = myfont.render(_string, 1, color)
         screen.blit(label, (x, y))
         return label
 
@@ -79,8 +76,6 @@ class Scene:
 
 class Logger(Scene):
     def __init__(self):
-        #self._screen = screen
-        #self.on_init(screen)
 	self._sprites = [[] for i in range(2)]
         self._temp = []
         self._login = []
@@ -167,7 +162,6 @@ class Logger(Scene):
 class Game(Scene):
     """ Main game scene """
     def __init__(self):
-        #self.on_init(screen)
 	self._sprites = [[] for i in range(2)]
 	self._filename = []
         self._core_size_str = []
@@ -178,6 +172,7 @@ class Game(Scene):
         self._battle_status = "Server, halo?"
         self._boxes = []
         self._highlighted = 0
+        self._info = ""
 
 
     def on_init(self,screen):
@@ -208,6 +203,9 @@ self._width/32,self._height/3)
             self.display_box(screen,146,311, 50, 20)
         self.light_up(screen,self._boxes[self._highlighted])
         self.display_users(screen)
+        self.display_label(screen,self._info,26, 351)
+        self.display_label(screen,self._filename,screen.get_width()/32,(screen.get_height()/2)-10)
+        self.display_label(screen,self._core_size_str,146,311)
 
 
     def add_sign(self,screen,inkey,tab):
@@ -235,10 +233,8 @@ self._width/32,self._height/3)
     def add_sign_to_size(self,screen,inkey,x,y, width,height):
         if inkey == K_BACKSPACE:
             self._core_size_str = self._core_size_str[0:-1]
-            #self.display_box(screen, x, y, width, height)
             screen.fill((0,0,0))
             self.on_init(screen)
-            # + narysowac inne textboxy
         elif inkey >= 48 and inkey <= 57:
             self._core_size_str+=chr(inkey)
         else:
@@ -279,7 +275,10 @@ self._width/32,self._height/3)
 
 
     def display_info(self,screen,message,n=0):
-        self.display_label(screen,message,26, 351)
+        self._info = message
+        screen.fill((0,0,0))
+        self.on_init(screen)
+	
 
 
     def draw_memory(self,screen):
@@ -299,28 +298,10 @@ self._width/32,self._height/3)
 
 
 
-"""How to access previous/next element while for looping?
-
-def neighborhood(iterable):
-    iterator = iter(iterable)
-    prev_item = None
-    current_item = next(iterator)  # throws StopIteration if empty.
-    for next_item in iterator:
-        yield (prev_item, current_item, next_item)
-        prev_item = current_item
-        current_item = next_item
-    yield (prev_item, current_item, None)
-
-Usage:
-
-for prev,item,next in neighborhood(l):
-    print prev, item, next"""
-
 
 class Statistics(Scene):
 
 # TODO:
-# usuwanie wojownikow
 # usuniecie konta
 
     def __init__(self):
@@ -337,8 +318,6 @@ class Statistics(Scene):
         self.display_bold_label(screen,'users',300+100,104-30)
         self.display_box(screen,300+100,130-30,250,300)
         self.create_button(screen,'back',547,455)
-        #self.create_button(screen,'+',292,183)
-        #self.create_button(screen,'-',292,221)
         self.display_box(screen,36, 430)
         self.light_up(screen, self._boxes[-1])
         self.create_button(screen,'remove',36,455)

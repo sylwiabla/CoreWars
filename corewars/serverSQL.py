@@ -63,9 +63,6 @@ class ServerSQL:
     def get_table(self,cur,table_name):
         cur.execute("SELECT * FROM "+table_name+";")
         rows = cur.fetchall()
-#	print('Table: '+table_name)
-#        for row in rows:
-#            print(row)
         return rows
 
     def get_warriors(self,cur,user_id):
@@ -108,7 +105,6 @@ class ServerSQL:
 	if cur.rowcount>0:
 	    return rows[0][0]
 	u_hash = self.count_md5(u_pass)
-        print u_hash
         cur.execute("INSERT INTO users_info (login,password) VALUES (%s,%s)",(u_log,u_hash,))
 
 # maximum number of warriors (???)
@@ -164,6 +160,8 @@ class ServerSQL:
     def remove_warrior(self,cur,warrior_id):
         """Remove warriors info from db"""
 	cur.execute("DELETE FROM warriors WHERE warrior_id = " + str (warrior_id))
+        print cur.rowcount
+        return cur.rowcount
 
 
 

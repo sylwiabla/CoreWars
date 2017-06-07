@@ -4,7 +4,9 @@ import sys
 from thread import *
 sys.path.append('./build')
 import compiler_ext
- 
+
+
+
 HOST = ''   #localhost
 PORT = 4000 
 LIMIT = 2
@@ -26,8 +28,7 @@ print 'Socket bind complete'
 #Start listening on socket
 s.listen(2)
 print 'Socket now listening'
- 
-#error = compiler_ext.compile('./sylw/test/test')
+
 
 def clientthread(conn):
     """Handling connections"""
