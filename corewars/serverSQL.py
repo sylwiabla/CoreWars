@@ -91,9 +91,9 @@ class ServerSQL:
         return rows
 
 
-    def find_warrior(self,cur,warrior_name):
+    def find_warrior(self,cur,warrior_name, user_id):
         """Get warrior ID based on its name"""
-        cur.execute("SELECT warrior_id FROM warriors WHERE warrior_name LIKE (%s)", (warrior_name,))
+        cur.execute("SELECT warrior_id FROM warriors WHERE warrior_name LIKE (%s) AND user_id=(%s);", (warrior_name,user_id,))
         rows = cur.fetchall()
         return rows
 
@@ -110,7 +110,7 @@ class ServerSQL:
 # maximum number of warriors (???)
     def add_warrior(self,cur,warrior_name,user_id):
         """Add new warrior to db"""
-	rows = self.find_warrior(cur,warrior_name)
+	rows = self.find_warrior(cur,warrior_name, user_id)
 	if cur.rowcount>0:
 	    return rows[0][0]# warrior exist
         else:
@@ -125,8 +125,8 @@ class ServerSQL:
 	    	return rows[0][0]
 	return None
 
-    def get_warrior_id(self,cur,warrior_name):
-        rows = self.find_warrior(cur,warrior_name)
+    def get_warrior_id(self,cur,warrior_name,user_id):
+        rows = self.find_warrior(cur,warrior_name,user_id)
 	if cur.rowcount>0:
 	    return rows[0][0]
 	return None
@@ -171,7 +171,7 @@ if __name__ == '__main__':
     cur = server.connect()
     #server.create_warriors_table(cur)
     #print server.get_table(cur, 'users_info')
-    #server.remove_warrior(cur, 5)
+    #server.remove_user(cur,user_id)
     #server.delete_table(cur,'warriors')
     #print server.get_warrior_id(cur,'zbyszek')
     #print server.get_statistics(cur)

@@ -313,7 +313,7 @@ class Statistics(Scene):
     def on_init(self,screen):
         screen.fill((0,0,0))
         self.display_bold_label(screen,'Statistics',210,20, 30)
-        self.display_bold_label(screen,'My Worriors',28,104-30)
+        self.display_bold_label(screen,'My Warriors',28,104-30)
         self.display_box(screen,28,130-30,250,300)
         self.display_bold_label(screen,'users',300+100,104-30)
         self.display_box(screen,300+100,130-30,250,300)

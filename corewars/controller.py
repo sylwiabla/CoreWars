@@ -2,7 +2,7 @@
 import pygame
 from pygame.locals import *
 import graphics
-import serverSQL
+#import serverSQL
 import socket
 import sys
 import thread
@@ -86,23 +86,67 @@ class App:
                     self.load_scene()
 		elif titles[index]=='remove':
                     scene = self._scenes_line[self._sceneID]
-                    self.db_remove_warrior(scene.get_convict())
-                    text = self.db_get_warriors(self._userID)
-	            scene.display_info(self._display_surf,text)
+                    self.send(self._socket, 'remove_w:'+scene.get_convict())
         if event.type == pygame.QUIT:
             self._running = False
 
 
     def on_loop(self):
+        #print self._old_reply, self._reply
         if self._reply!=self._old_reply:
+            scene = self._scenes_line[self._sceneID]
+            self._old_reply = self._reply
             if self._reply.startswith('users:'):
                 self._scenes_line[self._sceneID].save_users(self._display_surf,self._reply[6:])
+                print self._reply[6:]
             elif self._reply.startswith('error:'):
                 self._scenes_line[self._sceneID].display_info(self._display_surf,'Error ocures, check console')
             elif self._reply.startswith('compiled:'):
                 self._scenes_line[self._sceneID].display_info(self._display_surf,'Compilation completed!')
-            self._old_reply = self._reply
-        #pass
+            elif self._reply.startswith('show:'):
+                text = self._reply[5:].split('], [')
+                worriors = text[0]
+                w_out = []
+                if len(worriors)>2:
+                    w2 = worriors[3:-1].split('), (')
+                    for w in w2:
+                        buf = w.split(',')
+                        nazwa = buf[0]
+                        wynik = buf[1]
+                        w_out.append([nazwa[1:-1],wynik[1:]])
+                users = text[1]
+                u2 = users[1:-3].split('), (')
+                u_out = []
+                for u in u2:
+                    buf = u.split(',')
+                    nazwa = buf[0]
+                    wynik = buf[1]
+                    u_out.append([nazwa[1:-1],wynik[1:]])
+                scene.display_info(self._display_surf,w_out)
+	        scene.display_info(self._display_surf,u_out,1)
+            elif self._reply.startswith('auth:'):
+                userID = self._reply[5:]
+	        if userID!='None': # if username and password is correct
+	            self._sceneID+=1;
+                    self.send(self._socket,'get:')
+	        else: # display error
+	            self._scenes_line[self._sceneID].display_info    (self._display_surf,"Incorrect login or password.")
+                self.load_scene()
+                self._userID = userID
+                self._tab_counter= not self._tab_counter
+            elif self._reply.startswith('add_usr:'):
+                userID = self._reply[8:]
+                print userID
+                if userID!='None': #name already in use
+                    self._scenes_line[self._sceneID].display_info(self._display_surf,'Username already exist.')
+                else:
+	            self._scenes_line[self._sceneID].display_info(self._display_surf,'Account created. Please, sing in.')
+	        self._scenes_line[self._sceneID].on_init(self._display_surf)
+                self._tab_counter= not self._tab_counter
+            elif self._reply.startswith('remove_w'):
+                #self.
+                text = self._reply[9:]#self.
+	        scene.display_info(self._display_surf,text)
 
 
     def on_render(self):
@@ -128,7 +172,7 @@ class App:
     def load_file(self,filename):
         """Send name of warrior to compiler and start program"""
 	self.send(self._socket,'filename:'+filename)
-        db_add_warrior(filename, self._userID)
+        
 
 
     def sign_in(self):
@@ -137,15 +181,7 @@ class App:
 	psw = self._scenes_line[self._sceneID].get_password()
         if not usr or not psw:
             return
-        userID = self.db_auth(usr,psw)
-	if userID: # if username and password is correct
-	    self._sceneID+=1;
-            self.send(self._socket,usr)
-	else: # display error
-	    self._scenes_line[self._sceneID].display_info(self._display_surf,"Incorrect login or password.")
-        self.load_scene()
-        self._userID = userID
-        self._tab_counter= not self._tab_counter
+        self.send(self._socket,'auth:'+str(usr)+','+str(psw))
 
 
     def sign_up(self):
@@ -154,12 +190,8 @@ class App:
 	psw = self._scenes_line[self._sceneID].get_password()
         if not usr or not psw:
             return
-        if self.db_add_usr(usr,psw): #name already in use
-            self._scenes_line[self._sceneID].display_info(self._display_surf,'Username already exist.')
-        else:
-	    self._scenes_line[self._sceneID].display_info(self._display_surf,'Account created. Please, sing in.')
-	self._scenes_line[self._sceneID].on_init(self._display_surf)
-        self._tab_counter= not self._tab_counter
+        self.send(self._socket, 'add_usr:'+str(usr)+','+str(psw))
+
 
 
     def start_battle(self, core_size):
@@ -169,56 +201,15 @@ class App:
 
     def show_statistics(self, userID):
         """ Show scores in statistics scene """
-        scene = self._scenes_line[self._sceneID]
+        self.send(self._socket, 'show:'+userID)
+        """scene = self._scenes_line[self._sceneID]
     	sql = serverSQL.ServerSQL()
 	cur = sql.connect()
         text = sql.get_warriors(cur,userID)
 	scene.display_info(self._display_surf,text)
         text = sql.get_statistics(cur)
 	scene.display_info(self._display_surf,text,1)
-        sql.close_conn(cur)
-
-
-
-    def db_auth(self,login,password):
-        """ Authentication in database """
-    	sql = serverSQL.ServerSQL()
-	cur = sql.connect()
-	userID = sql.get_user_id(cur,login,password)
-        sql.close_conn(cur)
-        return userID
-
-    def db_add_usr(self,login,password):
-        """ Save new user in database """
-    	sql = serverSQL.ServerSQL()
-	cur = sql.connect()
-        userID = sql.add_user(cur,login,password)
-        sql.close_conn(cur)
-        return userID
-
-    def db_add_warrior(self, filename, userID):
-        sql = serverSQL.ServerSQL()
-	cur = sql.connect()
-        ID = sql.add_warrior(cur,filename,userID)
-        sql.close_conn(cur)
-        return ID
-        
-
-    def db_remove_warrior(self, convict):
-        sql = serverSQL.ServerSQL()
-        cur = sql.connect()
-        warrior_id = sql.get_warrior_id(cur,convict)
-        print 'Warrior:'+str(warrior_id)
-        count = sql.remove_warrior(cur,warrior_id)
-        sql.close_conn(cur)
-        return count
-
-    def db_get_warriors(self, userID):
-        sql = serverSQL.ServerSQL()
-        cur = sql.connect()
-        rest = sql.get_warriors(cur,userID)
-        sql.close_conn(cur)
-        return rest
+        sql.close_conn(cur)"""
 
 
     def create_socket(self):
