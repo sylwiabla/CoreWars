@@ -45,6 +45,7 @@ class Scene:
         return label
 
     def create_button(self,screen,text,x,y):
+        """ Display button and add to sprites list """
         rect = self.display_button(screen,text,x,y)
         self._sprites[0].append(rect)
         self._sprites[1].append(str(text))
@@ -60,6 +61,7 @@ class Scene:
             
 
     def light_up(self,screen, rect):
+        """ Highlight active textbox """
         index = self._boxes.index(rect)
         rest = abs(index-1)
         self.light_off(screen,self._boxes[rest])

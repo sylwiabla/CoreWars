@@ -2,4 +2,5 @@ import controller
 
 def main():
     """Entry point for the application script"""
-print("Call your main application code here")
+    theApp = controller.App()
+    theApp.on_execute()

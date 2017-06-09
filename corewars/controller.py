@@ -62,11 +62,11 @@ class App:
             #print chr(event.key)
 	elif event.type == MOUSEBUTTONDOWN:
 	    pos = pygame.mouse.get_pos()
-            print pos
+            #print pos
 	    sprites = self._scenes_line[self._sceneID]._sprites[0]
 	    titles = self._scenes_line[self._sceneID]._sprites[1]
 	    clicked_sprites = [s for s in sprites if s.collidepoint(pos)]
-	    print clicked_sprites
+	    #print clicked_sprites
 	    if clicked_sprites:
                 index = sprites.index(clicked_sprites[0])
                 if titles[index]=='Sign in':
@@ -98,7 +98,7 @@ class App:
             self._old_reply = self._reply
             if self._reply.startswith('users:'):
                 self._scenes_line[self._sceneID].save_users(self._display_surf,self._reply[6:])
-                print self._reply[6:]
+                #print self._reply[6:]
             elif self._reply.startswith('error:'):
                 self._scenes_line[self._sceneID].display_info(self._display_surf,'Error ocures, check console')
             elif self._reply.startswith('compiled:'):
@@ -136,7 +136,7 @@ class App:
                 self._tab_counter= not self._tab_counter
             elif self._reply.startswith('add_usr:'):
                 userID = self._reply[8:]
-                print userID
+                #print userID
                 if userID!='None': #name already in use
                     self._scenes_line[self._sceneID].display_info(self._display_surf,'Username already exist.')
                 else:
@@ -247,7 +247,7 @@ class App:
     def recive_data(self,s):
 	"""Receive data from server"""
 	self._reply = s.recv(4096)
-	print self._reply
+	#print self._reply
 	return self._reply
 
     def close(self,s):

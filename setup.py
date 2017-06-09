@@ -10,7 +10,6 @@ from setuptools.command.test import test as TestCommand
 
 from codecs import open
 from os import path, chdir, pardir
-#from py2exe import *
 
 here = path.abspath(path.dirname(__file__))
 
@@ -35,12 +34,12 @@ setup(
     #ext_modules = [Extension('foo', ['foo.c'])],
     #package_dir = {'corewars': 'corewars'},
     #package_data = {'corewars': ['data/*.dat']},
-    install_requires = ['pygame',
-                        'python-setuptools',
-                        'python-pygame',
-                        'python-psycopg2',
-                        'python-configparser'],
-    test_suite = 'unit_tests'
+#    install_requires = ['pygame',
+#                        'python-setuptools',
+#                        'python-pygame',
+#                        'python-psycopg2',
+#                        'python-configparser'],
+    test_suite = 'unit_tests',
     # https://packaging.python.org/en/latest/requirements.html
 
     # If there are data files included in your packages that need to be
@@ -49,13 +48,14 @@ setup(
 #    package_data={
 #        'corewars': ['package_data.dat'],
 #    },
-
+    data_files=[('fonts', ['corewars/fonts/starjedi/Starjedi.ttf','corewars/fonts/starjedi/Starjhol.ttf'])],
     # To provide executable scripts, use entry points in preference to the
     # "scripts" keyword. Entry points provide cross-platform support and allow
     # pip to create the appropriate form of executable for the target platform.
 #    entry_points={
 #        'console_scripts': [
-#            'corewars=corewars:main',
+#            'corewars=corewars:controller',
 #        ],
 #    },
+    entry_points = {'console_scripts': ['corewars = corewars:main',],},
 )
