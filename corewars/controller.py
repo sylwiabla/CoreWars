@@ -2,7 +2,6 @@
 import pygame
 from pygame.locals import *
 import graphics
-#import serverSQL
 import socket
 import sys
 import thread
@@ -73,7 +72,7 @@ class App:
                     self.sign_in()
 		elif titles[index]=='Sign up':
 		    self.sign_up()
-		elif titles[index]=='Start':
+		elif titles[index]=='Compile':
 		    filename = self._scenes_line[self._sceneID].get_filename()
 		    self.load_file(filename)
 	            #self.start_battle(core_size);
@@ -92,7 +91,7 @@ class App:
 
 
     def on_loop(self):
-        #print self._old_reply, self._reply
+        """Respond to server reply"""
         if self._reply!=self._old_reply:
             scene = self._scenes_line[self._sceneID]
             self._old_reply = self._reply
@@ -150,9 +149,11 @@ class App:
 
 
     def on_render(self):
+        """Update screen"""
         pygame.display.flip()
 
     def on_cleanup(self):
+        """Close connection with server and quit pygame"""
         if self._connected:
 	    self.close(self._socket)
         pygame.quit()
@@ -194,22 +195,14 @@ class App:
 
 
 
-    def start_battle(self, core_size):
-        """..."""
-        self.send(self._socket,'start:'+str(core_size))
+#    def start_battle(self, core_size):
+#        """Send request to compile """
+#        self.send(self._socket,'start:'+str(core_size))
 
 
     def show_statistics(self, userID):
         """ Show scores in statistics scene """
         self.send(self._socket, 'show:'+userID)
-        """scene = self._scenes_line[self._sceneID]
-    	sql = serverSQL.ServerSQL()
-	cur = sql.connect()
-        text = sql.get_warriors(cur,userID)
-	scene.display_info(self._display_surf,text)
-        text = sql.get_statistics(cur)
-	scene.display_info(self._display_surf,text,1)
-        sql.close_conn(cur)"""
 
 
     def create_socket(self):

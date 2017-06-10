@@ -107,7 +107,7 @@ class ServerSQL:
 	u_hash = self.count_md5(u_pass)
         cur.execute("INSERT INTO users_info (login,password) VALUES (%s,%s)",(u_log,u_hash,))
 
-# maximum number of warriors (???)
+
     def add_warrior(self,cur,warrior_name,user_id):
         """Add new warrior to db"""
 	rows = self.find_warrior(cur,warrior_name, user_id)

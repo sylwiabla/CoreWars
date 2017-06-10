@@ -1,4 +1,5 @@
 import psycopg2
+import sys
 import testing.postgresql
 #from nose.tools import eq_
 sys.path.append('../corewars')
@@ -44,8 +45,8 @@ def test_add_user():
 
     # Ensure the database is in a known state before calling the function we're
     # testing
-    with db_con.cursor() as cur:
-        cur.execute(slurp('./tests/fixtures/state_empty.sql'))
+#    with db_con.cursor() as cur:
+#        cur.execute(slurp('./tests/fixtures/state_empty.sql'))
 
     # Attempt to insert user
     server.add_user(cur,'zbyszek','zbyszek')

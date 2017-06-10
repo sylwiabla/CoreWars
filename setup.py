@@ -7,7 +7,7 @@ https://github.com/pypa/sampleproject
 
 from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
-
+#from distgradle import GradleDistibution
 from codecs import open
 from os import path, chdir, pardir
 
@@ -24,7 +24,7 @@ setup(
     name = 'corewars',
     version = '0.1dev0',
     description = 'CoreWars game project',
-    long_description = long_description, #open('README.txt').read(),
+    long_description = long_description,
     url = 'https://github.com/sylwiabla/CoreWars',
     author = 'Kamila Lis',
     author_email = 'klis@mion.elka.pw.edu.pl',
@@ -33,14 +33,13 @@ setup(
     packages = find_packages(),
     #ext_modules = [Extension('foo', ['foo.c'])],
     #package_dir = {'corewars': 'corewars'},
-    #package_data = {'corewars': ['data/*.dat']},
+    package_data = {'corewars': ['fonts/*.ttf']},
 #    install_requires = ['pygame',
 #                        'python-setuptools',
 #                        'python-pygame',
 #                        'python-psycopg2',
 #                        'python-configparser'],
     test_suite = 'unit_tests',
-    # https://packaging.python.org/en/latest/requirements.html
 
     # If there are data files included in your packages that need to be
     # installed, specify them here.  If using Python 2.6 or less, then these
@@ -48,7 +47,7 @@ setup(
 #    package_data={
 #        'corewars': ['package_data.dat'],
 #    },
-    data_files=[('fonts', ['corewars/fonts/starjedi/Starjedi.ttf','corewars/fonts/starjedi/Starjhol.ttf'])],
+    #data_files=[('corewars/fonts', ['corewars/fonts/starjedi/Starjedi.ttf','corewars/fonts/starjedi/Starjhol.ttf'])],
     # To provide executable scripts, use entry points in preference to the
     # "scripts" keyword. Entry points provide cross-platform support and allow
     # pip to create the appropriate form of executable for the target platform.

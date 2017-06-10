@@ -14,8 +14,9 @@ To start remote server type
 	./remote.py
 
 ## Requirements
-*pygame,
-*python-setuptools,
-*python-pygame,
-*python-psycopg2,
-*python-configparser
+
+*	pygame
+*	python-setuptools
+*	python-pygame
+*	python-psycopg2
+*	python-configparser

@@ -1,7 +1,12 @@
 #!/usr/bin/python
+import pkg_resources
+import sys
 import pygame, string
 from pygame.locals import *
 from abc import *#ABCMeta, abstract method
+
+my_font = pkg_resources.resource_filename(__name__, 'fonts/Starjhol.ttf')
+my_font2 = pkg_resources.resource_filename(__name__, 'fonts/Starjedi.ttf')
 
 #BLUE = (128,0,255)
 BLUE = (133,139,222)
@@ -39,7 +44,7 @@ class Scene:
         return label
 
     def display_bold_label(self,screen, text,x,y,size=20):
-	font = pygame.font.Font("fonts/starjedi/Starjedi.ttf", size)
+	font = pygame.font.Font(my_font2, size)
         label = font.render(text, 1, BLUE)
         screen.blit(label, (x, y))
         return label
@@ -54,7 +59,7 @@ class Scene:
     def display_button(self,screen,text,x,y):
 	rect = pygame.Rect(x,y,100,30)
 	pygame.draw.rect(screen, BLUE, rect, 0)
-        font = pygame.font.Font("fonts/starjedi/Starjedi.ttf", 16)
+        font = pygame.font.Font(my_font2, 16)
         label = font.render(text, 1, (0,0,0))
         screen.blit(label, (x+10, y+2))
         return rect
@@ -86,7 +91,7 @@ class Logger(Scene):
         self._highlighted = 0
 
     def on_init(self,screen):
-	font = pygame.font.Font("fonts/starjedi/Starjhol.ttf", 46)
+	font = pygame.font.Font(my_font, 46)
         label = font.render("Core Wars", 1, BLUE)
         screen.blit(label,
        ((screen.get_width()/4)-20,screen.get_height()/6))
@@ -184,8 +189,8 @@ class Game(Scene):
         self.display_bold_label(screen,'Battle',
 self._width/32,self._height/3)
         if len(self._sprites[0])==0:
-	    self.create_button(screen,"Start",21,454)
-	    self.create_button(screen,"Stop",(self._width/32)+110,self._height/1.1)
+	    self.create_button(screen,"Compile",21,454)
+	    self.create_button(screen,"Run",(self._width/32)+110,self._height/1.1)
 	    self.create_button(screen,"Core",(self._width/32)+220,self._height/1.1)
 	    self.create_button(screen,"Scores",(self._width/32)+330,self._height/1.1)
 	    #self.create_button(screen,"Load",(self._width/32)+220,(screen.get_height()/2)-15)

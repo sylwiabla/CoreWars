@@ -30,6 +30,15 @@ print 'Socket bind complete'
 s.listen(2)
 print 'Socket now listening'
 
+#create table in database
+db = serverSQL.ServerSQL()
+cur = db.connect()
+try:
+    db.get_table(cur,'users_info')
+except Exception, e:
+    db.create_table(cur)
+    db.create_warriors_table(cur)
+db.close_conn(cur)
 
 
 def db_auth(login,password):
@@ -93,6 +102,7 @@ def clientthread(conn):
                 index = clients_conn.index(conn)
                 clients_name.remove(clients_name[index])
             clients_conn.remove(conn)
+            print 'Disconnected'
         if data.startswith('show:'):
             reply = 'show:'+str(db_get_statistics(data[5:]))
         if data.startswith('auth:'):
