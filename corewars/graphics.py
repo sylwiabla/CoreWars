@@ -289,7 +289,6 @@ self._width/32,self._height/3)
 
 
     def draw_memory(self,screen):
-        """Draw current core status"""
 	rows = 15 #int((self._width/20)-5)
 	columns = int(self._core_size/rows) #int(self._core_size/columns)
         width = 670/columns
@@ -302,6 +301,20 @@ self._width/32,self._height/3)
     def draw_cell(self,screen,color,fill,x,y,width=20,height=10):
 	pygame.draw.rect(screen, color,
         (x,y,width,height),fill)
+
+    def fill_memory_cell(self,screen,memory_list):
+        """Draw current core status"""
+        x=0
+        y=0
+        columns = int(self._core_size/rows)
+        for i in memory_list:
+            if x==columns:
+                y=y+1
+                x=0
+            else:
+                x=x+1
+            if i==0:
+                self.draw_cell(screen, WHITE,0,x,y)
 
 
 

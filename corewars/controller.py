@@ -75,7 +75,8 @@ class App:
 		elif titles[index]=='Compile':
 		    filename = self._scenes_line[self._sceneID].get_filename()
 		    self.load_file(filename)
-	            #self.start_battle(core_size);
+		elif titles[index]=='Run':
+	            self.run_program()
 		elif titles[index]=='Scores':
 	            self._sceneID+=1;
                     self.load_scene()
@@ -128,14 +129,13 @@ class App:
 	        if userID!='None': # if username and password is correct
 	            self._sceneID+=1;
                     self.send(self._socket,'get:')
-	        else: # display error
+	        else: 
 	            self._scenes_line[self._sceneID].display_info    (self._display_surf,"Incorrect login or password.")
                 self.load_scene()
                 self._userID = userID
                 self._tab_counter= not self._tab_counter
             elif self._reply.startswith('add_usr:'):
                 userID = self._reply[8:]
-                #print userID
                 if userID!='None': #name already in use
                     self._scenes_line[self._sceneID].display_info(self._display_surf,'Username already exist.')
                 else:
@@ -143,9 +143,12 @@ class App:
 	        self._scenes_line[self._sceneID].on_init(self._display_surf)
                 self._tab_counter= not self._tab_counter
             elif self._reply.startswith('remove_w'):
-                #self.
-                text = self._reply[9:]#self.
+                text = self._reply[9:]
 	        scene.display_info(self._display_surf,text)
+            elif self._reply.startswith('run:'):
+                text = self._reply[6:-2]
+                core = text.split(',')
+                scene.fill_memory_cell(self._display_surf,core)
 
 
     def on_render(self):
@@ -174,6 +177,9 @@ class App:
         """Send name of warrior to compiler and start program"""
 	self.send(self._socket,'filename:'+filename)
         
+    def run_program(self):
+        """Start battle"""
+        self.send(self._socket,'run')
 
 
     def sign_in(self):

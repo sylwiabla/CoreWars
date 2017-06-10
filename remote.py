@@ -130,6 +130,10 @@ def clientthread(conn):
                 reply = 'error:'+error
             else:
                 reply = 'compiled:'
+        if data.startswith('run'):
+            pass
+            # send core final state
+            # reply = 'run:'+ ...
         #reply = data #soon: compitation errors
         if data.startswith('get:'):
             for c in clients_conn:
