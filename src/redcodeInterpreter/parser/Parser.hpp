@@ -37,10 +37,11 @@ STS -> FOR S
 #include <list>
 #include <unordered_map>
 #include <stack>
+#include <boost/lexical_cast.hpp>
 #include "../errorLogger/ErrorLogger.hpp"
 #include "../scanner/Scanner.hpp"
-#include "instruction/SingleInstruction.hpp"
-#include "instruction/CompositeInstruction.hpp"
+#include "../instruction/SingleInstruction.hpp"
+#include "../instruction/CompositeInstruction.hpp"
 #include "../symbolTableManager/SymbolTableManager.hpp"
 #include "../symbolTableManager/identifier/Label.hpp"
 

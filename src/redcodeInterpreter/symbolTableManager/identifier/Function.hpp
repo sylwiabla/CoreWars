@@ -6,7 +6,7 @@
 #define REDCODEINTERPRETER_FUNCTION_HPP
 
 #include "Identifier.hpp"
-#include "../../parser/instruction/CompositeInstruction.hpp"
+#include "../../instruction/CompositeInstruction.hpp"
 
 class Function : public Identifier
 {

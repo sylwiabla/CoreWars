@@ -18,6 +18,9 @@ public:
     CompositeInstruction (Token::TokenType type) : Instruction(type), counter_(1)
     {}
 
+    CompositeInstruction (Token::TokenType type, long counter) : Instruction(type), counter_(counter)
+    {}
+
     virtual ~CompositeInstruction ()
     {}
 
@@ -42,7 +45,7 @@ public:
     virtual void insertNumeric (long value)
     {
         if (body_.empty())
-            counter_ = value;
+            setCounter(value);
         else
             body_.back()->insertNumeric(value);
     }
@@ -55,6 +58,25 @@ public:
     const std::list<InstructionPtr> & getBody () const
     {
         return body_;
+    }
+
+    virtual void getInstructions (std::vector<InstructionPtr> & result)
+    {
+        for (int i = counter_; i > 0; --i)
+        {
+            for (InstructionPtr instruction : body_)
+                instruction->getInstructions(result);
+        }
+    }
+
+    long getCounter () const
+    {
+        return counter_;
+    }
+
+    void setCounter (long counter)
+    {
+        counter_ = counter;
     }
 
 private:

@@ -303,7 +303,7 @@ void Parser::acceptNumeric (std::string value)
 {
     try
     {
-        long numValue = std::stol(value);
+        long numValue = boost::lexical_cast<long> (value);
         if (nestedInstructions_.empty())
             code_.back()->insertNumeric(numValue);
         else

@@ -7,6 +7,14 @@
 
 #include "Instruction.hpp"
 
+class TwoArgsInstruction;
+class OneArgsInstruction;
+class ZeroArgsInstruction;
+
+typedef std::shared_ptr<TwoArgsInstruction> TwoArgsInstrPtr;
+typedef std::shared_ptr<OneArgsInstruction> OneArgsInstrPtr;
+typedef std::shared_ptr<ZeroArgsInstruction> ZeroArgsInstrPtr;
+
 typedef std::tuple<Token::TokenType, long, Token::TokenType> Operand;
 
 class ZeroArgsInstruction : public Instruction
@@ -19,6 +27,11 @@ public:
     virtual void insertNumeric (long value) {}
     virtual void insertModifier (Token::TokenType modifier) {}
     virtual void insertInstruction (const InstructionPtr & instruction) {}
+
+    virtual void getInstructions (std::vector<InstructionPtr> & result)
+    {
+        result.push_back(std::make_shared<ZeroArgsInstruction>(*this));
+    }
 
 };
 
@@ -47,6 +60,11 @@ public:
     }
 
     virtual void insertInstruction (const InstructionPtr & instruction) {};
+
+    virtual void getInstructions (std::vector<InstructionPtr> & result)
+    {
+        result.push_back(std::make_shared<OneArgsInstruction> (*this));
+    }
 
 private:
     Operand aArg;
@@ -89,15 +107,16 @@ public:
 
     virtual void insertInstruction (const InstructionPtr & instruction) {};
 
+    virtual void getInstructions (std::vector<InstructionPtr> & result)
+    {
+        result.push_back(std::make_shared<TwoArgsInstruction> (*this));
+    }
+
 private:
     Operand aArg;
     Operand bArg;
 
     bool canModifiers_;
 };
-
-typedef std::shared_ptr<TwoArgsInstruction> TwoArgsInstrPtr;
-typedef std::shared_ptr<OneArgsInstruction> OneArgsInstrPtr;
-typedef std::shared_ptr<ZeroArgsInstruction> ZeroArgsInstrPtr;
 
 #endif //REDCODEINTERPRETER_SINGLEINSTRUCTION_HPP

@@ -2,6 +2,7 @@
 #include "redcodeInterpreter/scanner/Scanner.hpp"
 #include "redcodeInterpreter/scanner/sourceCodeManager/FilesystemSourceManager.hpp"
 #include "redcodeInterpreter/parser/Parser.hpp"
+#include "redcodeInterpreter/emulator/Emulator.hpp"
 
 namespace std
 {
@@ -21,13 +22,18 @@ int main()
                                                  symbolTableManager);
     parser->parse();
     ErrorPtr error = errorLogger->getError();
-    while (error)
+    if (error)
     {
-        std::cout << "Line: " << std::get<0> (*error) << "* " << std::get<1> (*error) << std::endl;
-        error = errorLogger->getError();
+        while (error)
+        {
+            std::cout << "Line: " << std::get<0> (*error) << "* " << std::get<1> (*error) << std::endl;
+            error = errorLogger->getError();
+        }
+        return -1;
     }
 
+    Emulator * emulator = new Emulator(2400);
 
-
+    delete(emulator);
     return 0;
 }

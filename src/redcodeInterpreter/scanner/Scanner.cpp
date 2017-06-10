@@ -54,7 +54,7 @@ void Scanner::omitWhiteSpace()
 
 TokenPtr Scanner::createToken (char first)
 {
-    if (isdigit(first))
+    if (isdigit(first) || (first == '-'))
         return createNumeric(first);
 
     if (isalpha(first))

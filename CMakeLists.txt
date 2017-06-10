@@ -3,7 +3,7 @@ project(RedcodeInterpreter)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -std=c++1y -DCMAKE_CXX_COMPILER=/usr/bin/g++")
 
-find_package(Boost COMPONENTS system filesystem thread REQUIRED)
+find_package(Boost COMPONENTS system filesystem thread unit_test_framework REQUIRED)
 
 if(Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIRS})
@@ -19,7 +19,7 @@ set(SOURCE_CODE_MANAGER_EXCEP src/redcodeInterpreter/scanner/sourceCodeManager/e
 set(ERROR_LOGGER src/redcodeInterpreter/errorLogger/ErrorLogger.hpp
         src/redcodeInterpreter/errorLogger/ErrorLogger.cpp)
 set(TOKEN src/redcodeInterpreter/scanner/token/Token.hpp)
-set(INSTRUCTION src/redcodeInterpreter/parser/instruction/Instruction.hpp)
+set(INSTRUCTION src/redcodeInterpreter/instruction/Instruction.hpp)
 set(IDENTIFIER src/redcodeInterpreter/symbolTableManager/identifier/Label.hpp
         src/redcodeInterpreter/symbolTableManager/identifier/Identifier.hpp
         src/redcodeInterpreter/symbolTableManager/SymbolTableManager.hpp
@@ -27,10 +27,16 @@ set(IDENTIFIER src/redcodeInterpreter/symbolTableManager/identifier/Label.hpp
 set(SOURCE_FILES src/main.cpp
         src/redcodeInterpreter/parser/Parser.hpp
         src/redcodeInterpreter/parser/Parser.cpp
-        src/redcodeInterpreter/parser/instruction/CompositeInstruction.hpp
-        src/redcodeInterpreter/parser/instruction/SingleInstruction.hpp src/redcodeInterpreter/parser/instruction/CompositeInstruction.cpp)
+        src/redcodeInterpreter/instruction/CompositeInstruction.hpp
+        src/redcodeInterpreter/instruction/SingleInstruction.hpp
+        src/redcodeInterpreter/instruction/CompositeInstruction.cpp)
+set(EMULATOR src/redcodeInterpreter/emulator/Emulator.hpp
+        src/redcodeInterpreter/emulator/Emulator.cpp
+        src/redcodeInterpreter/emulator/exceptions/OutOfMemory.hpp
+        src/redcodeInterpreter/emulator/Warrior.hpp)
 
-add_executable(RedcodeInterpreter ${SOURCE_FILES} ${SOURCE_CODE_MANAGER} ${SOURCE_CODE_MANAGER_EXCEP} ${ERROR_LOGGER} ${SCANNER} ${TOKEN} ${KEYWORD} ${INSTRUCTION} ${IDENTIFIER})
+add_executable(RedcodeInterpreter ${SOURCE_FILES} ${SOURCE_CODE_MANAGER} ${SOURCE_CODE_MANAGER_EXCEP} ${ERROR_LOGGER} ${SCANNER} ${TOKEN}
+        ${KEYWORD} ${INSTRUCTION} ${IDENTIFIER} ${EMULATOR})
 
 if(Boost_FOUND)
 

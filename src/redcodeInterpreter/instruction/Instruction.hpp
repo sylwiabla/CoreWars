@@ -6,8 +6,8 @@
 #define REDCODEINTERPRETER_INSTRUCTION_HPP
 
 #include <memory>
-#include "../../scanner/token/Token.hpp"
-#include "../../symbolTableManager/identifier/Identifier.hpp"
+#include "../scanner/token/Token.hpp"
+#include "../symbolTableManager/identifier/Identifier.hpp"
 
 class Instruction;
 typedef std::shared_ptr<Instruction> InstructionPtr;
@@ -25,6 +25,7 @@ public:
     virtual void insertAddrMode (Token::TokenType addrMode) = 0;
     virtual void insertNumeric (long value) = 0;
     virtual void insertModifier (Token::TokenType modifier) = 0;
+    virtual void getInstructions (std::vector<InstructionPtr> &) = 0;
 
     inline Token::TokenType getType () const
     {

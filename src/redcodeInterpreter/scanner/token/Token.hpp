@@ -29,6 +29,11 @@ public:
         return type_;
     }
 
+    bool operator==(const Token & other) const
+    {
+        return (type_ == other.getType() && name_ == other.getName());
+    }
+
 private:
     TokenType type_;
     std::string name_;
