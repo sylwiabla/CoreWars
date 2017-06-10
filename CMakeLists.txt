@@ -10,6 +10,8 @@ if(Boost_FOUND)
 
 endif()
 
+add_definitions (-DBOOST_TEST_DYN_LINK)
+
 set(SCANNER src/redcodeInterpreter/scanner/Scanner.hpp
         src/redcodeInterpreter/scanner/Scanner.cpp)
 set(SOURCE_CODE_MANAGER src/redcodeInterpreter/scanner/sourceCodeManager/SourceCodeManager.hpp
@@ -24,8 +26,7 @@ set(IDENTIFIER src/redcodeInterpreter/symbolTableManager/identifier/Label.hpp
         src/redcodeInterpreter/symbolTableManager/identifier/Identifier.hpp
         src/redcodeInterpreter/symbolTableManager/SymbolTableManager.hpp
         src/redcodeInterpreter/symbolTableManager/identifier/Function.hpp)
-set(SOURCE_FILES src/main.cpp
-        src/redcodeInterpreter/parser/Parser.hpp
+set(PARSER src/redcodeInterpreter/parser/Parser.hpp
         src/redcodeInterpreter/parser/Parser.cpp
         src/redcodeInterpreter/instruction/CompositeInstruction.hpp
         src/redcodeInterpreter/instruction/SingleInstruction.hpp
@@ -34,12 +35,22 @@ set(EMULATOR src/redcodeInterpreter/emulator/Emulator.hpp
         src/redcodeInterpreter/emulator/Emulator.cpp
         src/redcodeInterpreter/emulator/exceptions/OutOfMemory.hpp
         src/redcodeInterpreter/emulator/Warrior.hpp)
+set(MAIN src/main.cpp)
 
-add_executable(RedcodeInterpreter ${SOURCE_FILES} ${SOURCE_CODE_MANAGER} ${SOURCE_CODE_MANAGER_EXCEP} ${ERROR_LOGGER} ${SCANNER} ${TOKEN}
+set(TEST_SYMBOL_MANAGER test/redcodeInterpreter/symbolTableManager/SymbolTableManager.cpp
+        test/redcodeInterpreter/scanner/Scanner.cpp)
+
+set(TEST_SOURCE_MANAGER test/redcodeInterpreter/scanner/SourceCodeManager.cpp)
+
+add_executable(RedcodeInterpreter ${PARSER} ${SOURCE_CODE_MANAGER} ${SOURCE_CODE_MANAGER_EXCEP} ${ERROR_LOGGER} ${SCANNER} ${TOKEN}
+        ${KEYWORD} ${INSTRUCTION} ${IDENTIFIER} ${EMULATOR} ${MAIN})
+
+add_executable (corewars_test ${TEST_SOURCE_MANAGER} ${TEST_SYMBOL_MANAGER} ${PARSER} ${SOURCE_CODE_MANAGER} ${SOURCE_CODE_MANAGER_EXCEP} ${ERROR_LOGGER} ${SCANNER} ${TOKEN}
         ${KEYWORD} ${INSTRUCTION} ${IDENTIFIER} ${EMULATOR})
 
 if(Boost_FOUND)
 
     target_link_libraries(RedcodeInterpreter ${Boost_LIBRARIES})
+    target_link_libraries (corewars_test ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
 
 endif()

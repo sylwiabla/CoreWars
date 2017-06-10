@@ -3,7 +3,7 @@ mov 12.I, $var
 nop
 for var
 dat @var, 24.AB
-jmz #var.X, 9
+jmz #var.X, -9
 nop
 rof
 equ foo
