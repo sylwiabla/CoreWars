@@ -20,7 +20,8 @@ int main()
     ParserPtr parser = std::make_shared<Parser> (errorLogger, std::make_unique<Scanner> (std::make_unique<FilesystemSourceManager>
                                                                                                  ("/home/sylwia/Documents/Projects/ClionProjects/RedcodeInterpreter/test/test"), errorLogger),
                                                  symbolTableManager);
-    parser->parse();
+    CodePtr code = parser->parse();
+
     ErrorPtr error = errorLogger->getError();
     if (error)
     {
@@ -29,11 +30,17 @@ int main()
             std::cout << "Line: " << std::get<0> (*error) << "* " << std::get<1> (*error) << std::endl;
             error = errorLogger->getError();
         }
-        return -1;
+        return 0;
     }
 
-    Emulator * emulator = new Emulator(2400);
+    Emulator * emulator = new Emulator(300, 400);
+    emulator->loadWarriors(code, code);
+
+    for (InstructionPtr instruction : *emulator->getCore())
+        std::cout << instruction->getType() << std::endl;
 
     delete(emulator);
+
+
     return 0;
 }

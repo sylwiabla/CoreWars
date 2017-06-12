@@ -24,7 +24,7 @@ void FilesystemSourceManager::openFile ()
 
 char FilesystemSourceManager::getNext ()
 {
-    boost::mutex::scoped_lock scoped_lock(readMutex_);
+    //boost::mutex::scoped_lock scoped_lock(readMutex_);
 
     if (endReached_)
         return EOF;

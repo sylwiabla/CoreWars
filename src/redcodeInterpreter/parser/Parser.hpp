@@ -45,6 +45,9 @@ STS -> FOR S
 #include "../symbolTableManager/SymbolTableManager.hpp"
 #include "../symbolTableManager/identifier/Label.hpp"
 
+typedef std::list<InstructionPtr> Code;
+typedef std::shared_ptr<Code> CodePtr;
+
 class Parser;
 typedef std::shared_ptr<Parser> ParserPtr;
 namespace std
@@ -61,7 +64,7 @@ public:
         stack_.push(symbols_[0]);  // push start symbol - STATS
     }
 
-    void parse ();
+    CodePtr parse ();
 
     enum SymbolType {STATS, STAT, INST, EQU, FOR, label, inst0, inst1, inst2, OP, comma, addMode, OP1, OP_NAME, numeric, MOD, equ, EQU_VAL, STS, uqe, forType, rof, dot, mod, epsilon, end};
 
@@ -173,6 +176,7 @@ private:
     void acceptComposite (Token::TokenType type);
     void acceptLabel (std::string name);
     void acceptUqe ();
+    void acceptRof ();
 };
 
 namespace std

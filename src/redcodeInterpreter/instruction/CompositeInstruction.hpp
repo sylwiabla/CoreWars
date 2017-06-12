@@ -21,36 +21,19 @@ public:
     CompositeInstruction (Token::TokenType type, long counter) : Instruction(type), counter_(counter)
     {}
 
-    virtual ~CompositeInstruction ()
+    ~CompositeInstruction ()
     {}
 
-    virtual void insertInstruction (const InstructionPtr & instruction)
-    {
-        if (body_.empty())
-            body_.push_back(instruction);
-        InstructionPtr last;
-        last = body_.back();
-        auto iter = std::find(composites_.begin(), composites_.end(), last->getType());
-        if (iter != composites_.end())
-            last->insertInstruction(instruction);
-        else
-            body_.push_back(instruction);
-    }
+    void insertInstruction (const InstructionPtr & instruction, const InstructionPtr & nestedInstruction);
 
-    virtual void insertAddrMode (Token::TokenType addrMode)
+    void insertAddrMode (Token::TokenType addrMode)
     {
         body_.back()->insertAddrMode(addrMode);
     }
 
-    virtual void insertNumeric (long value)
-    {
-        if (body_.empty())
-            setCounter(value);
-        else
-            body_.back()->insertNumeric(value);
-    }
+    void insertNumeric (long value);
 
-    virtual void insertModifier (Token::TokenType modifier)
+    void insertModifier (Token::TokenType modifier)
     {
         body_.back()->insertModifier(modifier);
     }
@@ -60,29 +43,39 @@ public:
         return body_;
     }
 
-    virtual void getInstructions (std::vector<InstructionPtr> & result)
-    {
-        for (int i = counter_; i > 0; --i)
-        {
-            for (InstructionPtr instruction : body_)
-                instruction->getInstructions(result);
-        }
-    }
+    long getInstructions (std::vector<InstructionPtr> & result, long start, long size);
+    long getNrInstructions ();
 
-    long getCounter () const
-    {
-        return counter_;
-    }
+    long getCounter () const;
 
     void setCounter (long counter)
     {
         counter_ = counter;
     }
 
+    bool needsNumeric ()
+    {
+        if (body_.empty())
+        {
+            if (getType() == Token::forType)
+                return true;
+        }
+        else
+            return body_.back()->needsNumeric();
+    }
+
+    void setOperand (OperandPtr value, bool aOperand)
+    {}
+
+    OperandPtr getOperand (bool aOperand)
+    {
+        return nullptr;
+    }
+
 private:
-    std::list<InstructionPtr> body_;
     long counter_;
     static const std::list<Token::TokenType> composites_;
+    std::list<InstructionPtr> body_;
 };
 
 #endif //REDCODEINTERPRETER_MULTIINSTRUCTION_HPP
