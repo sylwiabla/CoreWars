@@ -9,6 +9,7 @@ for 4
 nop
 rof
 mul 12, 78
+add 23, var.I
 jmp #98.BA
 uqe
 
