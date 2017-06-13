@@ -213,7 +213,7 @@ private:
     std::unordered_map<Token::TokenType, FunctorPtr, std::EnumClassHash> functors_;
 
 public:
-    Emulator (unsigned long coreSize, int maxInvoked, InstructionPtr instruction);
+    Emulator (unsigned long coreSize, int maxInvoked, InstructionPtr initInstruction);
 
     enum Winner {FIRST, SECOND, NONE, WAITING};
 
@@ -253,7 +253,7 @@ private:
     std::shared_ptr<NopFunctor> nopFunctor;
 
 public:
-    long immedateGetter (long value, long pc);
+    long immediateGetter (long value, long pc);
     long directGetter (long value, long pc);
     long indirectGetter (long value, long pc);
 

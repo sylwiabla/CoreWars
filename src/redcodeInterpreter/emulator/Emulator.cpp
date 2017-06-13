@@ -28,10 +28,10 @@ long Emulator::getAddress (OperandPtr operand, Token::TokenType addrMode)
     else if (addrMode == Token::indirectMode)
         return indirectGetter(value, pc_);
     else if (addrMode == Token::immediateMode)
-        return immedateGetter(value, pc_);
+        return immediateGetter(value, pc_);
 }
 
-long Emulator::immedateGetter (long value, long pc)
+long Emulator::immediateGetter (long value, long pc)
 {
     return  (pc + value) % coreSize_;
 }
@@ -130,23 +130,10 @@ void Emulator::applyModifier (OperandPtr operandA, OperandPtr operandB, Token::T
         iModHandler(aValue, bValue);
 }
 
-Emulator::Emulator (unsigned long coreSize, int maxInvoked, InstructionPtr instruction) : pc_(0), nrInvoked_(0), coreSize_(coreSize), firstCurrent_(true),
-                                                                                            core_(coreSize, instruction) //std::make_shared<TwoArgsInstruction> (TwoArgsInstruction ()))
+Emulator::Emulator (unsigned long coreSize, int maxInvoked, InstructionPtr i) : pc_(0), nrInvoked_(0), coreSize_(coreSize), firstCurrent_(true),
+                                                                                            core_(coreSize, i)//std::make_shared<TwoArgsInstruction> (TwoArgsInstruction ()))
 {
-    //core_ = std::make_shared<Core> (Core ());
     maxInvoked_ = maxInvoked;
-    //core_->reserve(0);
-    //core_ = new std::vector<InstructionPtr>[coreSize];
-
-    // initialize core with dat 0, 0
-    /*for (int i = 0; i < coreSize; ++i)
-    {
-        // Token::end marks no modifier/addressing mode
-        Operand aOperand = std::make_tuple<Token::TokenType, long, Token::TokenType> (Token::end, 0, Token::end);
-        Operand bOperand = std::make_tuple<Token::TokenType, long, Token::TokenType> (Token::end, 0, Token::end);
-        //(*core_)[i] = std::make_shared<TwoArgsInstruction> (TwoArgsInstruction (Token::dat, aOperand, bOperand));
-        core_->push_back (std::make_shared<TwoArgsInstruction> (TwoArgsInstruction (Token::dat, aOperand, bOperand)));
-    }*/
 
     processIdGenerator_ = 0;
     firstWarrior_ = std::make_shared<Warrior> (Warrior ());

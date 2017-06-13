@@ -61,10 +61,14 @@ private:
 
 public:
     OneArgsInstruction (Token::TokenType type) : Instruction(type), canModifiers_(true), operandInitialized_(false)
-    {}
+    {
+        aArg = std::make_shared<Operand> (Operand ());
+    }
 
-    OneArgsInstruction (Token::TokenType type, bool canModifiers) : Instruction(type), canModifiers_(canModifiers), operandInitialized_(false)
-    {}
+    OneArgsInstruction (Token::TokenType type, bool canModifiers) : OneArgsInstruction(type)
+    {
+        canModifiers_ = canModifiers;
+    }
 
     virtual void insertAddrMode (Token::TokenType addrMode)
     {
@@ -136,11 +140,15 @@ public:
 
     TwoArgsInstruction (Token::TokenType type) : Instruction(type), canModifiers_(true), operandsInitialized_(NO),
                                                  modifiersInitialized_(NO), addrModesInitialized_(NO)
-    {}
+    {
+        aArg = std::make_shared<Operand> (Operand ());
+        bArg = std::make_shared<Operand> (Operand ());
+    }
 
-    TwoArgsInstruction (Token::TokenType type, bool canModifiers) : Instruction(type), canModifiers_(canModifiers), operandsInitialized_(NO),
-                                                                    modifiersInitialized_(NO), addrModesInitialized_(NO)
-    {}
+    TwoArgsInstruction (Token::TokenType type, bool canModifiers) : TwoArgsInstruction(type)
+    {
+        canModifiers_ = canModifiers;
+    }
 
     TwoArgsInstruction (Token::TokenType type, const Operand & aOperand, const Operand & bOperand) : Instruction(type), canModifiers_(true)
     {

@@ -1,1 +1,30 @@
+equ var 2 uqe
+mov 12, var
 nop
+
+equ foo
+nop
+slt var, var
+for 4
+nop
+rof
+mul 12, 78
+jmp #98.BA
+uqe
+
+for var
+dat @var, 24.AB
+foo
+jmz #var.X, -9
+nop
+rof
+
+for 4
+nop
+foo
+nop
+rof
+
+nop
+mul 3, 4
+foo

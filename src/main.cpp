@@ -3,6 +3,7 @@
 #include "redcodeInterpreter/scanner/sourceCodeManager/FilesystemSourceManager.hpp"
 #include "redcodeInterpreter/parser/Parser.hpp"
 #include "redcodeInterpreter/emulator/Emulator.hpp"
+#include "redcodeInterpreter/emulator/exceptions/OutOfMemory.hpp"
 
 namespace std
 {
@@ -33,14 +34,21 @@ int main()
         return 0;
     }
 
-    TwoArgsInstrPtr i = std::make_shared<TwoArgsInstruction> (TwoArgsInstruction ());
-    Emulator * emulator = new Emulator((unsigned long) 30, (int) 40, i);
-    emulator->loadWarriors(code, code);
+    try {
+        TwoArgsInstrPtr i = std::make_shared<TwoArgsInstruction> (TwoArgsInstruction ());
+        Emulator * emulator = new Emulator((unsigned long) 300, (int) 40, i);
+        emulator->loadWarriors(code, code);
 
-    for (InstructionPtr instruction : emulator->getCore())
-        std::cout << instruction->getType() << std::endl;
+        emulator->invokeInstruction();
+        for (InstructionPtr instruction : emulator->getCore())
+            std::cout << instruction->getType() << std::endl;
 
-    delete(emulator);
+        delete(emulator);
+    } catch (const OutOfMemory & excep)
+    {
+        return 0;
+    }
+
 
 
     return 0;
