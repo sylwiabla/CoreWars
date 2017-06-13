@@ -18,7 +18,8 @@ const Parser::Derivation Parser::statForRule = {std::make_shared<Symbol> (false,
 const Parser::Derivation Parser::statLabRule = {std::make_shared<Symbol> (true, label)};
 const Parser::Derivation Parser::instInst0Rule = {std::make_shared<Symbol> (true, inst0)};
 const Parser::Derivation Parser::instInst1Rule = {std::make_shared<Symbol> (false, OP), std::make_shared<Symbol> (true, inst1)};
-const Parser::Derivation Parser::instInst2Rule = {std::make_shared<Symbol> (false, OP), std::make_shared<Symbol> (true, comma), std::make_shared<Symbol> (false, OP), std::make_shared<Symbol> (true, inst2)};
+const Parser::Derivation Parser::instInst2Rule = {std::make_shared<Symbol> (false, OP), std::make_shared<Symbol> (true, comma), std::make_shared<Symbol> (false, OP),
+                                                  std::make_shared<Symbol> (true, inst2)};
 const Parser::Derivation Parser::opAddRule = {std::make_shared<Symbol> (false, OP1), std::make_shared<Symbol> (true, addMode)};
 const Parser::Derivation Parser::opOp1Rule = {std::make_shared<Symbol> (false, OP1)};
 const Parser::Derivation Parser::op1Rule = {std::make_shared<Symbol> (false, MOD), std::make_shared<Symbol> (false, OP_NAME)};
@@ -30,7 +31,8 @@ const Parser::Derivation Parser::equVLabRule = {std::make_shared<Symbol> (true, 
 const Parser::Derivation Parser::equVStsRule = {std::make_shared<Symbol> (true, uqe), std::make_shared<Symbol> (false, STS)};
 const Parser::Derivation Parser::stsInstRule = {std::make_shared<Symbol> (false, STATS), std::make_shared<Symbol> (false, INST)};
 const Parser::Derivation Parser::stsForRule = {std::make_shared<Symbol> (false, STATS), std::make_shared<Symbol> (false, FOR)};
-const Parser::Derivation Parser::forRule = {std::make_shared<Symbol> (true, rof), std::make_shared<Symbol> (false, STS), std::make_shared<Symbol> (false, OP_NAME), std::make_shared<Symbol> (true, forType)};
+const Parser::Derivation Parser::forRule = {std::make_shared<Symbol> (true, rof), std::make_shared<Symbol> (false, STS), std::make_shared<Symbol> (false, OP_NAME),
+                                            std::make_shared<Symbol> (true, forType)};
 const Parser::Derivation Parser::modDotRule = {std::make_shared<Symbol> (true, mod), std::make_shared<Symbol> (true, dot)};
 const Parser::Derivation Parser::modEpsRule = {std::make_shared<Symbol> (true, epsilon)};
 
@@ -123,11 +125,8 @@ CodePtr Parser::parse ()
     TokenPtr token = scanner_->getToken();
     SymbolPtr input;
 
-    while (token && !logger_->isFull())
+    while ((token->getType().getTokenType() != Token::end) && !logger_->isFull())
     {
-        while (!token)
-            token = scanner_->getToken();
-
         while (stack_.top()->getType() == epsilon)
             stack_.pop();
 
@@ -327,7 +326,7 @@ void Parser::acceptLabel (std::string name)
         }
         else
         {
-            if (nestedInstructions_.top()->getType() == Token::equ)
+            if (symbolTableManager_->getRecentlyAdded() == "")
                 symbolTableManager_->setRecentlyAdded(name);
             else
                 logger_->logError(std::make_shared<Error> (Error (scanner_->getLineNr(), "Identifier not declared: " + name)));

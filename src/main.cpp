@@ -39,9 +39,11 @@ int main()
         Emulator * emulator = new Emulator((unsigned long) 300, (int) 40, i);
         emulator->loadWarriors(code, code);
 
-        emulator->invokeInstruction();
-        for (InstructionPtr instruction : emulator->getCore())
-            std::cout << instruction->getType() << std::endl;
+        while (emulator->invokeInstruction() == Emulator::WAITING)
+        {
+            for (InstructionPtr instruction : emulator->getCore())
+                std::cout << instruction->getType() << std::endl;
+        }
 
         delete(emulator);
     } catch (const OutOfMemory & excep)

@@ -131,7 +131,7 @@ void Emulator::applyModifier (OperandPtr operandA, OperandPtr operandB, Token::T
 }
 
 Emulator::Emulator (unsigned long coreSize, int maxInvoked, InstructionPtr i) : pc_(0), nrInvoked_(0), coreSize_(coreSize), firstCurrent_(true),
-                                                                                            core_(coreSize, i)//std::make_shared<TwoArgsInstruction> (TwoArgsInstruction ()))
+                                                                                            core_(coreSize, i)
 {
     maxInvoked_ = maxInvoked;
 
@@ -239,6 +239,7 @@ bool Emulator::MovFunctor::operator () (Emulator & e, InstructionPtr i)
     InstructionPtr source = e.getMemoryCell(addresses.first);
     e.setMemoryCell(source, addresses.second);
     e.applyModifiers(i);
+    return true;
 }
 
 bool Emulator::DatFunctor::operator () (Emulator & e, InstructionPtr i)
@@ -253,6 +254,7 @@ bool Emulator::AddFunctor::operator () (Emulator & e, InstructionPtr i)
     auto addresses = e.getAddresses (i);
     e.setMemoryCell((addresses.first + addresses.second) % e.getCoreSize(), e.getPc(), true);
     e.applyModifiers(i);
+    return true;
 }
 
 bool Emulator::SubFunctor::operator () (Emulator & e, InstructionPtr i)
@@ -260,6 +262,7 @@ bool Emulator::SubFunctor::operator () (Emulator & e, InstructionPtr i)
     auto addresses = e.getAddresses (i);
     e.setMemoryCell((addresses.first - addresses.second) % e.getCoreSize(), e.getPc(), true);
     e.applyModifiers(i);
+    return true;
 }
 
 bool Emulator::MulFunctor::operator () (Emulator & e, InstructionPtr i)
@@ -267,6 +270,7 @@ bool Emulator::MulFunctor::operator () (Emulator & e, InstructionPtr i)
     auto addresses = e.getAddresses (i);
     e.setMemoryCell((addresses.first * addresses.second) % e.getCoreSize(), e.getPc(), true);
     e.applyModifiers(i);
+    return true;
 }
 
 bool Emulator::DivFunctor::operator () (Emulator & e, InstructionPtr i)
@@ -274,6 +278,7 @@ bool Emulator::DivFunctor::operator () (Emulator & e, InstructionPtr i)
     auto addresses = e.getAddresses (i);
     e.setMemoryCell((addresses.first / addresses.second) % e.getCoreSize(), e.getPc(), true);
     e.applyModifiers(i);
+    return true;
 }
 
 bool Emulator::ModFunctor::operator () (Emulator & e, InstructionPtr i)
@@ -281,6 +286,7 @@ bool Emulator::ModFunctor::operator () (Emulator & e, InstructionPtr i)
     auto addresses = e.getAddresses (i);
     e.setMemoryCell((addresses.first % addresses.second) % e.getCoreSize(), e.getPc(), true);
     e.applyModifiers(i);
+    return true;
 }
 
 bool Emulator::JmzFunctor::operator () (Emulator & e, InstructionPtr i)
@@ -289,6 +295,7 @@ bool Emulator::JmzFunctor::operator () (Emulator & e, InstructionPtr i)
     if (!addresses.second)
         e.jump(addresses.first);
     e.applyModifiers(i);
+    return true;
 }
 
 bool Emulator::JmnFunctor::operator () (Emulator & e, InstructionPtr i)
@@ -297,6 +304,7 @@ bool Emulator::JmnFunctor::operator () (Emulator & e, InstructionPtr i)
     if (addresses.second)
         e.jump(addresses.first);
     e.applyModifiers(i);
+    return true;
 }
 
 bool Emulator::DjnFunctor::operator () (Emulator & e, InstructionPtr i)
@@ -306,6 +314,7 @@ bool Emulator::DjnFunctor::operator () (Emulator & e, InstructionPtr i)
     if (!(addresses.second - 1))
         e.jump(addresses.first);
     e.applyModifiers(i);
+    return true;
 }
 
 bool Emulator::SplFunctor::operator () (Emulator & e, InstructionPtr i)
@@ -313,6 +322,7 @@ bool Emulator::SplFunctor::operator () (Emulator & e, InstructionPtr i)
     auto addresses = e.getAddresses (i);
     e.createProcess(addresses.first);
     e.applyModifiers(i);
+    return true;
 }
 
 bool Emulator::CmpFunctor::operator () (Emulator & e, InstructionPtr i)
@@ -321,6 +331,7 @@ bool Emulator::CmpFunctor::operator () (Emulator & e, InstructionPtr i)
     if (addresses.first == addresses.second)
         e.jump(e.getPc() + 1);
     e.applyModifiers(i);
+    return true;
 }
 
 bool Emulator::SeqFunctor::operator () (Emulator & e, InstructionPtr i)
@@ -329,6 +340,7 @@ bool Emulator::SeqFunctor::operator () (Emulator & e, InstructionPtr i)
     if (addresses.first == addresses.second)
         e.jump(e.getPc() + 1);
     e.applyModifiers(i);
+    return true;
 }
 
 bool Emulator::SneFunctor::operator () (Emulator & e, InstructionPtr i)
@@ -337,6 +349,7 @@ bool Emulator::SneFunctor::operator () (Emulator & e, InstructionPtr i)
     if (addresses.first != addresses.second)
         e.jump(e.getPc() + 1);
     e.applyModifiers(i);
+    return true;
 }
 
 bool Emulator::SltFunctor::operator () (Emulator & e, InstructionPtr i)
@@ -345,6 +358,7 @@ bool Emulator::SltFunctor::operator () (Emulator & e, InstructionPtr i)
     if (addresses.first < addresses.second)
         e.jump(e.getPc() + 1);
     e.applyModifiers(i);
+    return true;
 }
 
 bool Emulator::JmpFunctor::operator () (Emulator & e, InstructionPtr i)
@@ -352,4 +366,5 @@ bool Emulator::JmpFunctor::operator () (Emulator & e, InstructionPtr i)
     auto addresses = e.getAddresses (i);
     e.jump(addresses.first);
     e.applyModifiers(i);
+    return true;
 }

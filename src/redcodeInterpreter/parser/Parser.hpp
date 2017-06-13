@@ -58,15 +58,17 @@ namespace std
 class Parser
 {
 public:
-    Parser(ErrorLoggerPtr logger, ScannerPtr scanner, SymbolTablePtr symbolTableManager) : logger_(logger), scanner_(std::move(scanner)), symbolTableManager_(symbolTableManager)
+    Parser(ErrorLoggerPtr logger, ScannerPtr scanner, SymbolTablePtr symbolTableManager) : logger_(logger), scanner_(std::move(scanner)),
+                                                                                           symbolTableManager_(symbolTableManager)
     {
-        stack_.push(std::make_shared<Symbol> (true, end)); // push end symbol
+        stack_.push(std::make_shared<Symbol> (true, end));      // push end symbol
         stack_.push(std::make_shared<Symbol> (false, STATS));  // push start symbol - STATS
     }
 
     CodePtr parse ();
 
-    enum SymbolType {STATS, STAT, INST, EQU, FOR, label, inst0, inst1, inst2, OP, comma, addMode, OP1, OP_NAME, numeric, MOD, equ, EQU_VAL, STS, uqe, forType, rof, dot, mod, epsilon, end};
+    enum SymbolType {STATS, STAT, INST, EQU, FOR, label, inst0, inst1, inst2, OP, comma, addMode, OP1, OP_NAME, numeric, MOD, equ,
+        EQU_VAL, STS, uqe, forType, rof, dot, mod, epsilon, end};
 
 private:
     class ProductionRule;
@@ -173,6 +175,7 @@ private:
     void acceptAddrMode (Token::Type type);
     void acceptNumeric (std::string value);
     void acceptModifier (Token::Type type);
+
     void acceptComposite (Token::Type type);
     void acceptLabel (std::string name);
     void acceptUqe ();

@@ -4,55 +4,61 @@
 
 #include "Scanner.hpp"
 
-Scanner::Keywords Scanner::keywords_ = {{"#", Token::Type (Token::immediateMode, Token::addMode, "immediate addressing mode")},
-                                        {"$", Token::Type(Token::directMode, Token::addMode, "direct addressing mode")},
-                                        {"@", Token::Type(Token::indirectMode, Token::addMode, "indirect addressing mode")},
-                                        {"A", Token::Type (Token::AModifier, Token::modifier, "a modifier")},
-                                        {"B", Token::Type(Token::BModifier, Token::modifier, "b modifier")},
-                                        {"AB", Token::Type(Token::ABModifier, Token::modifier, "a - b modifier")},
-                                        {"BA", Token::Type(Token::BAModifier, Token::modifier, "b - a modifier")},
-                                        {"F", Token::Type(Token::FModifier, Token::modifier, "f modifier")},
-                                        {"X", Token::Type(Token::XModifier, Token::modifier, "x modifier")},
-                                        {"I", Token::Type(Token::IModifier, Token::modifier, "i modifier")},
+Scanner::Keywords Scanner::keywords_ = {{"#", Token::Type (Token::immediateMode, "immediate addressing mode")},
+                                        {"$", Token::Type(Token::directMode, "direct addressing mode")},
+                                        {"@", Token::Type(Token::indirectMode, "indirect addressing mode")},
+                                        {"A", Token::Type (Token::AModifier, "a modifier")},
+                                        {"B", Token::Type(Token::BModifier, "b modifier")},
+                                        {"AB", Token::Type(Token::ABModifier, "a - b modifier")},
+                                        {"BA", Token::Type(Token::BAModifier, "b - a modifier")},
+                                        {"F", Token::Type(Token::FModifier, "f modifier")},
+                                        {"X", Token::Type(Token::XModifier, "x modifier")},
+                                        {"I", Token::Type(Token::IModifier, "i modifier")},
                                         {"equ", Token::Type(Token::equ, "equ")},
                                         {"end", Token::Type(Token::end, "end")},
                                         {"for", Token::Type(Token::forType, "for loop")},
                                         {"rof", Token::Type(Token::rof, "rof")},
                                         {"uqe", Token::Type(Token::uqe, "uqe")},
-                                        {"dat", Token::Type(Token::dat, Token::inst2, "dat")},
-                                        {"mov", Token::Type(Token::mov, Token::inst2, "mov")},
-                                        {"add", Token::Type(Token::add, Token::inst2, "add")},
-                                        {"sub", Token::Type(Token::sub, Token::inst2, "sub")},
-                                        {"mul", Token::Type(Token::mul, Token::inst2, "mul")},
-                                        {"div", Token::Type(Token::div, Token::inst2, "div")},
-                                        {"mod", Token::Type(Token::mod, Token::inst2, "mod")},
-                                        {"jmz", Token::Type(Token::jmz, Token::inst2, "jmz")},
-                                        {"jmn", Token::Type(Token::jmn, Token::inst2, "jmn")},
-                                        {"djn", Token::Type(Token::djn, Token::inst2, "djn")},
-                                        {"spl", Token::Type(Token::spl, Token::inst2, "spl")},
-                                        {"cmp", Token::Type(Token::cmp, Token::inst2, "cmp")},
-                                        {"seq", Token::Type(Token::seq, Token::inst2, "seq")},
-                                        {"sne", Token::Type(Token::sne, Token::inst2, "sne")},
-                                        {"slt", Token::Type(Token::slt, Token::inst2, "slt")},
-                                        {"jmp", Token::Type(Token::jmp, Token::inst1, "jmp")},
-                                        {"nop", Token::Type(Token::nop, Token::inst0, "nop")},
+                                        {"dat", Token::Type(Token::dat, "dat")},
+                                        {"mov", Token::Type(Token::mov, "mov")},
+                                        {"add", Token::Type(Token::add, "add")},
+                                        {"sub", Token::Type(Token::sub, "sub")},
+                                        {"mul", Token::Type(Token::mul, "mul")},
+                                        {"div", Token::Type(Token::div, "div")},
+                                        {"mod", Token::Type(Token::mod, "mod")},
+                                        {"jmz", Token::Type(Token::jmz, "jmz")},
+                                        {"jmn", Token::Type(Token::jmn, "jmn")},
+                                        {"djn", Token::Type(Token::djn, "djn")},
+                                        {"spl", Token::Type(Token::spl, "spl")},
+                                        {"cmp", Token::Type(Token::cmp, "cmp")},
+                                        {"seq", Token::Type(Token::seq, "seq")},
+                                        {"sne", Token::Type(Token::sne, "sne")},
+                                        {"slt", Token::Type(Token::slt, "slt")},
+                                        {"jmp", Token::Type(Token::jmp, "jmp")},
+                                        {"nop", Token::Type(Token::nop, "nop")},
                                         {",", Token::Type(Token::comma, "comma")},
                                         {".", Token::Type(Token::dot, "dot")}};
 
 TokenPtr Scanner::getToken ()
 {
-    omitWhiteSpace();
-    char c = sourceCodeManager_->getNext();
-    while (c == COMMENT_START)
+    TokenPtr token;
+    do
     {
-        omitComment();
         omitWhiteSpace();
-        c = sourceCodeManager_->getNext();
-    }
+        char c = sourceCodeManager_->getNext();
+        while (c == COMMENT_START)
+        {
+            omitComment();
+            omitWhiteSpace();
+            c = sourceCodeManager_->getNext();
+        }
 
-    if (endReached())
-        return nullptr;
-    return createToken (c);
+        if (endReached())
+            return std::make_shared<Token> (Token::end, "eot");
+        token = createToken(c);
+    } while (!token);
+
+    return token;
 }
 
 void Scanner::omitComment()
