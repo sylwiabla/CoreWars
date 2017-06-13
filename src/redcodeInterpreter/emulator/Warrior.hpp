@@ -29,9 +29,9 @@ public:
 
     bool killProcess_ ()
     {
+        processes_.erase(processes_.begin() + runningProcess_);
         if (processes_.empty())
             return false;
-        processes_.erase(processes_.begin() + runningProcess_);
         return true;
     }
 

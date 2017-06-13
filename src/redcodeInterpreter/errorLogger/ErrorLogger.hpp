@@ -39,7 +39,7 @@ private:
     boost::mutex writeMutex_;
 
     unsigned int nrErrors_;
-    static const unsigned int MAX_ERRORS = 30;
+    static const unsigned int MAX_ERRORS = 1;
 };
 
 typedef std::shared_ptr<ErrorLogger> ErrorLoggerPtr;

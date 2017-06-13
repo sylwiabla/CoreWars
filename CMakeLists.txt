@@ -40,7 +40,7 @@ set(MAIN src/main.cpp)
 set(TEST_SYMBOL_MANAGER test/redcodeInterpreter/symbolTableManager/SymbolTableManager.cpp
         test/redcodeInterpreter/scanner/Scanner.cpp)
 
-set(TEST_SOURCE_MANAGER test/redcodeInterpreter/scanner/SourceCodeManager.cpp)
+set(TEST_SOURCE_MANAGER test/redcodeInterpreter/scanner/SourceCodeManager.cpp test/redcodeInterpreter/emulator/Emulator.cpp)
 
 add_executable(RedcodeInterpreter ${PARSER} ${SOURCE_CODE_MANAGER} ${SOURCE_CODE_MANAGER_EXCEP} ${ERROR_LOGGER} ${SCANNER} ${TOKEN}
         ${KEYWORD} ${INSTRUCTION} ${IDENTIFIER} ${EMULATOR} ${MAIN})

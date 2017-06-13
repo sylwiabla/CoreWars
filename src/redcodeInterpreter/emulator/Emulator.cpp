@@ -7,85 +7,31 @@
 #include "Emulator.hpp"
 #include "exceptions/OutOfMemory.hpp"
 
-void Emulator::init ()
-{
-    functions_.insert(std::make_pair(Token::mov, &Emulator::movFunction));
-    functions_.insert(std::make_pair(Token::mov, &Emulator::datFunction));
-    functions_.insert(std::make_pair(Token::mov, &Emulator::addFunction));
-    functions_.insert(std::make_pair(Token::mov, &Emulator::subFunction));
-    functions_.insert(std::make_pair(Token::mov, &Emulator::mulFunction));
-    functions_.insert(std::make_pair(Token::mov, &Emulator::divFunction));
-    functions_.insert(std::make_pair(Token::mov, &Emulator::modFunction));
-    functions_.insert(std::make_pair(Token::mov, &Emulator::jmzFunction));
-    functions_.insert(std::make_pair(Token::mov, &Emulator::jmnFunction));
-    functions_.insert(std::make_pair(Token::mov, &Emulator::djnFunction));
-    functions_.insert(std::make_pair(Token::mov, &Emulator::splFunction));
-    functions_.insert(std::make_pair(Token::mov, &Emulator::cmpFunction));
-    functions_.insert(std::make_pair(Token::mov, &Emulator::seqFunction));
-    functions_.insert(std::make_pair(Token::mov, &Emulator::sneFunction));
-    functions_.insert(std::make_pair(Token::mov, &Emulator::sltFunction));
-    functions_.insert(std::make_pair(Token::mov, &Emulator::ldpFunction));
-    functions_.insert(std::make_pair(Token::mov, &Emulator::stpFunction));
-    functions_.insert(std::make_pair(Token::mov, &Emulator::jmpFunction));
-    functions_.insert(std::make_pair(Token::mov, &Emulator::nopFunction));
-
-    addrModesMapping_.insert(std::make_pair(Token::immidiateMode, &Emulator::immidateGetter));
-    addrModesMapping_.insert(std::make_pair(Token::directMode, &Emulator::directGetter));
-    addrModesMapping_.insert(std::make_pair(Token::indirectMode, &Emulator::indirectGetter));
-
-    modifierMapping_.insert((std::make_pair(Token::AModifier, &Emulator::aModHandler)));
-    modifierMapping_.insert((std::make_pair(Token::BModifier, &Emulator::bModHandler)));
-    modifierMapping_.insert((std::make_pair(Token::ABModifier, &Emulator::abModHandler)));
-    modifierMapping_.insert((std::make_pair(Token::BAModifier, &Emulator::baModHandler)));
-    modifierMapping_.insert((std::make_pair(Token::FModifier, &Emulator::fModHandler)));
-    modifierMapping_.insert((std::make_pair(Token::XModifier, &Emulator::xModHandler)));
-    modifierMapping_.insert((std::make_pair(Token::IModifier,&Emulator::iModHandler)));
-}
-
 std::pair <long, long> Emulator::getAddresses (InstructionPtr instruction)
 {
     OperandPtr aArg = instruction->getOperand(true);
     OperandPtr bArg = instruction->getOperand(false);
 
     Token::TokenType aAddrMode = std::get<0> (*aArg);
-    auto mapperA = &addrModesMapping_.at(aAddrMode);
-
     Token::TokenType bAddrMode = std::get<0> (*bArg);
-    auto mapperB = &Emulator::addrModesMapping_.at(bAddrMode);
 
-    return std::make_pair<long, long> ((aAddrMode == Token::end) ? std::get<1> (*aArg) : boost::bind (&mapperA, this, std::get<1> (*aArg), pc_),
-                                       (bAddrMode == Token::end) ? std::get<1> (*bArg) : boost::bind (&mapperB, this, std::get<1> (*bArg), pc_);
+    return std::make_pair<long, long> (getAddress(aArg, aAddrMode), getAddress(bArg, bAddrMode));
 }
 
-bool Emulator::movFunction (InstructionPtr instruction)
+long Emulator::getAddress (OperandPtr operand, Token::TokenType addrMode)
 {
-    auto addresses = getAddresses (instruction);
-    (*core_)[addresses.second] = (*core_)[addresses.first];
-    applyModifier(instruction);
+    long value = std::get <1> (*operand);
+    if (addrMode == Token::end)
+        return (value + pc_) % coreSize_;
+    else if (addrMode == Token::directMode)
+        return directGetter(value, pc_);
+    else if (addrMode == Token::indirectMode)
+        return indirectGetter(value, pc_);
+    else if (addrMode == Token::immediateMode)
+        return immedateGetter(value, pc_);
 }
 
-bool Emulator::datFunction (InstructionPtr instruction);
-bool Emulator::addFunction (InstructionPtr instruction);
-bool Emulator::subFunction (InstructionPtr instruction);
-bool Emulator::mulFunction (InstructionPtr instruction);
-bool Emulator::divFunction (InstructionPtr instruction);
-bool Emulator::modFunction (InstructionPtr instruction);
-bool Emulator::jmzFunction (InstructionPtr instruction);
-bool Emulator::jmnFunction (InstructionPtr instruction);
-bool Emulator::djnFunction (InstructionPtr instruction);
-bool Emulator::splFunction (InstructionPtr instruction);
-bool Emulator::cmpFunction (InstructionPtr instruction);
-bool Emulator::seqFunction (InstructionPtr instruction);
-bool Emulator::sneFunction (InstructionPtr instruction);
-bool Emulator::sltFunction (InstructionPtr instruction);
-bool Emulator::ldpFunction (InstructionPtr instruction);
-bool Emulator::stpFunction (InstructionPtr instruction);
-bool Emulator::jmpFunction (InstructionPtr instruction);
-
-bool Emulator::nopFunction (InstructionPtr instruction)
-{}
-
-long Emulator::immidateGetter (long value, long pc)
+long Emulator::immedateGetter (long value, long pc)
 {
     return  (pc + value) % coreSize_;
 }
@@ -153,17 +99,35 @@ void Emulator::iModHandler (long aOp, long bOp)
     (*core_)[(pc_ + bOp) % coreSize_] = (*core_)[(pc_ + aOp) % coreSize_];
 }
 
-void Emulator::applyModifier (InstructionPtr instruction)
+void Emulator::applyModifiers (InstructionPtr instruction)
 {
     OperandPtr aArg = instruction->getOperand(true);
     OperandPtr bArg = instruction->getOperand(false);
 
     Token::TokenType aModifier = std::get<2> (*aArg);
-    if (aModifier != Token::end)
-        boost::bind (&Emulator::modifierMapping_.at(aModifier), this, std::get<1> (*aArg), std::get<1> (*bArg));
     Token::TokenType bModifier = std::get<2> (*bArg);
-    if (bModifier != Token::end)
-        boost::bind (&Emulator::modifierMapping_.at(bModifier), this, std::get<1> (*aArg), std::get<1> (*bArg));
+
+    applyModifier (aArg, bArg, aModifier);
+    applyModifier (aArg, bArg, bModifier);
+}
+
+void Emulator::applyModifier (OperandPtr operandA, OperandPtr operandB, Token::TokenType type)
+{
+    long aValue = std::get<1> (*operandA);
+    long bValue = std::get<1> (*operandB);
+
+    if (type == Token::AModifier)
+        aModHandler(aValue, bValue);
+    else if (type == Token::BModifier)
+        bModHandler(aValue, bValue);
+    else if (type == Token::ABModifier)
+        abModHandler(aValue, bValue);
+    else if (type == Token::FModifier)
+        fModHandler(aValue, bValue);
+    else if (type == Token::XModifier)
+        xModHandler(aValue, bValue);
+    else if (type == Token::IModifier)
+        iModHandler(aValue, bValue);
 }
 
 Emulator::Emulator (unsigned long coreSize, int maxInvoked) : coreSize_(coreSize), nrInvoked_(0), firstCurrent_(true),
@@ -184,7 +148,24 @@ Emulator::Emulator (unsigned long coreSize, int maxInvoked) : coreSize_(coreSize
     processIdGenerator_ = 0;
     firstWarrior_ = std::make_shared<Warrior> (Warrior ());
     secondWarrior_ = std::make_shared<Warrior> (Warrior ());
-    init();
+
+    movFunctor = std::make_shared<MovFunctor>();
+    datFunctor = std::make_shared<DatFunctor>();
+    addFunctor = std::make_shared<AddFunctor>();
+    subFunctor = std::make_shared<SubFunctor>();
+    mulFunctor = std::make_shared<MulFunctor>();
+    divFunctor = std::make_shared<DivFunctor>();
+    modFunctor = std::make_shared<ModFunctor>();
+    jmzFunctor = std::make_shared<JmzFunctor>();
+    jmnFunctor = std::make_shared<JmnFunctor>();
+    djnFunctor = std::make_shared<DjnFunctor>();
+    splFunctor = std::make_shared<SplFunctor>();
+    cmpFunctor = std::make_shared<CmpFunctor>();
+    seqFunctor = std::make_shared<SeqFunctor>();
+    sneFunctor = std::make_shared<SneFunctor>();
+    sltFunctor = std::make_shared<SltFunctor>();
+    jmpFunctor = std::make_shared<JmpFunctor>();
+    nopFunctor = std::make_shared<NopFunctor>();
 }
 
 void Emulator::loadWarriors (CodePtr warrior1Code, CodePtr warrior2Code)
@@ -221,7 +202,7 @@ void Emulator::loadWarriors (CodePtr warrior1Code, CodePtr warrior2Code)
     pc_ = firstPC;
 }
 
-Winner Emulator::invokeInstruction ()
+Emulator::Winner Emulator::invokeInstruction ()
 {
     if (nrInvoked_ > maxInvoked_)
         return NONE;
@@ -230,13 +211,14 @@ Winner Emulator::invokeInstruction ()
 
     InstructionPtr instruction = (*core_)[pc_];
     Token::TokenType type = instruction->getType();
-    bool notFailed = boost::bind (&Emulator::functions_.at(type), this, type);
-    if (notFailed)
+    FunctorPtr functor = functors_.find(type)->second;
+    if (!(*functor)(*this, instruction))
         return firstCurrent_ ? SECOND : FIRST;
 
     current->switchProcess();
     firstCurrent_ = !firstCurrent_;
     ++nrInvoked_;
+    return WAITING;
 }
 
 long Emulator::findPCForSecond (long firstBegin, long nrInstrFirst, long nrInstrSecond)
@@ -252,4 +234,125 @@ long Emulator::findPCForSecond (long firstBegin, long nrInstrFirst, long nrInstr
         pc += firstBegin + nrInstrFirst;
 
     return pc;
+}
+
+bool Emulator::MovFunctor::operator () (Emulator & e, InstructionPtr i)
+{
+    auto addresses = e.getAddresses (i);
+    InstructionPtr source = e.getMemoryCell(addresses.first);
+    e.setMemoryCell(source, addresses.second);
+    e.applyModifiers(i);
+}
+
+bool Emulator::DatFunctor::operator () (Emulator & e, InstructionPtr i)
+{
+    bool stillRunning = e.killProcess();
+    e.applyModifiers(i);
+    return stillRunning;
+}
+
+bool Emulator::AddFunctor::operator () (Emulator & e, InstructionPtr i)
+{
+    auto addresses = e.getAddresses (i);
+    e.setMemoryCell((addresses.first + addresses.second) % e.getCoreSize(), e.getPc(), true);
+    e.applyModifiers(i);
+}
+
+bool Emulator::SubFunctor::operator () (Emulator & e, InstructionPtr i)
+{
+    auto addresses = e.getAddresses (i);
+    e.setMemoryCell((addresses.first - addresses.second) % e.getCoreSize(), e.getPc(), true);
+    e.applyModifiers(i);
+}
+
+bool Emulator::MulFunctor::operator () (Emulator & e, InstructionPtr i)
+{
+    auto addresses = e.getAddresses (i);
+    e.setMemoryCell((addresses.first * addresses.second) % e.getCoreSize(), e.getPc(), true);
+    e.applyModifiers(i);
+}
+
+bool Emulator::DivFunctor::operator () (Emulator & e, InstructionPtr i)
+{
+    auto addresses = e.getAddresses (i);
+    e.setMemoryCell((addresses.first / addresses.second) % e.getCoreSize(), e.getPc(), true);
+    e.applyModifiers(i);
+}
+
+bool Emulator::ModFunctor::operator () (Emulator & e, InstructionPtr i)
+{
+    auto addresses = e.getAddresses (i);
+    e.setMemoryCell((addresses.first % addresses.second) % e.getCoreSize(), e.getPc(), true);
+    e.applyModifiers(i);
+}
+
+bool Emulator::JmzFunctor::operator () (Emulator & e, InstructionPtr i)
+{
+    auto addresses = e.getAddresses (i);
+    if (!addresses.second)
+        e.jump(addresses.first);
+    e.applyModifiers(i);
+}
+
+bool Emulator::JmnFunctor::operator () (Emulator & e, InstructionPtr i)
+{
+    auto addresses = e.getAddresses (i);
+    if (addresses.second)
+        e.jump(addresses.first);
+    e.applyModifiers(i);
+}
+
+bool Emulator::DjnFunctor::operator () (Emulator & e, InstructionPtr i)
+{
+    auto addresses = e.getAddresses (i);
+    e.setMemoryCell(addresses.second - 1, e.getPc(), false);
+    if (!(addresses.second - 1))
+        e.jump(addresses.first);
+    e.applyModifiers(i);
+}
+
+bool Emulator::SplFunctor::operator () (Emulator & e, InstructionPtr i)
+{
+    auto addresses = e.getAddresses (i);
+    e.createProcess(addresses.first);
+    e.applyModifiers(i);
+}
+
+bool Emulator::CmpFunctor::operator () (Emulator & e, InstructionPtr i)
+{
+    auto addresses = e.getAddresses (i);
+    if (addresses.first == addresses.second)
+        e.jump(e.getPc() + 1);
+    e.applyModifiers(i);
+}
+
+bool Emulator::SeqFunctor::operator () (Emulator & e, InstructionPtr i)
+{
+    auto addresses = e.getAddresses (i);
+    if (addresses.first == addresses.second)
+        e.jump(e.getPc() + 1);
+    e.applyModifiers(i);
+}
+
+bool Emulator::SneFunctor::operator () (Emulator & e, InstructionPtr i)
+{
+    auto addresses = e.getAddresses (i);
+    if (addresses.first != addresses.second)
+        e.jump(e.getPc() + 1);
+    e.applyModifiers(i);
+}
+
+bool Emulator::SltFunctor::operator () (Emulator & e, InstructionPtr i)
+{
+    auto addresses = e.getAddresses (i);
+    if (addresses.first < addresses.second)
+        e.jump(e.getPc() + 1);
+    e.applyModifiers(i);
+}
+
+bool Emulator::JmpFunctor::operator () (Emulator & e, InstructionPtr i)
+{
+    auto addresses = e.getAddresses (i);
+    e.jump(addresses.first);
+    e.applyModifiers(i);
 }

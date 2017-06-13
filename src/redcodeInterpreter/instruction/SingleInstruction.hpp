@@ -54,6 +54,11 @@ public:
 
 class OneArgsInstruction : public Instruction
 {
+private:
+    OperandPtr aArg;
+    bool canModifiers_;
+    bool operandInitialized_;
+
 public:
     OneArgsInstruction (Token::TokenType type) : Instruction(type), canModifiers_(true), operandInitialized_(false)
     {}
@@ -105,11 +110,6 @@ public:
         aArg = value;
     }
 
-private:
-    OperandPtr aArg;
-    bool canModifiers_;
-    bool operandInitialized_;
-
 };
 
 class TwoArgsInstruction : public Instruction
@@ -117,6 +117,16 @@ class TwoArgsInstruction : public Instruction
 public:
     enum InitializationProgress {NO, ONE, BOTH};
 
+private:
+    OperandPtr aArg;
+    OperandPtr bArg;
+
+    bool canModifiers_;
+    InitializationProgress operandsInitialized_;
+    InitializationProgress modifiersInitialized_;
+    InitializationProgress addrModesInitialized_;
+
+public:
     TwoArgsInstruction (Token::TokenType type) : Instruction(type), canModifiers_(true), operandsInitialized_(NO),
                                                  modifiersInitialized_(NO), addrModesInitialized_(NO)
     {}
@@ -204,14 +214,6 @@ public:
         (aOperand ? aArg : bArg) = value;
     }
 
-private:
-    OperandPtr aArg;
-    OperandPtr bArg;
-
-    bool canModifiers_;
-    InitializationProgress operandsInitialized_;
-    InitializationProgress modifiersInitialized_;
-    InitializationProgress addrModesInitialized_;
 };
 
 #endif //REDCODEINTERPRETER_SINGLEINSTRUCTION_HPP

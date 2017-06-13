@@ -6,6 +6,8 @@
 #define REDCODEINTERPRETER_INSTRUCTION_HPP
 
 #include <memory>
+#include <boost/function.hpp>
+#include <boost/bind.hpp>
 #include "../scanner/token/Token.hpp"
 #include "../symbolTableManager/identifier/Identifier.hpp"
 

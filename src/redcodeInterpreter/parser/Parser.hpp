@@ -60,8 +60,8 @@ class Parser
 public:
     Parser(ErrorLoggerPtr logger, ScannerPtr scanner, SymbolTablePtr symbolTableManager) : logger_(logger), scanner_(std::move(scanner)), symbolTableManager_(symbolTableManager)
     {
-        stack_.push(symbols_[25]); // push end symbol
-        stack_.push(symbols_[0]);  // push start symbol - STATS
+        stack_.push(std::make_shared<Symbol> (true, end)); // push end symbol
+        stack_.push(std::make_shared<Symbol> (false, STATS));  // push start symbol - STATS
     }
 
     CodePtr parse ();
@@ -76,8 +76,8 @@ public:
 
     typedef std::shared_ptr<Symbol> SymbolPtr;
     typedef std::shared_ptr<ProductionRule> ProductionPtr;
-    typedef const std::unordered_map<Token::TokenType, SymbolType, std::EnumClassHash> Terminals;
     typedef const std::unordered_map<std::pair<Symbol, Symbol>, ProductionPtr> PredictTable;
+    typedef std::vector<Parser::SymbolPtr> Derivation;
 
     class Symbol
     {
@@ -86,7 +86,7 @@ public:
         Parser::SymbolType type_;
 
     public:
-        Symbol ()
+        Symbol () : isTerminal_(true), type_(end)
         {}
 
         Symbol (bool isTerminal, Parser::SymbolType type) : isTerminal_(isTerminal), type_(type)
@@ -156,24 +156,21 @@ private:
     static const std::vector<Parser::SymbolPtr> modDotRule;
     static const std::vector<Parser::SymbolPtr> modEpsRule;
 
-    static Terminals terminals_;
-    static const std::vector<SymbolPtr> symbols_;
     static const std::vector<ProductionPtr> productions_;
     static PredictTable predictTable_;
     std::stack<SymbolPtr> stack_;
     std::stack<CompInstPtr> nestedInstructions_;
     std::list<InstructionPtr> code_;
 
-    SymbolPtr mapTokenToSymbol (TokenPtr token);
     void accept (TokenPtr token, SymbolType type);
-    void derive(SymbolPtr input);
-    void logError();
+    void derive(Token::Type type, SymbolPtr input);
+    void logError(Token::Type type);
 
-    const InstructionPtr acceptInst (Token::TokenType tokenType, SymbolType symbolType);
-    void acceptAddrMode (Token::TokenType type);
+    const InstructionPtr acceptInst (Token::Type tokenType, SymbolType symbolType);
+    void acceptAddrMode (Token::Type type);
     void acceptNumeric (std::string value);
-    void acceptModifier (Token::TokenType type);
-    void acceptComposite (Token::TokenType type);
+    void acceptModifier (Token::Type type);
+    void acceptComposite (Token::Type type);
     void acceptLabel (std::string name);
     void acceptUqe ();
     void acceptRof ();

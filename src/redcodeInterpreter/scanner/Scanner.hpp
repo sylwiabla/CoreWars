@@ -16,13 +16,15 @@ public:
     Scanner(SourceManagerPtr sourceManagerPtr, const ErrorLoggerPtr & logger) : logger_(logger), sourceCodeManager_(std::move(sourceManagerPtr))
     {}
 
+    typedef const std::unordered_map<std::string, Token::Type> Keywords;
+
 private:
     static const unsigned int MAX_IDENTIFIER_LENGTH = 1024;
 
     SourceManagerPtr sourceCodeManager_;
     ErrorLoggerPtr logger_;
 
-    static const std::unordered_map<std::string, Token::TokenType> keywords_;
+    static Keywords keywords_;
     static const char COMMENT_START = ';';
 
 public:
@@ -36,7 +38,7 @@ public:
         return sourceCodeManager_->getLineNr();
     }
 
-    typedef std::unordered_map<std::string, Token::TokenType>::const_iterator TokenIter;
+    typedef Keywords::const_iterator KeywordIter;
 
 private:
     void omitComment ();

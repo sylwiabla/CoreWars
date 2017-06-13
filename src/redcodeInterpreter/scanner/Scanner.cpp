@@ -4,13 +4,40 @@
 
 #include "Scanner.hpp"
 
-const std::unordered_map<std::string, Token::TokenType> Scanner::keywords_ = {{"#", Token::immidiateMode}, {"$", Token::directMode}, {"@", Token::indirectMode}, {"A", Token::AModifier}, {"B", Token::BModifier},
-                                                                              {"AB", Token::ABModifier}, {"BA", Token::BAModifier}, {"F", Token::FModifier}, {"X", Token::XModifier}, {"I", Token::IModifier},
-                                                                              {"equ", Token::equ}, {"end", Token::end}, {"for", Token::forType}, {"rof", Token::rof}, {"uqe", Token::uqe},
-                                                                              {"dat", Token::dat}, {"mov", Token::mov}, {"add", Token::add}, {"sub", Token::sub}, {"mul", Token::mul}, {"div", Token::div},
-                                                                              {"mod", Token::mod}, {"jmz", Token::jmz}, {"jmn", Token::jmn}, {"djn", Token::djn}, {"spl", Token::spl}, {"cmp", Token::cmp},
-                                                                              {"seq", Token::seq}, {"sne", Token::sne}, {"slt", Token::slt}, {"ldp", Token::ldp}, {"stp", Token::stp}, {"jmp", Token::jmp},
-                                                                              {"nop", Token::nop}, {",", Token::comma}, {".", Token::dot}};
+Scanner::Keywords Scanner::keywords_ = {{"#", Token::Type (Token::immediateMode, Token::addMode, "immediate addressing mode")},
+                                        {"$", Token::Type(Token::directMode, Token::addMode, "direct addressing mode")},
+                                        {"@", Token::Type(Token::indirectMode, Token::addMode, "indirect addressing mode")},
+                                        {"A", Token::Type (Token::AModifier, Token::modifier, "a modifier")},
+                                        {"B", Token::Type(Token::BModifier, Token::modifier, "b modifier")},
+                                        {"AB", Token::Type(Token::ABModifier, Token::modifier, "a - b modifier")},
+                                        {"BA", Token::Type(Token::BAModifier, Token::modifier, "b - a modifier")},
+                                        {"F", Token::Type(Token::FModifier, Token::modifier, "f modifier")},
+                                        {"X", Token::Type(Token::XModifier, Token::modifier, "x modifier")},
+                                        {"I", Token::Type(Token::IModifier, Token::modifier, "i modifier")},
+                                        {"equ", Token::Type(Token::equ, "equ")},
+                                        {"end", Token::Type(Token::end, "end")},
+                                        {"for", Token::Type(Token::forType, "for loop")},
+                                        {"rof", Token::Type(Token::rof, "rof")},
+                                        {"uqe", Token::Type(Token::uqe, "uqe")},
+                                        {"dat", Token::Type(Token::dat, Token::inst2, "dat")},
+                                        {"mov", Token::Type(Token::mov, Token::inst2, "mov")},
+                                        {"add", Token::Type(Token::add, Token::inst2, "add")},
+                                        {"sub", Token::Type(Token::sub, Token::inst2, "sub")},
+                                        {"mul", Token::Type(Token::mul, Token::inst2, "mul")},
+                                        {"div", Token::Type(Token::div, Token::inst2, "div")},
+                                        {"mod", Token::Type(Token::mod, Token::inst2, "mod")},
+                                        {"jmz", Token::Type(Token::jmz, Token::inst2, "jmz")},
+                                        {"jmn", Token::Type(Token::jmn, Token::inst2, "jmn")},
+                                        {"djn", Token::Type(Token::djn, Token::inst2, "djn")},
+                                        {"spl", Token::Type(Token::spl, Token::inst2, "spl")},
+                                        {"cmp", Token::Type(Token::cmp, Token::inst2, "cmp")},
+                                        {"seq", Token::Type(Token::seq, Token::inst2, "seq")},
+                                        {"sne", Token::Type(Token::sne, Token::inst2, "sne")},
+                                        {"slt", Token::Type(Token::slt, Token::inst2, "slt")},
+                                        {"jmp", Token::Type(Token::jmp, Token::inst1, "jmp")},
+                                        {"nop", Token::Type(Token::nop, Token::inst0, "nop")},
+                                        {",", Token::Type(Token::comma, "comma")},
+                                        {".", Token::Type(Token::dot, "dot")}};
 
 TokenPtr Scanner::getToken ()
 {
@@ -76,7 +103,7 @@ TokenPtr Scanner::createNumeric (char first)
 
     sourceCodeManager_->unget();
     if (iswspace(c) || (c == COMMENT_START) || (c == ',') || endReached() || (c == '.'))
-        return std::make_shared<Token> (Token::numeric, token);
+        return std::make_shared<Token> (Token::numeric, "numeric", token);
 
     logger_->logError(std::make_shared<Error> (Error (sourceCodeManager_->getLineNr(), "Bad numeric identifier: " + token)));
     return nullptr;
@@ -109,9 +136,9 @@ TokenPtr Scanner::createAlpha (char first)
     }
 
     sourceCodeManager_->unget();
-    TokenIter tokenIter = keywords_.find(token);
+    KeywordIter tokenIter = keywords_.find(token);
     if (tokenIter == keywords_.end())
-        return std::make_shared<Token> (*(new Token(Token::alpha, token)));
+        return std::make_shared<Token> (*(new Token(Token::alpha, "alphanumeric", token)));
     return std::make_shared<Token> (*(new Token(tokenIter->second)));
 }
 
@@ -119,17 +146,17 @@ TokenPtr Scanner::createOther(char first)
 {
     std::string token = "";
     token += first;
-    TokenIter tokenIter = keywords_.find(token);
+    KeywordIter tokenIter = keywords_.find(token);
     if (tokenIter != keywords_.end())
     {
-        Token::TokenType type = tokenIter->second;
+        Token::Type type = tokenIter->second;
         if ((type == Token::comma) || (type == Token::dot))
             return std::make_shared<Token> (*(new Token(tokenIter->second)));
 
         char next = sourceCodeManager_->getNext();
         sourceCodeManager_->unget();
         if (isalpha(next) || isdigit(next))
-            return std::make_shared<Token> (*(new Token(tokenIter->second, tokenIter->first)));
+            return std::make_shared<Token> (*(new Token(tokenIter->second)));
         logger_->logError(std::make_shared<Error> (Error (sourceCodeManager_->getLineNr(), "Cannot resolve token: " + token)));
     }
     else
