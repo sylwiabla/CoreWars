@@ -127,6 +127,13 @@ private:
     InitializationProgress addrModesInitialized_;
 
 public:
+    TwoArgsInstruction () : Instruction(Token::dat), canModifiers_(true), operandsInitialized_(NO),
+                                                 modifiersInitialized_(NO), addrModesInitialized_(NO)
+    {
+        aArg = std::make_shared<Operand> (Operand (Token::end, 0, Token::end));
+        bArg = std::make_shared<Operand> (Operand (Token::end, 0, Token::end));
+    }
+
     TwoArgsInstruction (Token::TokenType type) : Instruction(type), canModifiers_(true), operandsInitialized_(NO),
                                                  modifiersInitialized_(NO), addrModesInitialized_(NO)
     {}

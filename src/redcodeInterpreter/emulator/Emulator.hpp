@@ -199,7 +199,7 @@ public:
 
 private:
     unsigned long coreSize_;
-    CorePtr core_;
+    Core core_;
     int nrInvoked_;
     int maxInvoked_;
     long pc_;
@@ -208,17 +208,12 @@ private:
     WarriorPtr secondWarrior_;
     bool firstCurrent_;
 
-    std::atomic_int processIdGenerator_;
+    int processIdGenerator_;
 
-    const std::unordered_map<Token::TokenType, FunctorPtr, std::EnumClassHash> functors_ = {{Token::mov, movFunctor}, {Token::dat, datFunctor}, {Token::add, addFunctor},
-                                                                       {Token::sub, subFunctor}, {Token::mul, mulFunctor}, {Token::div, divFunctor},
-                                                                       {Token::mod, modFunctor}, {Token::jmz, jmzFunctor}, {Token::jmn, jmnFunctor},
-                                                                       {Token::djn, djnFunctor}, {Token::spl, splFunctor}, {Token::cmp, cmpFunctor},
-                                                                       {Token::seq, seqFunctor}, {Token::sne, sneFunctor}, {Token::slt, sltFunctor},
-                                                                       {Token::jmp, jmpFunctor}, {Token::nop, nopFunctor}};
+    std::unordered_map<Token::TokenType, FunctorPtr, std::EnumClassHash> functors_;
 
 public:
-    Emulator (unsigned long coreSize, int maxInvoked);
+    Emulator (unsigned long coreSize, int maxInvoked, InstructionPtr instruction);
 
     enum Winner {FIRST, SECOND, NONE, WAITING};
 
@@ -226,7 +221,7 @@ public:
     // returned false - current warrior lost
     Winner invokeInstruction ();
 
-    CorePtr getCore () const
+    Core getCore () const
     {
         return core_;
     }
@@ -278,19 +273,19 @@ public:
 
     void setMemoryCell (InstructionPtr newValue, long address)
     {
-        (*core_)[address] = newValue;
+        core_[address] = newValue;
     }
 
     // aOperand - target operand
     void setMemoryCell (long newValue, long address, bool aOperand)
     {
-        OperandPtr operand = (*core_)[address]->getOperand(aOperand);
+        OperandPtr operand = core_[address]->getOperand(aOperand);
         std::get<1> (*operand) = newValue;
     }
 
     InstructionPtr getMemoryCell (long address)
     {
-        return (*core_)[address];
+        return core_[address];
     }
 
     bool killProcess ()

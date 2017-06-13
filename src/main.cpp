@@ -33,14 +33,12 @@ int main()
         return 0;
     }
 
-    Emulator * emulator = new Emulator(300, 400);
+    TwoArgsInstrPtr i = std::make_shared<TwoArgsInstruction> (TwoArgsInstruction ());
+    Emulator * emulator = new Emulator((unsigned long) 30, (int) 40, i);
     emulator->loadWarriors(code, code);
 
-    while (emulator->invokeInstruction() == Emulator::WAITING)
-    {
-        for (InstructionPtr instruction : *emulator->getCore())
-            std::cout << instruction->getType() << std::endl;
-    }
+    for (InstructionPtr instruction : emulator->getCore())
+        std::cout << instruction->getType() << std::endl;
 
     delete(emulator);
 
