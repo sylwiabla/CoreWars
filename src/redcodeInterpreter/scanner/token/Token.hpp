@@ -80,6 +80,11 @@ public:
             return tokenType_;
         }
 
+        TokenSubType getTokenSubType() const
+        {
+            return subType_;
+        }
+
         const std::string & getName () const
         {
             return name_;

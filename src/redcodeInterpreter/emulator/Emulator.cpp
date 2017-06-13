@@ -130,9 +130,10 @@ void Emulator::applyModifier (OperandPtr operandA, OperandPtr operandB, Token::T
         iModHandler(aValue, bValue);
 }
 
-Emulator::Emulator (unsigned long coreSize, int maxInvoked) : coreSize_(coreSize), nrInvoked_(0), firstCurrent_(true),
+Emulator::Emulator (unsigned long coreSize, int maxInvoked) : nrInvoked_(0), firstCurrent_(true),
                                                               maxInvoked_(maxInvoked), pc_(0)
 {
+    coreSize_ = coreSize;
     core_ = std::make_shared<Core> (Core ());
     core_->reserve(coreSize);
 

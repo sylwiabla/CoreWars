@@ -77,6 +77,7 @@ public:
     typedef std::shared_ptr<Symbol> SymbolPtr;
     typedef std::shared_ptr<ProductionRule> ProductionPtr;
     typedef const std::unordered_map<std::pair<Symbol, Symbol>, ProductionPtr> PredictTable;
+    typedef const std::unordered_map<Token::TokenType, SymbolType, std::EnumClassHash> Terminals;
     typedef std::vector<Parser::SymbolPtr> Derivation;
 
     class Symbol
@@ -161,12 +162,14 @@ private:
     std::stack<SymbolPtr> stack_;
     std::stack<CompInstPtr> nestedInstructions_;
     std::list<InstructionPtr> code_;
+    static Terminals terminals_;
 
+    SymbolPtr mapTokenToSymbol (TokenPtr token);
     void accept (TokenPtr token, SymbolType type);
     void derive(Token::Type type, SymbolPtr input);
     void logError(Token::Type type);
 
-    const InstructionPtr acceptInst (Token::Type tokenType, SymbolType symbolType);
+    const InstructionPtr acceptInst (Token::TokenType tokenType, SymbolType symbolType);
     void acceptAddrMode (Token::Type type);
     void acceptNumeric (std::string value);
     void acceptModifier (Token::Type type);

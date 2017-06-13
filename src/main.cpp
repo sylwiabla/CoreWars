@@ -36,8 +36,11 @@ int main()
     Emulator * emulator = new Emulator(300, 400);
     emulator->loadWarriors(code, code);
 
-    for (InstructionPtr instruction : *emulator->getCore())
-        std::cout << instruction->getType() << std::endl;
+    while (emulator->invokeInstruction() == Emulator::WAITING)
+    {
+        for (InstructionPtr instruction : *emulator->getCore())
+            std::cout << instruction->getType() << std::endl;
+    }
 
     delete(emulator);
 

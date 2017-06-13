@@ -2,7 +2,7 @@
 // Created by sylwia on 6/10/17.
 //
 
-//#define BOOST_TEST_MODULE SymbolTableManagerTest
+#define BOOST_TEST_MODULE RedcodeInterpreterTests
 #include <boost/test/unit_test.hpp>
 #include "../../../src/redcodeInterpreter/symbolTableManager/SymbolTableManager.hpp"
 

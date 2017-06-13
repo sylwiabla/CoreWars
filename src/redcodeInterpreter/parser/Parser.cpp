@@ -4,6 +4,12 @@
 
 #include "Parser.hpp"
 
+const Parser::Terminals Parser::terminals_ = {{Token::immediateMode, addMode}, {Token::directMode, addMode}, {Token::indirectMode, addMode}, {Token::AModifier, mod}, {Token::BModifier, mod}, {Token::ABModifier, mod},
+                                              {Token::BAModifier, mod}, {Token::FModifier, mod}, {Token::XModifier, mod}, {Token::IModifier, mod}, {Token::equ, equ}, {Token::forType, forType},
+                                              {Token::rof, rof}, {Token::dat, inst2}, {Token::mov, inst2}, {Token::add, inst2}, {Token::sub, inst2}, {Token::mul, inst2}, {Token::div, inst2}, {Token::mod, inst2},
+                                              {Token::jmz, inst2}, {Token::jmn, inst2}, {Token::djn, inst2}, {Token::spl, inst2}, {Token::cmp, inst2}, {Token::seq, inst2}, {Token::sne, inst2}, {Token::slt, inst2},
+                                              {Token::jmp, inst1}, {Token::nop, inst0}, {Token::comma, comma}, {Token::numeric, numeric}, {Token::alpha, label}, {Token::dot, dot}, {Token::uqe, uqe},};
+
 const Parser::Derivation Parser::statsStatRule = {std::make_shared<Symbol> (false, STATS), std::make_shared<Symbol> (false, STAT)};
 const Parser::Derivation Parser::statsEpsRule = {std::make_shared<Symbol> (true, epsilon)};
 const Parser::Derivation Parser::statInstRule = {std::make_shared<Symbol> (false, INST)};
@@ -125,6 +131,7 @@ CodePtr Parser::parse ()
         while (stack_.top()->getType() == epsilon)
             stack_.pop();
 
+        input = mapTokenToSymbol(token);
         if (*input == *stack_.top())
         {
             accept(token, input->getType());
@@ -141,12 +148,20 @@ CodePtr Parser::parse ()
     return std::make_shared<Code> (code_);
 }
 
+Parser::SymbolPtr Parser::mapTokenToSymbol (TokenPtr token)
+{
+    auto iter = terminals_.find(token->getType().getTokenType());
+    bool isTerminal = (iter != terminals_.end());
+    std::shared_ptr<Symbol> symbol = std::make_shared<Symbol> (isTerminal, iter->second);
+    return symbol;
+}
+
 void Parser::accept (TokenPtr token, SymbolType type)
 {
     stack_.pop();
 
     if ((type == inst0) || (type == inst1) || (type == inst2))
-        acceptInst(token->getType(), type);
+        acceptInst(token->getType().getTokenType(), type);
     else if (type == addMode)
         acceptAddrMode(token->getType());
     else if (type == numeric)
@@ -181,15 +196,15 @@ void Parser::logError (Token::Type type)
     logger_->logError(std::make_shared<Error> (Error (scanner_->getLineNr(), "Unexpected identifier of type " + type.getName())));
 }
 
-const InstructionPtr Parser::acceptInst (Token::Type tokenType, SymbolType symbolType)
+const InstructionPtr Parser::acceptInst (Token::TokenType tokenType, SymbolType symbolType)
 {
     InstructionPtr instruction;
     if (symbolType == inst0)
-        instruction = std::make_shared<ZeroArgsInstruction> (tokenType.getTokenType());
+        instruction = std::make_shared<ZeroArgsInstruction> (tokenType);
     else if (symbolType == inst1)
-        instruction = std::make_shared<OneArgsInstruction> (tokenType.getTokenType());
+        instruction = std::make_shared<OneArgsInstruction> (tokenType);
     else
-        instruction = std::make_shared<TwoArgsInstruction> (tokenType.getTokenType());
+        instruction = std::make_shared<TwoArgsInstruction> (tokenType);
 
     if (nestedInstructions_.empty())
         code_.push_back(instruction);
